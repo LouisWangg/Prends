@@ -1,0 +1,16 @@
+============== EXPLANATION ==============
+express = quickly create server in node.js
+cors = allow different domains to interact with each other, example: FE di port 3000, BE di port 5000
+pg = connect server with database
+nodemon = let server save and start automatically
+prettier = formatter for developing
+
+============== COMMAND ==============
+npm i express pg cors
+npm install nodemon
+npm install --save-dev prettier
+
+============== CMD PROMPT COMMAND ==============
+\l = list all databases
+\c = connected to a database
+\dt = list of relations in a database

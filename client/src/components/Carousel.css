@@ -1,0 +1,75 @@
+.carousel {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.slides-container {
+  display: flex;
+  transition: transform 0.8s ease-in-out; /* Smooth slide transition */
+  transform: translateX(0%); /* Default position */
+}
+
+.slide {
+  width: 100%; /* Ensure each slide takes full width */
+  height: auto;
+  flex-shrink: 0; /* Prevent shrinking of the image */
+  object-fit: cover; /* Ensure images fill the slide area without distortion */
+}
+
+.slide-hidden {
+  display: none;
+}
+
+.arrow {
+  font-size: 20px;
+  color: grey;
+  transition: all 0.9s ease;
+}
+
+.arrow:hover {
+  color: black;
+  cursor: pointer;
+  /* font-weight: bolder; */
+}
+
+.arrow-left {
+  margin-right: 25px;
+}
+
+.arrow-right {
+  margin-left: 25px;
+}
+
+.indicators {
+  margin-top: 10px;
+}
+
+.indicator {
+  background-color: black;
+  height: 0.7rem;
+  border-radius: 100%;
+  border: none;
+  outline: 1px solid grey;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.indicator-inactive {
+  background-color: white;
+}
+
+.play-pause-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: grey;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+.play-pause-btn:hover {
+  color: black;
+}

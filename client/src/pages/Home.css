@@ -1,0 +1,12 @@
+.carousels {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .homeDiv {
+    margin: 50px 70px 50px 70px;
+  }
