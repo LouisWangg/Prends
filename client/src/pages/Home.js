@@ -7,7 +7,6 @@ import Line from "../components/Line";
 import "./Home.css";
 
 const Home = () => {
-
   return (
     <Fragment>
       <div className="carousels">
@@ -25,20 +24,24 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box>
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">talklee 5 : Deep Dive to Your Inner-Child</Typography>
+        <Typography variant="h4">
+          talklee 5 : Deep Dive to Your Inner-Child
+        </Typography>
         <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
           Rp 100.000,00
         </Typography>
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">Kembangkan dirimu melalui kelas dari KLEEDEMY</Typography>
+        <Typography variant="h4">
+          Kembangkan dirimu melalui kelas dari KLEEDEMY
+        </Typography>
         <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
           Kini tersedia kelas rekaman yang bisa kamu akses selamanya!
         </Typography>
@@ -49,12 +52,12 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box>
-        <div style={{textAlign: "center"}}>
+        <div style={{ textAlign: "center" }}>
           <button>Lihat Semua</button>
         </div>
       </div>
@@ -70,13 +73,15 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box>
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">Pilih KLEEXPERT yang sesuai untukmu!</Typography>
+        <Typography variant="h4">
+          Pilih KLEEXPERT yang sesuai untukmu!
+        </Typography>
         <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
           Produk-produk untuk mengembangkan dan mengenal diri kamu lebih dalam!
         </Typography>
@@ -87,16 +92,18 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box>
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">Kata Kleezen yang sudah cobain layanan konseling di Klee!</Typography>
-        <div style={{display: "flex"}}>
+        <Typography variant="h4">
+          Kata Kleezen yang sudah cobain layanan konseling di Klee!
+        </Typography>
+        <div style={{ display: "flex" }}>
           <h3>Lebih Tenang</h3>
-          <h3 style={{margin: "0 80px 0 80px"}}>Ga Menyangka</h3>
+          <h3 style={{ margin: "0 80px 0 80px" }}>Ga Menyangka</h3>
           <h3>It Works</h3>
         </div>
         {/* <Box
@@ -106,13 +113,15 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box> */}
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">Baca artikel terbaru dari #Kleexplained</Typography>
+        <Typography variant="h4">
+          Baca artikel terbaru dari #Kleexplained
+        </Typography>
         <Box
           sx={{
             display: "grid",
@@ -120,13 +129,15 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard />
-          <SingleCard />
-          <SingleCard />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
+          <SingleCard id={82} />
         </Box>
       </div>
       <Line />
-      <Typography variant="h5">Beberapa pertanyaan Kleezen seputar layanan Klee!</Typography>
+      <Typography variant="h5">
+        Beberapa pertanyaan Kleezen seputar layanan Klee!
+      </Typography>
     </Fragment>
   );
 };

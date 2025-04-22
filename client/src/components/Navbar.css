@@ -48,7 +48,7 @@ a:hover {
 .navbarButtons .button {
   border: none;
   background-color: inherit;
-  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .button:active {

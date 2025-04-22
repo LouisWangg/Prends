@@ -8,9 +8,8 @@ import {
 import "./SingleCard.css";
 import { cards } from "../data/Cards"; // Importing the card data
 
-export const SingleCard = ({ card }) => {
-  const targetedId = 82;
-  const singleCard = cards.find((singleCard) => singleCard.id === targetedId);
+export const SingleCard = ({ id }) => {
+  const singleCard = cards.find((singleCard) => singleCard.id === id);
 
   return (
     <Card className="singleCard">
