@@ -120,7 +120,7 @@ const Home = () => {
       </div>
       <div className="homeDiv">
         <Typography variant="h4">
-          Baca artikel terbaru dari #Kleexplained
+          Baca artikel terbaru dari #Kleexplained!
         </Typography>
         <Box
           sx={{

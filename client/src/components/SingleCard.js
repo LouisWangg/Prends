@@ -16,7 +16,7 @@ export const SingleCard = ({ id }) => {
       <CardMedia
         component="img"
         image={singleCard.image}
-        alt={cards.title}
+        alt={singleCard.title}
         className="singleCardImage"
       />
       <CardContent sx={{textAlign: "center"}}>
@@ -24,7 +24,7 @@ export const SingleCard = ({ id }) => {
           {singleCard.title}
         </Typography>
         <Typography variant="caption" className="singleCardPrice">
-          {singleCard.date}
+          {singleCard.description}
         </Typography>
       </CardContent>
     </Card>
