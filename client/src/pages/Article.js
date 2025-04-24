@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { cards } from "../data/Cards"; // Importing the card data
 import { Button, Typography, Box } from "@mui/material";
-import { ArticleCard } from "../components/ArticleCard.js";
+import { SingleCard } from "../components/SingleCard.js";
 import "./Article.css";
 
 const ITEMS_PER_PAGE = 6;
@@ -43,7 +43,7 @@ const Article = () => {
         }}
       >
         {currentCards.map((card) => (
-        <ArticleCard data={card} />
+        <SingleCard id={card.id} type={"article"} />
         ))}
       </Box>
 

@@ -54,10 +54,10 @@ const Navbar = () => {
         <img src={logo} alt="logo" width={100} height={70} />
         <ul>
           <li
-            className={activeLink === "/home" ? "active" : ""}
-            onClick={() => handleLinkClick("/home")}
+            className={activeLink === "/" ? "active" : ""}
+            onClick={() => handleLinkClick("/")}
           >
-            <Link to="/home">Beranda</Link>
+            <Link to="/">Beranda</Link>
           </li>
           <li
             className={activeLink === "/article" ? "active" : ""}

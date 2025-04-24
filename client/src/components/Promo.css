@@ -1,0 +1,10 @@
+.promoBackground {
+    background-color: black;
+    text-align: center;
+}
+
+.promoText {
+    color: white;
+    font-size: large;
+    padding: 8px;
+}

@@ -13,4 +13,8 @@ export const slides = [
     src: image,
     alt: "Image 3 for carousel",
   },
+  {
+    src: image,
+    alt: "Image 4 for carousel",
+  },
 ];
