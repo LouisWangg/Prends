@@ -1,12 +1,44 @@
 .carousels {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-  .homeDiv {
-    margin: 50px 70px 50px 70px;
-  }
+.homeDiv {
+  margin: 50px 70px 50px 70px;
+}
+
+.kleedemyPosterContainer {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.kleedemyPosterImage {
+  border: 2px solid black;
+  margin: 30px 80px 30px 80px;
+  width: 400px;
+  height: 520px;
+}
+
+.kleedemyPosterText {
+  margin-left: 50px;
+  max-width: 500px;
+  word-wrap: break-word;
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.basketBtn {
+
+}
+
+.buyBtn {
+  
+}

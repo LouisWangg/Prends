@@ -6,17 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "clean-install": "rmdir /s /q node_modules && del /f /q package-lock.json && npm install"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
-    "nodemon": "^3.1.9",
     "pg": "^8.13.1"
   },
   "devDependencies": {
+    "nodemon": "^3.1.10",
     "prettier": "^3.5.1"
   }
 }

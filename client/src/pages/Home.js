@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import { Box, Typography } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 import { Carousel } from "../components/Carousel.js";
 import { SingleCard } from "../components/SingleCard.js";
 import { slides } from "../data/Carousel.js";
 import Line from "../components/Line";
+import image from "../assets/Asset1.png";
 import "./Home.css";
 
 const Home = () => {
@@ -31,12 +32,24 @@ const Home = () => {
         </Box>
       </div>
       <div className="homeDiv">
-        <Typography variant="h4">
-          talklee 5 : Deep Dive to Your Inner-Child
-        </Typography>
-        <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
-          Rp 100.000,00
-        </Typography>
+        <div className="kleedemyPosterContainer">
+          <img
+            src={image}
+            alt="Logo"
+            className="kleedemyPosterImage"
+          />
+          <Box className="kleedemyPosterText">
+            <Typography variant="button">KLEEDEMY</Typography>
+            <Typography variant="h4">
+              talklee 5 : Deep Dive to Your Inner-Child
+            </Typography>
+            <Typography variant="body1" style={{ marginTop: "10px" }}>
+              Rp 200.000,00
+            </Typography>
+            <Button variant="outlined">Tambahkan ke keranjang</Button>
+            <Button variant="contained">Beli sekarang</Button>
+          </Box>
+        </div>
       </div>
       <div className="homeDiv">
         <Typography variant="h4">
@@ -57,9 +70,6 @@ const Home = () => {
           <SingleCard id={82} />
           <SingleCard id={82} />
         </Box>
-        <div style={{ textAlign: "center" }}>
-          <button>Lihat Semua</button>
-        </div>
       </div>
       <div className="homeDiv">
         <Typography variant="h4">Kamu udah punya ini belum?</Typography>
