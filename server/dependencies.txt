@@ -20,6 +20,7 @@ information, by storing them in a .env file instead of hardcoding them into your
 - git rm -r --cached node_modules
 git commit -m "Remove node_modules from repo"
 git push
+- cp .env.example .env = copy and paste .env.example file and name it to .env
 
 
 ============== CMD PROMPT COMMAND ==============

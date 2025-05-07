@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const pool = require("./config/db");
+const pool = require("./config/database");
 
 //middleware
 app.use(cors());
