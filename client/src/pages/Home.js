@@ -40,14 +40,14 @@ const Home = () => {
           />
           <Box className="kleedemyPosterText">
             <Typography variant="button">KLEEDEMY</Typography>
-            <Typography variant="h4">
+            <Typography variant="h4" className="kleedemyPosterTitle">
               talklee 5 : Deep Dive to Your Inner-Child
             </Typography>
             <Typography variant="body1" style={{ marginTop: "10px" }}>
               Rp 200.000,00
             </Typography>
-            <Button variant="outlined">Tambahkan ke keranjang</Button>
-            <Button variant="contained">Beli sekarang</Button>
+            <Button variant="outlined" className="basketBtn">Tambahkan ke keranjang</Button>
+            <Button variant="contained" className="buyBtn">Beli sekarang</Button>
           </Box>
         </div>
       </div>

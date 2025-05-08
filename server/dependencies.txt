@@ -1,19 +1,21 @@
 ============== EXPLANATION ==============
 - express = quickly create server in node.js
-- cors = allow different domains to interact with each other, example: FE di port 3000, BE di port 5000
+- sequelize = define models using JS, perform CRUD without raw SQL, handle relationship
 - pg = connect server with database
+- cors = allow different domains to interact with each other, example: FE di port 3000, BE di port 5000
 - nodemon = let server save and start automatically
 - prettier = formatter for developing
-- install = dependencies used for production too 
-- install --save-dev = dependencies used only for development
 - dotenv = load environment variables from a .env file into process.env. 
 It helps manage configuration settings, such as API keys, database credentials, and other sensitive 
 information, by storing them in a .env file instead of hardcoding them into your code
-- git command = remove node_modules folder from Github repository
+
+- git rm = remove node_modules folder from Github repository
+- npm install = dependencies used for production too 
+- npm install --save-dev = dependencies used only for development
 
 
 ============== COMMAND ==============
-- npm i express pg cors
+- npm install express sequelize pg cors
 - npm install --save-dev nodemon
 - npm install --save-dev prettier
 - npm install dotenv
