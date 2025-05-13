@@ -1,13 +1,66 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Box, Typography } from "@mui/material";
 import { Carousel } from "../components/Carousel.js";
 import { SingleCard } from "../components/SingleCard.js";
 import { slides } from "../data/Carousel.js";
 import Line from "../components/Line";
 import image from "../assets/Asset1.png";
+import { fetchUsers, fetchUserById, createUser, updateUser, deleteUser } from "../services/UserService"; // Import the service
 import "./Home.css";
+import { getUser } from "../../../server/src/controllers/UserController.js";
 
 const Home = () => {
+  // useState to create variable and 'set' is used to assign the variable's value
+  const [users, setUsers] = useState([]);
+
+  // useEffect is for handling side effects like fetching data, subscriptions, timers, etc. 
+  // It’s designed to run after the initial render and is triggered only once in this case 
+  // (because of the empty dependency array [])
+  useEffect(() => {
+    const getUsers = async () => {
+      const datas = await fetchUsers();
+      setUsers(datas);
+    };
+
+    const getUserById = async () => {
+      const data = await fetchUserById(1);
+      console.log("Fetched user:", user);
+    };
+
+    getUsers();
+    getUserById();
+  }, []); // Empty dependency array ensures this runs only once
+
+  const handleCreate = async () => {
+    const newUser = {
+      email: "test@example.com",
+      password: "123456",
+      firstName: "John",
+      lastName: "Doe",
+    };
+
+    const response = await createUser(newUser);
+    console.log("Create response:", response);
+  };
+
+  const handleUpdate = async () => {
+    const userId = 1;
+    const updatedData = {
+      email: "updated@example.com",
+      firstName: "Jane",
+      lastName: "Smith",
+    };
+
+    const response = await updateUser(userId, updatedData);
+    console.log("Update response:", response);
+  };
+
+  const handleDelete = async () => {
+    const userId = 1;
+    const response = await deleteUser(userId);
+    console.log("Delete response:", response);
+  };
+
   return (
     <Fragment>
       <div className="carousels">
@@ -83,11 +136,18 @@ const Home = () => {
             gap: 3,
           }}
         >
+          {users.slice(0, 3).map((user) => ( //will only show up 1-3 datas, only if the length of data exists
+            <SingleCard key={user.userId} id={user.userId} />
+          ))}
+          {/* <SingleCard id={82} />
           <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} /> */}
         </Box>
       </div>
+      <button onClick={handleCreate}>Create User</button>
+      <button onClick={handleUpdate}>Update User</button>
+      <button onClick={handleDelete}>Delete User</button>
+
       <div className="homeDiv">
         <Typography variant="h4">
           Pilih KLEEXPERT yang sesuai untukmu!
