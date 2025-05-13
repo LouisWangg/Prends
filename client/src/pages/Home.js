@@ -5,28 +5,32 @@ import { SingleCard } from "../components/SingleCard.js";
 import { slides } from "../data/Carousel.js";
 import Line from "../components/Line";
 import image from "../assets/Asset1.png";
-import { fetchUsers, fetchUserById, createUser, updateUser, deleteUser } from "../services/UserService"; // Import the service
+import {
+  fetchUsers,
+  fetchUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../services/UserService"; // Import the service
 import "./Home.css";
-import { getUser } from "../../../server/src/controllers/UserController.js";
 
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
   const [users, setUsers] = useState([]);
 
-  // useEffect is for handling side effects like fetching data, subscriptions, timers, etc. 
-  // It’s designed to run after the initial render and is triggered only once in this case 
+  const getUsers = async () => {
+    const datas = await fetchUsers();
+    setUsers(datas);
+  };
+
+  const getUserById = async () => {
+    const data = await fetchUserById(1);
+  };
+
+  // useEffect is for handling side effects like fetching data, subscriptions, timers, etc.
+  // It’s designed to run after the initial render and is triggered only once in this case
   // (because of the empty dependency array [])
   useEffect(() => {
-    const getUsers = async () => {
-      const datas = await fetchUsers();
-      setUsers(datas);
-    };
-
-    const getUserById = async () => {
-      const data = await fetchUserById(1);
-      console.log("Fetched user:", user);
-    };
-
     getUsers();
     getUserById();
   }, []); // Empty dependency array ensures this runs only once
@@ -41,6 +45,7 @@ const Home = () => {
 
     const response = await createUser(newUser);
     console.log("Create response:", response);
+    getUsers();
   };
 
   const handleUpdate = async () => {
@@ -51,14 +56,18 @@ const Home = () => {
       lastName: "Smith",
     };
 
+    console.log("users = " + users);
+
     const response = await updateUser(userId, updatedData);
     console.log("Update response:", response);
+    getUsers();
   };
 
   const handleDelete = async () => {
     const userId = 1;
     const response = await deleteUser(userId);
     console.log("Delete response:", response);
+    getUsers();
   };
 
   return (
@@ -86,11 +95,7 @@ const Home = () => {
       </div>
       <div className="homeDiv">
         <div className="kleedemyPosterContainer">
-          <img
-            src={image}
-            alt="Logo"
-            className="kleedemyPosterImage"
-          />
+          <img src={image} alt="Logo" className="kleedemyPosterImage" />
           <Box className="kleedemyPosterText">
             <Typography variant="button">KLEEDEMY</Typography>
             <Typography variant="h4" className="kleedemyPosterTitle">
@@ -99,8 +104,12 @@ const Home = () => {
             <Typography variant="body1" style={{ marginTop: "10px" }}>
               Rp 200.000,00
             </Typography>
-            <Button variant="outlined" className="basketBtn">Tambahkan ke keranjang</Button>
-            <Button variant="contained" className="buyBtn">Beli sekarang</Button>
+            <Button variant="outlined" className="basketBtn">
+              Tambahkan ke keranjang
+            </Button>
+            <Button variant="contained" className="buyBtn">
+              Beli sekarang
+            </Button>
           </Box>
         </div>
       </div>
@@ -136,9 +145,13 @@ const Home = () => {
             gap: 3,
           }}
         >
-          {users.slice(0, 3).map((user) => ( //will only show up 1-3 datas, only if the length of data exists
-            <SingleCard key={user.userId} id={user.userId} />
-          ))}
+          {users.slice(0, 3).map(
+            (
+              user //will only show up 1-3 datas, only if the length of data exists
+            ) => (
+              <SingleCard key={user.userId} id={user.userId} />
+            )
+          )}
           {/* <SingleCard id={82} />
           <SingleCard id={82} />
           <SingleCard id={82} /> */}

@@ -8,6 +8,7 @@
 - dotenv = load environment variables from a .env file into process.env. 
 It helps manage configuration settings, such as API keys, database credentials, and other sensitive 
 information, by storing them in a .env file instead of hardcoding them into your code
+- axios = makes external API calls to another server
 
 - git rm = remove node_modules folder from Github repository
 - npm install = dependencies used for production too 
@@ -19,6 +20,7 @@ information, by storing them in a .env file instead of hardcoding them into your
 - npm install --save-dev nodemon
 - npm install --save-dev prettier
 - npm install dotenv
+- npm install axios
 - git rm -r --cached node_modules
 git commit -m "Remove node_modules from repo"
 git push

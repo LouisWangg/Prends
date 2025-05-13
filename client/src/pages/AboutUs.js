@@ -77,7 +77,7 @@ const AboutUs = () => {
         </div>
         <p>
           Terbaru, Klee berkolaborasi dengan @buranchi.id pada 26 Februari 2023
-          untuk mengadakan cara speed dating dengan menghadirkan kartu 
+          untuk mengadakan cara speed dating dengan menghadirkan kartu
           <b> Exploration Card - Dating Edition</b> yang belum diluncurkan
           secara publik.
         </p>

@@ -3,6 +3,7 @@ create-react-app = create react project folder
 react-router-dom = for router problems
 react-icons = icon
 prettier = formatter for developing
+axios = for error handling, response handling, automatic json transformation
 
 ============== COMMAND ==============
 npx create-react-app client(nama folder)
