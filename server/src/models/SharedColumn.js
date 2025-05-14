@@ -1,31 +1,37 @@
 const { DataTypes } = require('sequelize');
 
 const sharedColumns = {
-    userId: {
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    price: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    email: {
-        type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-            isEmail: true // Ensures the value is a valid email
-        }
-        // unique: true
+        defaultValue: 0
     },
-    password: {
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    itemType: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    firstName: {
-        type: DataTypes.STRING,
+    discountFlag: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    lastName: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
+    discountPrice: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    }
 };
 
-module.exports = { sharedColumns };
+module.exports = sharedColumns;
