@@ -1,11 +1,41 @@
 const User = require("../models/UserModel");
 
+// Register User
+const registerUser = async (req, res) => {
+  try {
+    const { email, password, firstName, lastName } = req.body;
+    const data = await User.create({ email, password, firstName, lastName });
+    res.json(`New user has been successfully added: ${data.firstName}`);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+};
+
+// Login User
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const data = await User.findOne({
+      where: {
+        email: email,
+        password: password
+      }
+    });
+    if (!data) return res.status(404).send("User not found");
+    res.json(data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+};
+
 // Create user
 const insertUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-    const user = await User.create({ email, password, firstName, lastName });
-    res.json(`New user has been successfully added: ${user.firstName}`);
+    const data = await User.create({ email, password, firstName, lastName });
+    res.json(`New user has been successfully added: ${data.firstName}`);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
@@ -15,8 +45,8 @@ const insertUser = async (req, res) => {
 // Get all users
 const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
-    res.json(users);
+    const datas = await User.findAll();
+    res.json(datas);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
@@ -27,9 +57,9 @@ const getUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findByPk(id);
-    if (!user) return res.status(404).send("User not found");
-    res.json(user);
+    const data = await User.findByPk(id);
+    if (!data) return res.status(404).send("User not found");
+    res.json(data);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
@@ -42,12 +72,12 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { email, firstName, lastName } = req.body;
 
-    const [updated] = await User.update(
+    const [data] = await User.update(
       { email, firstName, lastName },
       { where: { userId: id } }
     );
 
-    if (!updated) return res.status(404).send("User not found");
+    if (!data) return res.status(404).send("User not found");
     res.json(`User ${id} has been successfully updated`);
   } catch (error) {
     console.error(error.message);
@@ -59,8 +89,8 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await User.destroy({ where: { userId: id } });
-    if (!deleted) return res.status(404).send("User not found");
+    const data = await User.destroy({ where: { userId: id } });
+    if (!data) return res.status(404).send("User not found");
     res.json("User has been successfully deleted");
   } catch (error) {
     console.error(error.message);

@@ -7,6 +7,10 @@ const Image = sequelize.define('Image', {
         primaryKey: true,
         autoIncrement: true
     },
+    imageCategory: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     url: {
         type: DataTypes.TEXT,
         allowNull: false

@@ -1,20 +1,17 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const sharedColumn = require('./SharedColumn');
 
-const Counseling = sequelize.define('Counseling', {
-    counselingId: {
+const CounselingType = sequelize.define('CounselingType', {
+    counselingTypeId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    ...sharedColumn,
-    duration: {
-        type: DataTypes.INTEGER,
-        alowNull: false,
-        defaultValue: 0
+    title: {
+        type: DataTypes.STRING,
+        alowNull: false
     },
-    category: {
+    description: {
         type: DataTypes.STRING,
         allowNull: false
     }
@@ -22,4 +19,4 @@ const Counseling = sequelize.define('Counseling', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-module.exports = Counseling;
+module.exports = CounselingType;
