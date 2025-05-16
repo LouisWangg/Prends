@@ -4,8 +4,18 @@ const User = require("../models/UserModel");
 const registerUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-    const data = await User.create({ email, password, firstName, lastName });
-    res.json(`New user has been successfully added: ${data.firstName}`);
+    const data = await User.findOne({
+      where: {
+        email: email
+      }
+    });
+
+    if (data) {
+      return res.status(404).send(`User with this email: ${data.email} has already exist!`);
+    } else {
+      const account = await User.create({ email, password, firstName, lastName });
+      res.json(`New user has been successfully added: ${account.firstName}`);
+    }
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
@@ -99,6 +109,8 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
+  registerUser,
+  loginUser,
   insertUser,
   getUsers,
   getUser,

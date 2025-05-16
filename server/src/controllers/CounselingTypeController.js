@@ -1,10 +1,17 @@
+const { Op } = require("sequelize");
 const CounselingType = require("../models/CounselingTypeModel");
 
 // Get Card datas
-const getCounselingTypes = async (req, res) => {
+const getHomePageTypes = async (req, res) => {
   try {
     const datas = await CounselingType.findAll({
-        attributes: ['counselingTypeId', 'title']
+        attributes: ['name', 'price', 'discountFlag', 'discountPrice'],
+        where: {
+          counselingTypeId: {
+            [Op.gte]: 1,
+            [Op.lte]: 4
+          }
+        }
     });
     res.json(datas);
   } catch (error) {
@@ -14,5 +21,5 @@ const getCounselingTypes = async (req, res) => {
 };
 
 module.exports = {
-  getCounselingTypes
+  getHomePageTypes
 };

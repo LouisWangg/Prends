@@ -2,6 +2,28 @@ import axios from "axios";
 
 const userUrl = "http://localhost:5000/users/";
 
+// Register User
+export const registerUser = async (userData) => {
+  try {
+    const response = await axios.post(`${userUrl}/registerUser`, userData);
+    return response.data;
+  } catch (error) {
+    console.error("Register account failed: ", error);
+    return { error: "Failed to create user" };
+  }
+};
+
+// Login User
+export const loginUser = async (userData) => {
+  try {
+    const response = await axios.get(`${userUrl}/loginUser`, userData);
+    return response.data;
+  } catch (error) {
+    console.error(`User not found: `, error);
+    return { error: "Failed to create user" };
+  }
+};
+
 // Get all users
 export const fetchUsers = async () => {
   try {

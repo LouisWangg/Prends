@@ -1,10 +1,21 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import Tnc from "../components/Tnc";
+import { loginUser } from "../services/UserService"; // Import the service
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+      const userData = {
+        email: "test@example.com",
+        password: "123456",
+      };
+  
+      const response = await loginUser(userData);
+      console.log("Service response: ", response);
+    };
 
   const onRegisterForm = async (e) => {
     e.preventDefault();
@@ -44,6 +55,7 @@ const Login = () => {
           <button
             className="btn btn-success"
             style={{ width: "120px", height: "50px" }}
+            onClick={handleLogin}
           >
             Masuk
           </button>
