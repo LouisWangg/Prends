@@ -15,39 +15,41 @@ const AboutUs = () => {
 
   return (
     <Fragment>
-      <h1 className="pageTitle">Kenalan sama Klee yuk!</h1>
+      <h1 className="pageTitle">Let's be Prends!</h1>
       <div className="aboutUsContainer">
         <h6>Filosofi</h6>
         <p>
-          Klee berasal dari terjemahan Bahasa Jerman yang berarti daun semanggi.
-          Biasanya daun semanggi hanya punya 3 helai daun. Namun, jika kamu
-          berhasil menemukan daun semanggi yang mempunyai 4 helai daun dan
-          menyimpannya, dipercayai kamu akan, mendapatkan keberuntungan.
+          Prends berasal dari bahasa Prancis yang berarti mengambil. Prends harap kehadirannya dapat membantu 
+          orang-orang untuk mengambil waktu sejenak untuk terkoneksi dengan diri mereka untuk berproses dan 
+          bertumbuh bersama dengan bantuan profesional. Prends juga terdengar seperti kata "friends", sehingga 
+          Prends berharap kehadirannya dapat menjadi teman bagi mereka yang membutuhkan bantuan untuk sama-sama 
+          bertumbuh. Dengan tagline #BePrendsent (dibaca Be Present), Prends hadir untuk membagikan awareness 
+          dan menjadi jembatan penghubung bagi teman-teman yang mencari bantuan.
         </p>
-        <p>
+        {/* <p>
           Klee berangkat dari keinginan untuk membagikan sebanyak-banyaknya dan
           berharap siapapun yang menggenggam daun ini mendapatkan
           'keberuntungan' yang dipakai untuk menjalani hidup yang lebih baik
           pada banyak aspek kehidupan di masa depan, sehingga nantinya berdampak
           membentuk pribadi yang lebih baik, pribadi yang lebih ramah terhadap
           dirinya sendiri, sesama manusia, dan lingkungan tempat dia tinggal.
-        </p>
+        </p> */}
 
-        <h6>Tentang Klee</h6>
+        <h6>Tentang Prends</h6>
         <p>
-          Klee adalah platform media pengembangan diri yang telah berdiri sejak
-          Juli 2018 dengan impian untuk mewujudkan dunia yang lebih baik. Klee
-          percaya untuk mewujudkan dunia yang lebih baik harus dimulai dari diri
-          kita sendiri.
+          Prends adalah platform layanan konseling serta kelas pengembangan diri dengan psikolog yang terlisensi. 
+          Prends hadir sebagai platform yang menjembatani klien yang membutuhkan layanan konseling dengan psikolog 
+          yang membutuhkan wadah untuk menghubungkan mereka dengan klien. Selain konseling, Prends juga menyediakan 
+          layanan assessment, theraphy, dan layanan psikologi lainnya.
         </p>
-        <p>
+        {/* <p>
           Dengan impian tersebut, Klee saat ini fokus membantu setiap individu
           dengan menyediakan konseling online ataupun offline dengan psikolog
           tersertifikasi, kelas-kelas seperti : seminar, webinar, atau workshop,
           dan meluncurkan produk seperti jurnal atau kartu eksplorasi sendiri.
-        </p>
-        <br />
-        <p>
+        </p> */}
+        {/* <br /> */}
+        {/* <p>
           Saat ini Klee membagi layanan-layanan ke beberapa unit yang mempunyai
           fokusnya masing-masing.
           <br />
@@ -80,10 +82,10 @@ const AboutUs = () => {
           untuk mengadakan cara speed dating dengan menghadirkan kartu
           <b> Exploration Card - Dating Edition</b> yang belum diluncurkan
           secara publik.
-        </p>
-        <h6>Connect With Klee</h6>
+        </p> */}
+        <h6>Connect with Prends</h6>
         <p>
-          Dapatkan update terbaru dari Klee dengan mengikuti kami di :
+          Dapatkan update terbaru dari Prends dengan mengikuti kami di :
           <br />
           Instagram :{" "}
           <Link
@@ -91,7 +93,7 @@ const AboutUs = () => {
             url="https://www.instagram.com/klee.id/"
             onClick={(event) => openNewTab(event)}
           >
-            @klee.id
+            @prends.id
           </Link>
           <br />
           Twitter :{" "}
@@ -100,7 +102,7 @@ const AboutUs = () => {
             url="https://x.com/klee_id"
             onClick={(event) => openNewTab(event)}
           >
-            @klee_id
+            @prends_id
           </Link>
           <br />
           Facebook :{" "}
@@ -109,7 +111,7 @@ const AboutUs = () => {
             url="https://www.facebook.com/klee.indonesia/?_rdc=1&_rdr"
             onClick={(event) => openNewTab(event)}
           >
-            Klee
+            Prends
           </Link>
           <br />
           Youtube :{" "}
@@ -118,7 +120,7 @@ const AboutUs = () => {
             url="https://www.youtube.com/kleeindonesia"
             onClick={(event) => openNewTab(event)}
           >
-            Klee ID
+            Prends ID
           </Link>
           <br />
           Spotify :{" "}
@@ -127,7 +129,7 @@ const AboutUs = () => {
             url="https://open.spotify.com/show/7JRdDYLYSc93HCOOIzTsQo"
             onClick={(event) => openNewTab(event)}
           >
-            KLEECORDER
+            PRENDSCORDER
           </Link>
           <br />
           TikTok :{" "}
@@ -136,7 +138,7 @@ const AboutUs = () => {
             url="https://www.tiktok.com/@klee.id"
             onClick={(event) => openNewTab(event)}
           >
-            @klee.id
+            @prends.id
           </Link>
         </p>
       </div>

@@ -9,7 +9,7 @@ const CounselorLevel = sequelize.define('CounselorLevel', {
     },
     name: {
         type: DataTypes.STRING,
-        alowNull: false
+        allowNull: false
     },
     description: {
         type: DataTypes.STRING,

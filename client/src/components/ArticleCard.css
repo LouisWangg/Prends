@@ -1,66 +1,40 @@
 .articleCard {
-    max-width: 100%;
-    text-align: center;
-    border: none;
-    box-shadow: none !important;
-    cursor: pointer;
-  }
+  max-width: 100%;
+  text-align: center;
+  border: none;
+  box-shadow: none !important;
+  cursor: pointer;
+}
 
 .articleCard:hover .cardImage {
-    transform: scale(1.05); /* Zoom in */
-    transition: transform 0.7s ease; /* Smooth transition */
-  }
-  
-  .articleCard:hover .cardTitle {
-    text-decoration: underline;
-  }
-  
-  .cardTitle {
-    font-size: 30px !important;
-  }
-  
-  
-  .articleCard:hover {
-    cursor: pointer;
-  }
-  
-  .articleCard:hover .articleCardImage {
-    transform: scale(1.05); /* Zoom in */
-    transition: transform 0.7s ease; /* Smooth transition */
-  }
-  
-  .articleCard:hover .MuiTypography-subtitle1 {
-    text-decoration: underline;
-  }
-  
-  .articleCardImage {
-    height: 100%;
-    /* width: 100%; */
-    /* display: block; */
-    object-fit: contain;
-  }
-  
-  .articleCardPrice {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  /* .articleCardImageWrapper {
-    position: relative;
-    width: 100%;
-  }
-  
-  .articleCardBadge {
-    position: absolute;
-    bottom: 270px;
-    right: 10px;
-    background-color: black;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 10;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  } */
-  
+  transform: scale(1.05);
+  /* Zoom in */
+  transition: transform 0.7s ease;
+  /* Smooth transition */
+}
+
+.articleCard:hover .cardTitle {
+  text-decoration: underline;
+}
+
+.cardTitle {
+  font-size: 30px !important;
+}
+
+.articleCard:hover {
+  cursor: pointer;
+}
+
+/* .articleCard:hover .articleCardImage {
+  transform: scale(1.05);
+  transition: transform 0.7s ease;
+} */
+
+/* .articleCard:hover .MuiTypography-subtitle1 {
+  text-decoration: underline;
+} */
+
+/* .articleCardImage {
+  height: 100%;
+  object-fit: contain;
+} */

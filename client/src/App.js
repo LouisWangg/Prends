@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Article from "./pages/Article";
-import Kleemart from "./pages/Kleemart";
+import Store from "./pages/Store";
 import AboutUs from "./pages/AboutUs";
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/article" element={<Article />} />
-            <Route path="/kleemart" element={<Kleemart />} />
+            <Route path="/store" element={<Store />} />
             <Route path="/aboutUs" element={<AboutUs />} />
           </Routes>
         </div>

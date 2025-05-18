@@ -1,10 +1,10 @@
-const User = require("../models/UserModel");
+const userModel = require("../models/UserModel");
 
 // Register User
 const registerUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-    const data = await User.findOne({
+    const data = await userModel.findOne({
       where: {
         email: email
       }
@@ -13,7 +13,7 @@ const registerUser = async (req, res) => {
     if (data) {
       return res.status(404).send(`User with this email: ${data.email} has already exist!`);
     } else {
-      const account = await User.create({ email, password, firstName, lastName });
+      const account = await userModel.create({ email, password, firstName, lastName });
       res.json(`New user has been successfully added: ${account.firstName}`);
     }
   } catch (error) {
@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const data = await User.findOne({
+    const data = await userModel.findOne({
       where: {
         email: email,
         password: password
@@ -44,7 +44,7 @@ const loginUser = async (req, res) => {
 const insertUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-    const data = await User.create({ email, password, firstName, lastName });
+    const data = await userModel.create({ email, password, firstName, lastName });
     res.json(`New user has been successfully added: ${data.firstName}`);
   } catch (error) {
     console.error(error.message);
@@ -55,7 +55,7 @@ const insertUser = async (req, res) => {
 // Get all users
 const getUsers = async (req, res) => {
   try {
-    const datas = await User.findAll();
+    const datas = await userModel.findAll();
     res.json(datas);
   } catch (error) {
     console.error(error.message);
@@ -67,7 +67,7 @@ const getUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await User.findByPk(id);
+    const data = await userModel.findByPk(id);
     if (!data) return res.status(404).send("User not found");
     res.json(data);
   } catch (error) {
@@ -82,7 +82,7 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { email, firstName, lastName } = req.body;
 
-    const [data] = await User.update(
+    const [data] = await userModel.update(
       { email, firstName, lastName },
       { where: { userId: id } }
     );
@@ -99,7 +99,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await User.destroy({ where: { userId: id } });
+    const data = await userModel.destroy({ where: { userId: id } });
     if (!data) return res.status(404).send("User not found");
     res.json("User has been successfully deleted");
   } catch (error) {

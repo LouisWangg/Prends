@@ -1,10 +1,10 @@
-const counselorLevel = require("../models/CounselorLevelModel");
+const counselorLevelModel = require("../models/CounselorLevelModel");
 
 // Get Card datas
-const getCounselorLevels = async (req, res) => {
+const getHomePageLevels = async (req, res) => {
   try {
-    const datas = await counselorLevel.findAll({
-        attributes: ['name', 'description']
+    const datas = await counselorLevelModel.findAll({
+        attributes: ['name']
     });
     res.json(datas);
   } catch (error) {
@@ -14,5 +14,5 @@ const getCounselorLevels = async (req, res) => {
 };
 
 module.exports = {
-  getCounselorLevels
+  getHomePageLevels
 };

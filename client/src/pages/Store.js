@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import "./Kleemart.css";
+import "./Store.css";
 
-const Kleemart = () => {
+const Store = () => {
   const openNewTab = (event) => {
     event.preventDefault();
     window.open(
@@ -14,8 +14,8 @@ const Kleemart = () => {
 
   return (
     <Fragment>
-      <h1 className="kleemartTitle">KLEEMART</h1>
-      <div className="kleemartContainer">
+      <h1 className="storeTitle">KLEEMART</h1>
+      <div className="storeContainer">
         <h6>Filosofi</h6>
         <p>
           Klee berasal dari terjemahan Bahasa Jerman yang berarti daun semanggi.
@@ -139,4 +139,4 @@ const Kleemart = () => {
   );
 };
 
-export default Kleemart;
+export default Store;

@@ -1,54 +1,36 @@
 .singleCard {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 150px;
-    border: none;
-    box-shadow: none !important;
-    /* position: relative; */
-  }
-  
-  .singleCard:hover {
-    cursor: pointer;
-  }
-  
-  .singleCard:hover .singleCardImage {
-    transform: scale(1.05); /* Zoom in */
-    transition: transform 0.7s ease; /* Smooth transition */
-  }
-  
-  .singleCard:hover .MuiTypography-subtitle1 {
-    text-decoration: underline;
-  }
-  
-  .singleCardImage {
-    height: 100%;
-    /* width: 100%; */
-    /* display: block; */
-    object-fit: contain;
-  }
-  
-  .singleCardPrice {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  /* .singleCardImageWrapper {
-    position: relative;
-    width: 100%;
-  }
-  
-  .singleCardBadge {
-    position: absolute;
-    bottom: 270px;
-    right: 10px;
-    background-color: black;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 10;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  } */
-  
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 150px;
+  border: none;
+  box-shadow: none !important;
+  /* position: relative; */
+}
+
+.singleCard:hover {
+  cursor: pointer;
+}
+
+.singleCard:hover .singleCardImage {
+  transform: scale(1.05);
+  /* Zoom in */
+  transition: transform 0.7s ease;
+  /* Smooth transition */
+}
+
+.singleCard:hover .MuiTypography-subtitle1 {
+  text-decoration: underline;
+}
+
+.singleCardImage {
+  height: 100%;
+  /* width: 100%; */
+  /* display: block; */
+  object-fit: contain;
+}
+
+.singleCardPrice {
+  font-size: 16px;
+  font-weight: 500;
+}

@@ -19,7 +19,7 @@ const sharedColumns = {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    itemType: {
+    itemType: { // for kleexpert, kleedemy, etc
         type: DataTypes.STRING,
         allowNull: false
     },

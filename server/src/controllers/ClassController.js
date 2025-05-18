@@ -1,9 +1,9 @@
-const Class = require("../models/ClassModel");
+const classModel = require("../models/ClassModel");
 
 // Get Card datas
 const getHomePageClasses = async (req, res) => {
   try {
-    const datas = await Class.findAll({
+    const datas = await classModel.findAll({
         attributes: ['name', 'price', 'discountFlag', 'discountPrice']
     });
     res.json(datas);
@@ -14,5 +14,5 @@ const getHomePageClasses = async (req, res) => {
 };
 
 module.exports = {
-  getClasses
+  getHomePageClasses
 };
