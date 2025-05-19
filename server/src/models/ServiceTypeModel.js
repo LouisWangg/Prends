@@ -2,8 +2,8 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const sharedColumn = require('./SharedColumn');
 
-const Service = sequelize.define('Service', {
-    serviceId: {
+const ServiceType = sequelize.define('ServiceType', {
+    serviceTypeId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -38,4 +38,4 @@ const Service = sequelize.define('Service', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-module.exports = Service;
+module.exports = ServiceType;

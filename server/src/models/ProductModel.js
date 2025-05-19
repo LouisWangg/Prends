@@ -8,7 +8,12 @@ const Product = sequelize.define('Product', {
         primaryKey: true,
         autoIncrement: true
     },
-    ...sharedColumn
+    ...sharedColumn,
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });

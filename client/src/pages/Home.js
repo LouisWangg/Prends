@@ -11,12 +11,17 @@ import {
   createUser,
   updateUser,
   deleteUser,
-} from "../services/UserService"; // Import the service
+} from "../services/UserService"; // Import user service
+import {
+  fetchIndividualCounselings,
+  fetchIndividualCounselingById
+} from "../services/ServiceTypeService.js"; // Import service type service
 import "./Home.css";
 
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
   const [users, setUsers] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
 
   const getUsers = async () => {
     const datas = await fetchUsers();
@@ -27,12 +32,22 @@ const Home = () => {
     const data = await fetchUserById(1);
   };
 
+  const getServiceTypes = async () => {
+    const datas = await fetchIndividualCounselings();
+    setServiceTypes(datas);
+  };
+
+  const getServiceTypeById = async () => {
+    const data = await fetchUserById(1);
+  };
+
   // useEffect is for handling side effects like fetching data, subscriptions, timers, etc.
   // It’s designed to run after the initial render and is triggered only once in this case
   // (because of the empty dependency array [])
   useEffect(() => {
     getUsers();
-    getUserById();
+    getServiceTypes();
+    // getUserById();
   }, []); // Empty dependency array ensures this runs only once
 
   const handleCreate = async () => {
@@ -87,6 +102,9 @@ const Home = () => {
             gap: 3,
           }}
         >
+          {/* {serviceTypes.map((service) => (
+            <SingleCard key={service.id} id={service.id} type="counseling" data={service} />
+          ))} */}
           <SingleCard id={82} />
           <SingleCard id={82} />
           <SingleCard id={82} />
@@ -145,10 +163,8 @@ const Home = () => {
             gap: 3,
           }}
         >
-          {users.slice(0, 3).map(
-            (
-              user //will only show up 1-3 datas, only if the length of data exists
-            ) => (
+          {users.slice(0, 3).map( //will only show up 1-3 datas, only if the length of data exists
+            (user) => (
               <SingleCard key={user.userId} id={user.userId} />
             )
           )}

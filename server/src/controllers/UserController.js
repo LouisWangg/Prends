@@ -63,7 +63,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-// Get user by ID
+// Get user by Id
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;

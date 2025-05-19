@@ -10,11 +10,6 @@ const sharedColumns = {
         allowNull: false,
         defaultValue: 0
     },
-    quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
     description: {
         type: DataTypes.TEXT,
         allowNull: false

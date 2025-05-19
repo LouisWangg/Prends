@@ -1,19 +1,69 @@
 import React from "react";
 import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
+    Card,
+    CardContent,
+    CardMedia,
+    Typography,
 } from "@mui/material";
 import "./SingleCard.css";
 import "./ArticleCard.css";
 import { cards } from "../data/Cards"; // Importing the card data
 
-export const SingleCard = ({ id, type }) => {
+const SingleCard = ({ id, type, data }) => {
+    let singleCardContent;
+    // const singleCard = data;
     const singleCard = cards.find((singleCard) => singleCard.id === id);
 
-    if (type === "article") {
-        return (
+    const changePageHandle = () => {
+        if (type.includes("counseling") || type.includes("class")) {
+            // pindah page detail sesuai type
+        } else if (type.includes("level")) {
+            
+        } else if (type.includes("article")) {
+
+        }
+    };
+
+    if (type.includes("counseling") || type.includes("class")) {
+        singleCardContent = (
+            <Card className="singleCard">
+                <CardMedia
+                    component="img"
+                    image={singleCard.image}
+                    alt={singleCard.title}
+                    className="singleCardImage"
+                />
+                <CardContent sx={{ textAlign: "center" }}>
+                    <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
+                        {singleCard.title}
+                    </Typography>
+                    <Typography variant="caption" className="singleCardPrice">
+                        {singleCard.date}
+                    </Typography>
+                </CardContent>
+            </Card>
+        );
+    } else if (type.includes("level")) {
+        singleCardContent = (
+            <Card className="singleCard">
+                <CardMedia
+                    component="img"
+                    image={singleCard.image}
+                    alt={singleCard.title}
+                    className="singleCardImage"
+                />
+                <CardContent sx={{ textAlign: "center" }}>
+                    <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
+                        {singleCard.title}
+                    </Typography>
+                    <Typography variant="caption" className="singleCardPrice">
+                        {singleCard.date}
+                    </Typography>
+                </CardContent>
+            </Card>
+        );
+    } else if (type.includes("article")) {
+        singleCardContent = (
             <Card className="articleCard">
                 <CardMedia
                     component="img"
@@ -33,24 +83,9 @@ export const SingleCard = ({ id, type }) => {
                 </CardContent>
             </Card>
         );
-    } else {
-        return (
-            <Card className="singleCard">
-                <CardMedia
-                    component="img"
-                    image={singleCard.image}
-                    alt={singleCard.title}
-                    className="singleCardImage"
-                />
-                <CardContent sx={{ textAlign: "center" }}>
-                    <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
-                        {singleCard.title}
-                    </Typography>
-                    <Typography variant="caption" className="singleCardPrice">
-                        {singleCard.date}
-                    </Typography>
-                </CardContent>
-            </Card>
-        );
     }
+
+    return <div onClick={changePageHandle}>{singleCardContent}</div>;
 };
+
+export default SingleCard;
