@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { cards } from "../data/Cards"; // Importing the card data
 import { Button, Typography, Box } from "@mui/material";
-import { SingleCard } from "../components/SingleCard.js";
+import SingleCard from "../components/SingleCard.js";
 import "./Article.css";
 
 const ITEMS_PER_PAGE = 6;

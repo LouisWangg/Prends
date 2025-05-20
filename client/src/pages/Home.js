@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, Box, Typography } from "@mui/material";
 import { Carousel } from "../components/Carousel.js";
-import { SingleCard } from "../components/SingleCard.js";
+import SingleCard from "../components/SingleCard.js";
 import { slides } from "../data/Carousel.js";
 import Line from "../components/Line";
 import image from "../assets/Asset1.png";
@@ -103,12 +103,12 @@ const Home = () => {
           }}
         >
           {/* {serviceTypes.map((service) => (
-            <SingleCard key={service.id} id={service.id} type="counseling" data={service} />
+            <SingleCard key={service.id} id={service.id} type={"counseling"} data={service} />
           ))} */}
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
         </Box>
       </div>
       <div className="homeDiv">
@@ -145,10 +145,10 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
         </Box>
       </div>
       <div className="homeDiv">
@@ -165,12 +165,12 @@ const Home = () => {
         >
           {users.slice(0, 3).map( //will only show up 1-3 datas, only if the length of data exists
             (user) => (
-              <SingleCard key={user.userId} id={user.userId} />
+              <SingleCard key={user.userId} id={user.userId} type={"counseling"} />
             )
           )}
-          {/* <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} /> */}
+          {/* <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} /> */}
         </Box>
       </div>
       <button onClick={handleCreate}>Create User</button>
@@ -191,9 +191,9 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
         </Box>
       </div>
       <div className="homeDiv">
@@ -212,9 +212,9 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
         </Box> */}
       </div>
       <div className="homeDiv">
@@ -228,9 +228,9 @@ const Home = () => {
             gap: 3,
           }}
         >
-          <SingleCard id={82} />
-          <SingleCard id={82} />
-          <SingleCard id={82} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} />
         </Box>
       </div>
       <Line />
