@@ -102,13 +102,13 @@ const Home = () => {
             gap: 3,
           }}
         >
-          {/* {serviceTypes.map((service) => (
-            <SingleCard key={service.id} id={service.id} type={"counseling"} data={service} />
-          ))} */}
+          {serviceTypes.map((service) => (
+            <SingleCard key={service.serviceTypeId} id={service.serviceTypeId} type={service.itemType} data={service} />
+          ))}
+          {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} /> */}
         </Box>
       </div>
       <div className="homeDiv">
@@ -145,10 +145,10 @@ const Home = () => {
             gap: 3,
           }}
         >
+          {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} /> */}
         </Box>
       </div>
       <div className="homeDiv">
@@ -163,11 +163,11 @@ const Home = () => {
             gap: 3,
           }}
         >
-          {users.slice(0, 3).map( //will only show up 1-3 datas, only if the length of data exists
+          {/* {users.slice(0, 3).map( //will only show up 1-3 datas, only if the length of data exists
             (user) => (
               <SingleCard key={user.userId} id={user.userId} type={"counseling"} />
             )
-          )}
+          )} */}
           {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} /> */}
@@ -191,9 +191,9 @@ const Home = () => {
             gap: 3,
           }}
         >
+          {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} /> */}
         </Box>
       </div>
       <div className="homeDiv">
@@ -228,9 +228,9 @@ const Home = () => {
             gap: 3,
           }}
         >
+          {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
+          <SingleCard id={82} type={"counseling"} /> */}
         </Box>
       </div>
       <Line />

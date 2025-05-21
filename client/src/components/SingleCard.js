@@ -11,8 +11,8 @@ import { cards } from "../data/Cards"; // Importing the card data
 
 const SingleCard = ({ id, type, data }) => {
     let singleCardContent;
-    // const singleCard = data;
-    const singleCard = cards.find((singleCard) => singleCard.id === id);
+    const singleCard = data;
+    // const singleCard = cards.find((singleCard) => singleCard.id === id);
 
     const changePageHandle = () => {
         if (type.includes("counseling") || type.includes("class")) {
@@ -29,16 +29,16 @@ const SingleCard = ({ id, type, data }) => {
             <Card className="singleCard">
                 <CardMedia
                     component="img"
-                    image={singleCard.image}
+                    image={`data:image/jpeg;base64,${singleCard.ServiceTypeImages[0].image}`}
                     alt={singleCard.title}
                     className="singleCardImage"
                 />
                 <CardContent sx={{ textAlign: "center" }}>
                     <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
-                        {singleCard.title}
+                        {singleCard.name}
                     </Typography>
                     <Typography variant="caption" className="singleCardPrice">
-                        {singleCard.date}
+                        Dari Rp. {singleCard.price}
                     </Typography>
                 </CardContent>
             </Card>

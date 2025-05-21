@@ -1,9 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const sequelize = require('./config/database'); // your DB connection
+const { sequelize } = require('./models');
 const app = express();
 
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: true, logging: console.log })
   .then(() => {
     console.log('Database synced');
   })
@@ -17,9 +17,13 @@ app.use(express.json());
 
 // Import routes
 const userRoute = require("./routes/UserRoute");
+const serviceTypeRoute = require("./routes/ServiceTypeRoute");
+const serviceTypeImageRoute = require("./routes/ServiceTypeImageRoute");
 
 // Register routes
 app.use("/users", userRoute);
+app.use("/serviceTypes", serviceTypeRoute);
+app.use("/serviceTypeImages", serviceTypeImageRoute);
 
 // Server start
 app.listen(5000, () => {
