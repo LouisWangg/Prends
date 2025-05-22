@@ -1,11 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Feedback = sequelize.define('Feedback', {
-    feedbackId: {
+const CounselorFeedback = sequelize.define('CounselorFeedback', {
+    counselorFeedbackId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    counselorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     title: {
         type: DataTypes.STRING,
@@ -14,10 +22,6 @@ const Feedback = sequelize.define('Feedback', {
     description: {
         type: DataTypes.TEXT,
         allowNull: false
-    },
-    ratingZero: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
     },
     ratingOne: {
         type: DataTypes.INTEGER,
@@ -43,4 +47,4 @@ const Feedback = sequelize.define('Feedback', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-module.exports = Feedback;
+module.exports = CounselorFeedback;

@@ -102,8 +102,8 @@ const Home = () => {
             gap: 3,
           }}
         >
-          {serviceTypes.map((service) => (
-            <SingleCard key={service.serviceTypeId} id={service.serviceTypeId} type={service.itemType} data={service} />
+          {serviceTypes.map((serviceType) => (
+            <SingleCard key={serviceType.serviceTypeId} type={serviceType.type} data={serviceType} />
           ))}
           {/* <SingleCard id={82} type={"counseling"} />
           <SingleCard id={82} type={"counseling"} />

@@ -1,19 +1,19 @@
 const { Op } = require("sequelize");
-const ServiceTypeModel = require("../models/ServiceTypeModel");
-const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
+const serviceTypeModel = require("../models/ServiceTypeModel");
+const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
 
 // Get Konseling Individu datas
 const getIndividualCounselings = async (req, res) => {
   try {
-    const datas = await ServiceTypeModel.findAll({
-      attributes: ["serviceTypeId", "name", "price", "discountFlag", "discountPrice", "itemType"],
+    const datas = await serviceTypeModel.findAll({
+      attributes: ["serviceTypeId", "name", "price", "discountFlag", "discountPrice", "type"],
       where: {
         type: {
           [Op.iLike]: "%individu%",
         },
       },
       include: [{
-        model: ServiceTypeImageModel,
+        model: serviceTypeImageModel,
         attributes: ["image"], // specify the columns you want from the images table
       }],
     });
@@ -44,7 +44,7 @@ const getIndividualCounselings = async (req, res) => {
 const getIndividualCounseling = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await ServiceTypeModel.findByPk(id, {
+    const data = await serviceTypeModel.findByPk(id, {
       attributes: [
         "itemType",
         "name",
@@ -69,11 +69,11 @@ const uploadImage = async (req, res) => {
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
     // Find user by primary key
-    const data = await ServiceTypeModel.findByPk(id);
+    const data = await serviceTypeModel.findByPk(id);
     if (!data) return res.status(404).send("User not found");
 
     // Save image buffer (bytea) to DB
-    await ServiceTypeModel.update(
+    await serviceTypeModel.update(
       { image: req.file.buffer },
       { where: { serviceTypeId: id } }
     );

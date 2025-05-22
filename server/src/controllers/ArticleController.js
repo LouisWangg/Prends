@@ -1,15 +1,34 @@
 const { Op } = require("sequelize");
 const articleModel = require("../models/ArticleModel");
+const articleImageModel = require("../models/ArticleImageModel");
 
 // Get 3 newest Articles for Home page
 const getHomePageArticles = async (req, res) => {
   try {
     const datas = await articleModel.findAll({
-        attributes: ['title', 'subTitle'],
-        order: [['articleId', 'DESC']],
-        limit: 3
+      attributes: ["title", "subTitle"],
+      include: [{
+        model: articleImageModel,
+        attributes: ["image"],
+      }],
+      order: [["createdAt", "DESC"]],
+      limit: 3
     });
-    res.json(datas);
+
+    // Map results to convert image buffer to base64 string
+    const response = datas.map(item => {
+      const plain = item.get({ plain: true });
+
+      if (plain.ArticleImage) {
+        plain.ArticleImage.image = plain.ArticleImage.image
+          ? plain.ArticleImage.image.toString('base64')
+          : null;
+      }
+
+      return plain;
+    });
+
+    res.json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
@@ -20,10 +39,28 @@ const getHomePageArticles = async (req, res) => {
 const getArticles = async (req, res) => {
   try {
     const datas = await articleModel.findAll({
-        attributes: ['title', 'subTitle', 'createdAt'],
-        order: [['articleId', 'DESC']]
+      attributes: ["title", "createdAt", "subTitle"],
+      include: [{
+        model: articleImageModel,
+        attributes: ["image"],
+      }],
+      order: [["createdAt", "DESC"]]
     });
-    res.json(datas);
+
+    // Map results to convert image buffer to base64 string
+    const response = datas.map(item => {
+      const plain = item.get({ plain: true });
+
+      if (plain.ArticleImage) {
+        plain.ArticleImage.image = plain.ArticleImage.image
+          ? plain.ArticleImage.image.toString('base64')
+          : null;
+      }
+
+      return plain;
+    });
+
+    res.json(response);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");

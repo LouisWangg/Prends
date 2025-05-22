@@ -1,11 +1,16 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const ArticleImage = require('./ArticleImageModel');
 
 const Article = sequelize.define('Article', {
     articleId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    articleImageId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
     title: {
         type: DataTypes.STRING,
@@ -22,5 +27,8 @@ const Article = sequelize.define('Article', {
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
+
+ArticleImage.hasMany(Article, { foreignKey: 'articleImageId' });
+Article.belongsTo(ArticleImage, { foreignKey: 'articleImageId' });
 
 module.exports = Article;

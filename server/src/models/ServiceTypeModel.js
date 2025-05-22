@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const sharedColumn = require('./SharedColumn');
 const ServiceTypeImage = require('./ServiceTypeImageModel');
+const ServiceTypeFeedback = require('./ServiceTypeFeedbackModel');
 
 const ServiceType = sequelize.define('ServiceType', {
     serviceTypeId: {
@@ -33,5 +34,8 @@ const ServiceType = sequelize.define('ServiceType', {
 
 ServiceType.hasMany(ServiceTypeImage, { foreignKey: 'serviceTypeId' });
 ServiceTypeImage.belongsTo(ServiceType, { foreignKey: 'serviceTypeId' });
+
+ServiceType.hasMany(ServiceTypeFeedback, { foreignKey: 'serviceTypeId' });
+ServiceTypeFeedback.belongsTo(ServiceType, { foreignKey: 'serviceTypeId' });
 
 module.exports = ServiceType;

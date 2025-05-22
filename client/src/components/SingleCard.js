@@ -9,7 +9,7 @@ import "./SingleCard.css";
 import "./ArticleCard.css";
 import { cards } from "../data/Cards"; // Importing the card data
 
-const SingleCard = ({ id, type, data }) => {
+const SingleCard = ({ type, data }) => {
     let singleCardContent;
     const singleCard = data;
     // const singleCard = cards.find((singleCard) => singleCard.id === id);
@@ -24,7 +24,7 @@ const SingleCard = ({ id, type, data }) => {
         }
     };
 
-    if (type.includes("counseling") || type.includes("class")) {
+    if (type.includes("individu") || type.includes("class")) {
         singleCardContent = (
             <Card className="singleCard">
                 <CardMedia
@@ -43,25 +43,25 @@ const SingleCard = ({ id, type, data }) => {
                 </CardContent>
             </Card>
         );
-    } else if (type.includes("level")) {
-        singleCardContent = (
-            <Card className="singleCard">
-                <CardMedia
-                    component="img"
-                    image={singleCard.image}
-                    alt={singleCard.title}
-                    className="singleCardImage"
-                />
-                <CardContent sx={{ textAlign: "center" }}>
-                    <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
-                        {singleCard.title}
-                    </Typography>
-                    <Typography variant="caption" className="singleCardPrice">
-                        {singleCard.date}
-                    </Typography>
-                </CardContent>
-            </Card>
-        );
+    // } else if (type.includes("level")) {
+    //     singleCardContent = (
+    //         <Card className="singleCard">
+    //             <CardMedia
+    //                 component="img"
+    //                 image={singleCard.image}
+    //                 alt={singleCard.title}
+    //                 className="singleCardImage"
+    //             />
+    //             <CardContent sx={{ textAlign: "center" }}>
+    //                 <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
+    //                     {singleCard.title}
+    //                 </Typography>
+    //                 <Typography variant="caption" className="singleCardPrice">
+    //                     {singleCard.date}
+    //                 </Typography>
+    //             </CardContent>
+    //         </Card>
+    //     );
     } else if (type.includes("article")) {
         singleCardContent = (
             <Card className="articleCard">

@@ -7,6 +7,10 @@ const CounselorLevel = sequelize.define('CounselorLevel', {
         primaryKey: true,
         autoIncrement: true
     },
+    counselorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false
