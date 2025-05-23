@@ -6,7 +6,7 @@ const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
 const getIndividualCounselings = async (req, res) => {
   try {
     const datas = await serviceTypeModel.findAll({
-      attributes: ["serviceTypeId", "name", "price", "discountFlag", "discountPrice", "type"],
+      attributes: ["serviceTypeId", "name", "price", "discountFlag", "discountPrice", "itemType", "type"],
       where: {
         type: {
           [Op.iLike]: "%individu%",

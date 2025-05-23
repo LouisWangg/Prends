@@ -1,7 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, Box, Typography } from "@mui/material";
-import { Carousel } from "../components/Carousel.js";
+import Carousel from "../components/Carousel.js";
 import SingleCard from "../components/SingleCard.js";
+import HomeSection from "../components/HomeSection.js";
+import FeedbackBox from "../components/FeedbackBox.js";
 import { slides } from "../data/Carousel.js";
 import Line from "../components/Line";
 import image from "../assets/Asset1.png";
@@ -12,16 +14,19 @@ import {
   updateUser,
   deleteUser,
 } from "../services/UserService"; // Import user service
-import {
-  fetchIndividualCounselings,
-  fetchIndividualCounselingById
-} from "../services/ServiceTypeService.js"; // Import service type service
+import { fetchHomePageClasses } from "../services/ClassService.js";
+import { fetchHomePageCounselors } from "../services/CounselorService.js";
+import { fetchIndividualCounselings } from "../services/ServiceTypeService.js";
+import { fetchHomePageFeedbacks } from "../services/ServiceTypeFeedbackService.js";
 import "./Home.css";
 
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
   const [users, setUsers] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [counselors, setCounselors] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
+  const [serviceTypeFeedbacks, setServiceTypeFeedbacks] = useState([]);
 
   const getUsers = async () => {
     const datas = await fetchUsers();
@@ -32,13 +37,24 @@ const Home = () => {
     const data = await fetchUserById(1);
   };
 
-  const getServiceTypes = async () => {
+  const getHomePageClasses = async () => {
+    const datas = await fetchHomePageClasses();
+    setClasses(datas);
+  };
+
+  const getHomePageCounselors = async () => {
+    const datas = await fetchHomePageCounselors();
+    setCounselors(datas);
+  };
+
+  const getIndividualCounselings = async () => {
     const datas = await fetchIndividualCounselings();
     setServiceTypes(datas);
   };
 
-  const getServiceTypeById = async () => {
-    const data = await fetchUserById(1);
+  const getHomePageFeedbacks = async () => {
+    const datas = await fetchHomePageFeedbacks();
+    setServiceTypeFeedbacks(datas);
   };
 
   // useEffect is for handling side effects like fetching data, subscriptions, timers, etc.
@@ -46,8 +62,10 @@ const Home = () => {
   // (because of the empty dependency array [])
   useEffect(() => {
     getUsers();
-    getServiceTypes();
-    // getUserById();
+    getHomePageClasses();
+    getHomePageCounselors();
+    getIndividualCounselings();
+    getHomePageFeedbacks();
   }, []); // Empty dependency array ensures this runs only once
 
   const handleCreate = async () => {
@@ -90,10 +108,21 @@ const Home = () => {
       <div className="carousels">
         <Carousel data={slides} />
       </div>
+      <HomeSection
+        title="Konseling dengan Psikolog Tersertifikasi!"
+        subTitle="Pilih layanan konseling sesuai dengan kebutuhanmu!"
+        columns={4}>
+        {serviceTypes.map((serviceType) => (
+          <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
+        ))}
+        {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
+            <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
+          ))} */}
+      </HomeSection>
       <div className="homeDiv">
-        <Typography variant="h4">Konseling dengan KLEEXPERT!</Typography>
+        <Typography variant="h4">Konseling dengan Psikolog Tersertifikasi!</Typography>
         <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
-          Pilih layanan konseling dengan KLEEXPERT sesuai dengan kebutuhanmu!
+          Pilih layanan konseling sesuai dengan kebutuhanmu!
         </Typography>
         <Box
           sx={{
@@ -103,20 +132,19 @@ const Home = () => {
           }}
         >
           {serviceTypes.map((serviceType) => (
-            <SingleCard key={serviceType.serviceTypeId} type={serviceType.type} data={serviceType} />
+            <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
           ))}
-          {/* <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} />
-          <SingleCard id={82} type={"counseling"} /> */}
+          {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
+            <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
+          ))} */}
         </Box>
       </div>
       <div className="homeDiv">
-        <div className="kleedemyPosterContainer">
-          <img src={image} alt="Logo" className="kleedemyPosterImage" />
-          <Box className="kleedemyPosterText">
+        <div className="posterContainer">
+          <img src={image} alt="Logo" className="posterImage" />
+          <Box className="posterText">
             <Typography variant="button">KLEEDEMY</Typography>
-            <Typography variant="h4" className="kleedemyPosterTitle">
+            <Typography variant="h4" className="posterTitle">
               talklee 5 : Deep Dive to Your Inner-Child
             </Typography>
             <Typography variant="body1" style={{ marginTop: "10px" }}>
@@ -133,7 +161,7 @@ const Home = () => {
       </div>
       <div className="homeDiv">
         <Typography variant="h4">
-          Kembangkan dirimu melalui kelas dari KLEEDEMY
+          Kembangkan dirimu melalui kelas persembahan prends!
         </Typography>
         <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
           Kini tersedia kelas rekaman yang bisa kamu akses selamanya!

@@ -7,7 +7,7 @@ import {
 } from "react-icons/io";
 import "./Carousel.css";
 
-export const Carousel = ({ data }) => {
+const Carousel = ({ data }) => {
   const [slide, setSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -75,3 +75,5 @@ export const Carousel = ({ data }) => {
     </Fragment>
   );
 };
+
+export default Carousel;

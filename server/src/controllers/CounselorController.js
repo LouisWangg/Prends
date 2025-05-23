@@ -6,11 +6,11 @@ const counselorFeedbackModel = require("../models/CounselorFeedbackModel");
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
 
-// Get Home Page datas
+// Get Counselor datas for Home page
 const getHomePageCounselors = async (req, res) => {
   try {
     const datas = await counselorModel.findAll({
-      attributes: ["counselorId", "name", "price", "discountFlag", "discountPrice",
+      attributes: ["counselorId", "name", "price", "discountFlag", "discountPrice", "itemType", 
         [fn("COUNT", literal("DISTINCT CounselorFeedbackModels.counselorFeedbackId")), "feedBackCount"]
       ],
       include: [

@@ -34,3 +34,16 @@
   font-size: 16px;
   font-weight: 500;
 }
+
+.obralBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: black;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 2;
+}

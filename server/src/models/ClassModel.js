@@ -8,7 +8,11 @@ const Class = sequelize.define('Class', {
         primaryKey: true,
         autoIncrement: true
     },
-    ...sharedColumn
+    ...sharedColumn,
+    image: {
+      type: DataTypes.BLOB("long"),
+      allowNull: true,
+    },
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });

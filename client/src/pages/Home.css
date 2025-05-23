@@ -11,21 +11,21 @@
   margin: 50px 70px 50px 70px;
 }
 
-.kleedemyPosterContainer {
+.posterContainer {
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
 
-.kleedemyPosterImage {
+.posterImage {
   border: 2px solid black;
   margin: 30px 80px 30px 80px;
   width: 420px;
   height: 530px;
 }
 
-.kleedemyPosterText {
+.posterText {
   margin: 25px 0 0 50px;
   max-width: 500px;
   word-wrap: break-word;
@@ -35,7 +35,7 @@
   justify-content: center;
 }
 
-.kleedemyPosterTitle {
+.posterTitle {
   font-size: 55px !important;
 }
 
