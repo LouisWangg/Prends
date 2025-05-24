@@ -305,7 +305,7 @@ const Home = () => {
         <Typography variant="h5">
           Beberapa pertanyaan Prendsters seputar layanan prends!
         </Typography>
-        <li
+        {/* <li
           className={`dropdown ${activeLink === "/services" ? "active" : ""}`}
           onClick={() => {
             toggleExpertMenu();
@@ -347,7 +347,7 @@ const Home = () => {
           ) : (
             <RxChevronDown className="menuIcon" />
           )}
-        </li>
+        </li> */}
       </div>
     </Fragment>
   );
