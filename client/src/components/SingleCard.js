@@ -10,9 +10,20 @@ import "./ArticleCard.css";
 import { cards } from "../data/Cards"; // Importing the card data
 
 const SingleCard = ({ type, data }) => {
+    let imageData;
     let singleCardContent;
     const singleCard = data;
     // const singleCard = cards.find((singleCard) => singleCard.id === id);
+
+    if (type.includes("service")) {
+        imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
+    } else if (type.includes("class")) {
+        imageData = singleCard?.image || null;
+    } else if (type.includes("counselor")) {
+        imageData = singleCard?.CounselorImages?.[0]?.image || null;
+    } else if (type.includes("article")) {
+        imageData = singleCard?.ArticleImage?.image || null;
+    }
 
     const formatToRupiah = (price) => {
         if (typeof price !== "number") return "Rp0,00";
@@ -39,8 +50,8 @@ const SingleCard = ({ type, data }) => {
                 <div style={{ position: "relative" }}>
                     <CardMedia
                         component="img"
-                        image={`data:image/jpeg;base64,${singleCard.ServiceTypeImages[0].image}`}
-                        alt={singleCard.title}
+                        image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+                        alt={singleCard.name}
                         className="singleCardImage"
                     />
                     {singleCard.discountFlag && (
@@ -87,13 +98,34 @@ const SingleCard = ({ type, data }) => {
         //             </CardContent>
         //         </Card>
         //     );
+    } else if (type.includes("homeArticle")) {
+        singleCardContent = (
+            <Card className="articleCard">
+                <CardMedia
+                    component="img"
+                    height="320px"
+                    image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+                    alt={singleCard.title}
+                    className="cardImage"
+                />
+                <CardContent sx={{ textAlign: "center" }}>
+                    <Typography variant="h4" className="cardTitle">
+                        {singleCard.title}
+                    </Typography>
+                    <Typography variant="caption" sx={{ fontSize: "10px" }}>
+                        {singleCard.date}
+                    </Typography>
+                    <Typography variant="body1">{singleCard.description}</Typography>
+                </CardContent>
+            </Card>
+        );
     } else if (type.includes("article")) {
         singleCardContent = (
             <Card className="articleCard">
                 <CardMedia
                     component="img"
                     height="320px"
-                    image={singleCard.image}
+                    image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
                     alt={singleCard.title}
                     className="cardImage"
                 />

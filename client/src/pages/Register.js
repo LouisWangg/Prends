@@ -23,7 +23,7 @@ const Register = () => {
   const onRegisterForm = async (e) => {
     e.preventDefault();
     try {
-      const body = { name, email, password };
+      const body = { email, password };
       await fetch("http://localhost:5000/insert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

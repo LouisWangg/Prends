@@ -4,7 +4,7 @@ const classModel = require("../models/ClassModel");
 const getHomePageClasses = async (req, res) => {
   try {
     const datas = await classModel.findAll({
-        attributes: ["name", "price", "discountFlag", "discountPrice", "itemType", "image"],
+        attributes: ["classId", "name", "price", "discountFlag", "discountPrice", "itemType", "image"],
         order: [["createdAt", "DESC"]],
         limit: 4
     });
@@ -13,11 +13,7 @@ const getHomePageClasses = async (req, res) => {
     const response = datas.map(item => {
       const plain = item.get({ plain: true });
 
-      if (plain.image) {
-        plain.image = plain.image.toString("base64");
-      } else {
-        plain.image = null;
-      }
+      plain.image = plain.image ? plain.image.toString("base64") : null;
 
       return plain;
     });

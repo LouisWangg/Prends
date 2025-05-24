@@ -1,8 +1,12 @@
 /* DescriptionBox.css */
 .feedbackBox {
-  border: 1px solid #ccc;
-  padding: 16px; 
-  border-radius: 8px;
-  max-width: 300px;
+  background-color: whitesmoke;
+  border: 2px solid black;
+  padding: 28px; 
+  border-radius: 0px;
+  min-width: 350px;
+  max-width: 350px;
+  min-height: 380px;
+  max-height: 380px;
   margin: auto;
 }

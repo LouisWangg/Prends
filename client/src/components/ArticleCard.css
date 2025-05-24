@@ -6,6 +6,10 @@
   cursor: pointer;
 }
 
+.articleCard:hover {
+  cursor: pointer;
+}
+
 .articleCard:hover .cardImage {
   transform: scale(1.05);
   /* Zoom in */
@@ -13,16 +17,12 @@
   /* Smooth transition */
 }
 
-.articleCard:hover .cardTitle {
-  text-decoration: underline;
-}
-
 .cardTitle {
   font-size: 30px !important;
 }
 
-.articleCard:hover {
-  cursor: pointer;
+.articleCard:hover .cardTitle {
+  text-decoration: underline;
 }
 
 /* .articleCard:hover .articleCardImage {

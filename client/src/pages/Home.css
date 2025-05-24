@@ -7,7 +7,7 @@
   margin-bottom: 10px;
 }
 
-.homeDiv {
+.homeWrapper {
   margin: 50px 70px 50px 70px;
 }
 
@@ -64,4 +64,29 @@
 
 .buyBtn:hover {
   outline: 3px solid black !important;
+}
+
+.viewAllWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.viewAllBtn {
+  color: white;
+  background-color: black;
+  padding: 10px 30px 10px 30px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.viewAllBtn:hover {
+  outline: 1px solid black !important;
+}
+
+.qnaWrapper {
+  display: flex;
+  justify-content: center;
+  /* margin-top: 30px; */
 }

@@ -2,11 +2,11 @@ const { Op } = require("sequelize");
 const articleModel = require("../models/ArticleModel");
 const articleImageModel = require("../models/ArticleImageModel");
 
-// Get 3 newest Articles for Home page
+// Get 3 newest Article datas for Home page
 const getHomePageArticles = async (req, res) => {
   try {
     const datas = await articleModel.findAll({
-      attributes: ["title", "subTitle"],
+      attributes: ["articleId", "title", "subTitle"],
       include: [{
         model: articleImageModel,
         attributes: ["image"],
