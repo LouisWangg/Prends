@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Article from "./pages/Article";
 import Store from "./pages/Store";
 import AboutUs from "./pages/AboutUs";
+import RefundPolicy from "./pages/RefundPolicy";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/article" element={<Article />} />
             <Route path="/store" element={<Store />} />
             <Route path="/aboutUs" element={<AboutUs />} />
+            <Route path="/refundPolicy" element={<RefundPolicy />} />
           </Routes>
         </div>
         <Line />

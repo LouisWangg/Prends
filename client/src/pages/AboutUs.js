@@ -19,70 +19,105 @@ const AboutUs = () => {
       <div className="aboutUsContainer">
         <h6>Filosofi</h6>
         <p>
-          Prends berasal dari bahasa Prancis yang berarti mengambil. Prends harap kehadirannya dapat membantu 
-          orang-orang untuk mengambil waktu sejenak untuk terkoneksi dengan diri mereka untuk berproses dan 
-          bertumbuh bersama dengan bantuan profesional. Prends juga terdengar seperti kata "friends", sehingga 
-          Prends berharap kehadirannya dapat menjadi teman bagi mereka yang membutuhkan bantuan untuk sama-sama 
-          bertumbuh. Dengan tagline #BePrendsent (dibaca Be Present), Prends hadir untuk membagikan awareness 
-          dan menjadi jembatan penghubung bagi teman-teman yang mencari bantuan.
+          <strong>#Kleexplained! : Life After Breakup</strong>
+          <br />
+          bersama Shanen Emily, M. Psi., Psikolog
         </p>
-        {/* <p>
-          Klee berangkat dari keinginan untuk membagikan sebanyak-banyaknya dan
-          berharap siapapun yang menggenggam daun ini mendapatkan
-          'keberuntungan' yang dipakai untuk menjalani hidup yang lebih baik
-          pada banyak aspek kehidupan di masa depan, sehingga nantinya berdampak
-          membentuk pribadi yang lebih baik, pribadi yang lebih ramah terhadap
-          dirinya sendiri, sesama manusia, dan lingkungan tempat dia tinggal.
-        </p> */}
+        <br />
+
+        <p>
+          <strong>Pokok Pembahasan : </strong>
+        </p>
+        <ol>
+          <li>Bagaimana menjalani hari setelah hubungan berakhir?</li>
+          <li>Belajar Move On. Bagaimana?</li>
+          <li>Apa saja yang membuat move on lebih sulit?</li>
+          <li>Mencari orang baru atau sendiri dulu?</li>
+          <li>Bagaimana saat kenangan itu datang lagi?</li>
+          <li>Berdamai dengan rasa sedih, apakah bisa?</li>
+          <li>Panduan Bertahan Hidup Setelah Putus</li>
+          <li>
+            Activity untuk membantu kamu berproses setelah hubungan berakhir
+          </li>
+        </ol>
+        <br />
+
+        <p>
+          <strong>FAQ :</strong>
+        </p>
+        <p>
+          <strong>Apa itu #Kleexplained?</strong>
+        </p>
+        <p>
+          #Kleexplained adalah seri rekaman kelas persembahan expert prends yang
+          bekerja sama dengan Klee untuk membawakan topik tertentu. Dengan
+          durasi maksimal 2 jam, tiap kelas #Kleexplained siap membahas hingga
+          tuntas.
+        </p>
+        <br />
+
+        <p>
+          <strong>Apa yang saya dapatkan dari membeli #Kleexplained?</strong>
+        </p>
+        <p>Dengan membeli kelas #Kleexplained!, kamu akan mendapatkan :</p>
+        <ol>
+          <li>Akses rekaman selamanya</li>
+          <li>Materi dalam bentuk PDF</li>
+          <li>Voucher potongan harga konseling di prends</li>
+        </ol>
+        <br />
+
+        <p>
+          <strong>Perhatian :</strong>
+        </p>
+        <ol>
+          <li>
+            Syarat dan ketentuan pengembalian dana dapat kamu cek di{" "}
+            <Link
+              to="#"
+              url="/refundPolicy"
+              onClick={(event) => openNewTab(event)}
+              className="customUnderline"
+            >
+              https://prends.id/policies/refund-policy
+            </Link>
+          </li>
+          <li>
+            Jika ada pertanyaan atau kendala seputar kelas ini, bisa kamu
+            tanyakan ke Customer Service melalui{" "}
+            <Link
+              to="#"
+              url="https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0"
+              onClick={(event) => openNewTab(event)}
+              className="customUnderline"
+            >
+              s.id/askprends
+            </Link>
+          </li>
+        </ol>
+        <br />
+
+        <p>
+          Prends berasal dari bahasa Prancis yang berarti mengambil. Prends
+          harap kehadirannya dapat membantu orang-orang untuk mengambil waktu
+          sejenak untuk terkoneksi dengan diri mereka untuk berproses dan
+          bertumbuh bersama dengan bantuan profesional. Prends juga terdengar
+          seperti kata "friends", sehingga Prends berharap kehadirannya dapat
+          menjadi teman bagi mereka yang membutuhkan bantuan untuk sama-sama
+          bertumbuh. Dengan tagline #BePrendsent (dibaca Be Present), Prends
+          hadir untuk membagikan awareness dan menjadi jembatan penghubung bagi
+          teman-teman yang mencari bantuan.
+        </p>
 
         <h6>Tentang Prends</h6>
         <p>
-          Prends adalah platform layanan konseling serta kelas pengembangan diri dengan psikolog yang terlisensi. 
-          Prends hadir sebagai platform yang menjembatani klien yang membutuhkan layanan konseling dengan psikolog 
-          yang membutuhkan wadah untuk menghubungkan mereka dengan klien. Selain konseling, Prends juga menyediakan 
-          layanan assessment, theraphy, dan layanan psikologi lainnya.
+          Prends adalah platform layanan konseling serta kelas pengembangan diri
+          dengan psikolog yang terlisensi. Prends hadir sebagai platform yang
+          menjembatani klien yang membutuhkan layanan konseling dengan psikolog
+          yang membutuhkan wadah untuk menghubungkan mereka dengan klien. Selain
+          konseling, Prends juga menyediakan layanan assessment, theraphy, dan
+          layanan psikologi lainnya.
         </p>
-        {/* <p>
-          Dengan impian tersebut, Klee saat ini fokus membantu setiap individu
-          dengan menyediakan konseling online ataupun offline dengan psikolog
-          tersertifikasi, kelas-kelas seperti : seminar, webinar, atau workshop,
-          dan meluncurkan produk seperti jurnal atau kartu eksplorasi sendiri.
-        </p> */}
-        {/* <br /> */}
-        {/* <p>
-          Saat ini Klee membagi layanan-layanan ke beberapa unit yang mempunyai
-          fokusnya masing-masing.
-          <br />
-          <span className="subText">KLEEXPERT</span> : layanan psikologi seperti
-          konseling online chat, konseling online call, konseling offline,
-          konseling home visit, assessment, hinga theraphy dengan psikolog yang
-          tersertifikasi.
-        </p>
-        <p>
-          <span className="subText">KLEEDEMY</span> : layanan event seperti
-          webinar, seminar, hingga workshop untuk pengembangan diri dengan
-          narasumber yang kredibel.
-        </p>
-        <p>
-          <span className="subText">KLEEMART</span> : unit produksi
-          produk-produk pengembangan diri, seperti buku jurnal harian, dan kartu
-          eksplorasi diri. KLEEMART sudah meluncurkan 2 series daily journal,
-          Self Exploration Card, dan Exploration Card - Psychology Hacks
-          Edition.
-        </p>
-        <b>
-          Sejak 2018, Klee telah aktif berkolaborasi dengan berbagai partner
-          untuk mencipatakan dunia yang lebih baik, di antaranya :
-        </b>
-        <div className="imageContainer">
-          <img src={image} alt="Logo" className="aboutUsImage" />
-        </div>
-        <p>
-          Terbaru, Klee berkolaborasi dengan @buranchi.id pada 26 Februari 2023
-          untuk mengadakan cara speed dating dengan menghadirkan kartu
-          <b> Exploration Card - Dating Edition</b> yang belum diluncurkan
-          secara publik.
-        </p> */}
         <h6>Connect with Prends</h6>
         <p>
           Dapatkan update terbaru dari Prends dengan mengikuti kami di :
@@ -90,12 +125,13 @@ const AboutUs = () => {
           Instagram :{" "}
           <Link
             to="#"
-            url="https://www.instagram.com/klee.id/"
+            url="https://www.instagram.com/prends.id"
             onClick={(event) => openNewTab(event)}
+            className="customUnderline"
           >
             @prends.id
           </Link>
-          <br />
+          {/* <br />
           Twitter :{" "}
           <Link
             to="#"
@@ -139,7 +175,7 @@ const AboutUs = () => {
             onClick={(event) => openNewTab(event)}
           >
             @prends.id
-          </Link>
+          </Link> */}
         </p>
       </div>
     </Fragment>

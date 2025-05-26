@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 const HomeSection = ({ title, subTitle, children, columns }) => {
     return (
-        <div style={{ margin: "50px" }}>
+        <div style={{ margin: "70px" }}>
             <Typography variant="h4">{title}</Typography>
             <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
                 {subTitle}

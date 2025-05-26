@@ -101,7 +101,8 @@ const Home = () => {
       <HomeSection
         title="Konseling dengan Psikolog Tersertifikasi!"
         subTitle="Pilih layanan konseling sesuai dengan kebutuhanmu!"
-        columns={4}>
+        columns={4}
+      >
         {serviceTypes.map((serviceType) => (
           <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
         ))}
@@ -136,29 +137,41 @@ const Home = () => {
       <HomeSection
         title="Kata Prendsters yang sudah cobain layanan konseling di prends!"
         subTitle=""
-        columns={3}>
+        columns={3}
+      >
         <Box className="feedbackBox">
-          <Typography variant="h5" style={{ marginBottom: "10px" }}>Lebih Tenang</Typography>
+          <Typography variant="h5" style={{ marginBottom: "10px" }}>
+            Lebih Tenang
+          </Typography>
           <Typography variant="subtitle1">
-            Kak, alahmdullilah aku lebih tenang setelah konsul. Terima kasih prends. Aku jadi ngerasa lebih seneng saat ini,
-            berasa pikiran tuh ngga buntu gitu kak. Kalau aku ada masalah, kemungkinan aku konsul lg kak.
-            Abisnya bikin happy jd ga mumet gitu. Thanks prends ngga salah aku bayar konsul ke prends.
+            Kak, alahmdullilah aku lebih tenang setelah konsul. Terima kasih
+            prends. Aku jadi ngerasa lebih seneng saat ini, berasa pikiran tuh
+            ngga buntu gitu kak. Kalau aku ada masalah, kemungkinan aku konsul
+            lg kak. Abisnya bikin happy jd ga mumet gitu. Thanks prends ngga
+            salah aku bayar konsul ke prends.
           </Typography>
         </Box>
         <Box className="feedbackBox">
-          <Typography variant="h5" style={{ marginBottom: "10px" }}>Ga Menyangka</Typography>
+          <Typography variant="h5" style={{ marginBottom: "10px" }}>
+            Ga Menyangka
+          </Typography>
           <Typography variant="subtitle1">
-            Pertama kali dalam pengalaman aku sama psikolog, aku merasa naik level karena dari harus ketemu 2 minggu sekali,
-            ke depannya klo agak stabil bisa naik ke 3 minggu sekali. Never thought I’d get to this point in my life, ever.
-            Ga pernah kira bisa sestabil ini setelah bertahun” dealing with BPD. Thank you Kak Ivon yg selalu support aku
+            Pertama kali dalam pengalaman aku sama psikolog, aku merasa naik
+            level karena dari harus ketemu 2 minggu sekali, ke depannya klo agak
+            stabil bisa naik ke 3 minggu sekali. Never thought I’d get to this
+            point in my life, ever. Ga pernah kira bisa sestabil ini setelah
+            bertahun” dealing with BPD. Thank you Kak Ivon yg selalu support aku
             dalam berproses!
           </Typography>
         </Box>
         <Box className="feedbackBox">
-          <Typography variant="h5" style={{ marginBottom: "10px" }}>It Works.</Typography>
+          <Typography variant="h5" style={{ marginBottom: "10px" }}>
+            It Works.
+          </Typography>
           <Typography variant="subtitle1">
-            Aku pernah di kondisi depresi, 3 taun lalu, saking gamau terulangnya, beberapa bulan lalu sampe konsul di
-            @prends.id it works.
+            Aku pernah di kondisi depresi, 3 taun lalu, saking gamau
+            terulangnya, beberapa bulan lalu sampe konsul di @prends.id it
+            works.
           </Typography>
         </Box>
         {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
@@ -184,14 +197,16 @@ const Home = () => {
             </Button>
           </Box>
         </div>
-      </div> */}
+      </div> */
+      }
       <HomeSection
         title="Kembangkan dirimu melalui kelas persembahan prends!"
         subTitle="Kini tersedia kelas rekaman yang bisa kamu akses selamanya!"
-        columns={4}>
-        {/* {classes.map((class) => (
-          <SingleCard key={class.classId} type={class.itemType} data={class} />
-        ))} */}
+        columns={4}
+      >
+        {classes.map((singleClass) => (
+          <SingleCard key={singleClass.classId} type={singleClass.itemType} data={singleClass} />
+        ))}
       </HomeSection>
       {
         // <div className="homeWrapper">
@@ -219,15 +234,14 @@ const Home = () => {
       <HomeSection
         title="Pilih psikolog sesuai preferensi kamu!"
         subTitle="Sebelum konseling, kamu bisa mengenal psikolog kamu terlebih dahulu lewat profil mereka!"
-        columns={4}>
+        columns={4}
+      >
         {/* {counselors.map((counselor) => (
           <SingleCard key={counselor.counselorId} type={counselor.itemType} data={counselor} />
         ))} */}
       </HomeSection>
       <div className="viewAllWrapper">
-        <button className="viewAllBtn">
-          Lihat semua
-        </button>
+        <button className="viewAllBtn">Lihat semua</button>
       </div>
       {
         // <div className="homeWrapper">
@@ -277,7 +291,8 @@ const Home = () => {
       <HomeSection
         title="Baca artikel terbaru dari #Prendsight!"
         subTitle=""
-        columns={3}>
+        columns={3}
+      >
         {/* {articles.map((article) => (
           <SingleCard key={article.articleId} type="homeArticle" data={article} />
         ))} */}

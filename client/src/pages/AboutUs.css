@@ -3,6 +3,18 @@
   margin: 0 400px 0 400px;
 }
 
+.customUnderline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px; /* Thinner line */
+  color: inherit; /* Optional: matches surrounding text */
+}
+
+.customUnderline:hover{
+  text-decoration: underline;
+  text-decoration-thickness: 2px; /* Thinner line */
+  color: inherit; /* Optional: matches surrounding text */
+}
+
 .imageContainer {
   margin: 0;
   display: flex;

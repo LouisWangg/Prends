@@ -1,4 +1,4 @@
-const serviceTypeImage = require("../models/ServiceTypeImageModel");
+const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
 
 // Upload image by id
 const uploadImage = async (req, res) => {
@@ -7,7 +7,7 @@ const uploadImage = async (req, res) => {
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
     // Upload an image for a specific service type
-    await serviceTypeImage.create({
+    await serviceTypeImageModel.create({
       serviceTypeId: id,
       image: req.file.buffer,
     });
@@ -20,5 +20,5 @@ const uploadImage = async (req, res) => {
 };
 
 module.exports = {
-  uploadImage
+  uploadImage,
 };
