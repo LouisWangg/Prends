@@ -15,13 +15,13 @@ const SingleCard = ({ type, data }) => {
     const singleCard = data;
     // const singleCard = cards.find((singleCard) => singleCard.id === id);
 
-    if (type.includes("service")) {
+    if (type.includes("Service")) {
         imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
-    } else if (type.includes("class")) {
+    } else if (type.includes("Class")) {
         imageData = singleCard?.image || null;
-    } else if (type.includes("counselor")) {
+    } else if (type.includes("Counselor")) {
         imageData = singleCard?.CounselorImages?.[0]?.image || null;
-    } else if (type.includes("article")) {
+    } else if (type.includes("Article")) {
         imageData = singleCard?.ArticleImage?.image || null;
     }
 
@@ -35,25 +35,25 @@ const SingleCard = ({ type, data }) => {
     };
 
     const changePageHandle = () => {
-        if (type.includes("counseling") || type.includes("class")) {
+        if (type.includes("Counseling") || type.includes("Class")) {
             // pindah page detail sesuai type
-        } else if (type.includes("level")) {
+        } else if (type.includes("Level")) {
 
-        } else if (type.includes("article")) {
+        } else if (type.includes("Article")) {
 
         }
     };
 
-    if (type.includes("service") || type.includes("class") || type.includes("counselor")) {
+    if (type.includes("Service") || type.includes("Class") || type.includes("Counselor")) {
         singleCardContent = (
             <Card className="singleCard">
-                <div style={{ position: "relative" }}>
-                    <CardMedia
-                        component="img"
-                        image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
-                        alt={singleCard.name}
-                        className="singleCardImage"
-                    />
+                <div className="singleCardImageWrapper">
+                        <CardMedia
+                            component="img"
+                            image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+                            alt={singleCard.name}
+                            className="singleCardImage"
+                        />
                     {singleCard.discountFlag && (
                         <div className="obralBadge">Obral</div>
                     )}
@@ -68,7 +68,7 @@ const SingleCard = ({ type, data }) => {
                                 <span style={{ textDecoration: "line-through", color: "gray", marginRight: "8px" }}>
                                     {formatToRupiah(singleCard.price)}
                                 </span>
-                                <span style={{ color: "red", fontWeight: "bold" }}>
+                                <span style={{ color: "black" }}>
                                     Dari {formatToRupiah(singleCard.discountPrice)}
                                 </span>
                             </>
@@ -79,7 +79,7 @@ const SingleCard = ({ type, data }) => {
                 </CardContent>
             </Card>
         );
-        // } else if (type.includes("level")) {
+        // } else if (type.includes("Level")) {
         //     singleCardContent = (
         //         <Card className="singleCard">
         //             <CardMedia
@@ -98,7 +98,7 @@ const SingleCard = ({ type, data }) => {
         //             </CardContent>
         //         </Card>
         //     );
-    } else if (type.includes("homeArticle")) {
+    } else if (type.includes("HomeArticle")) {
         singleCardContent = (
             <Card className="articleCard">
                 <CardMedia
@@ -119,7 +119,7 @@ const SingleCard = ({ type, data }) => {
                 </CardContent>
             </Card>
         );
-    } else if (type.includes("article")) {
+    } else if (type.includes("Article")) {
         singleCardContent = (
             <Card className="articleCard">
                 <CardMedia

@@ -102,9 +102,9 @@ const Home = () => {
         title="Konseling dengan Psikolog Tersertifikasi!"
         subTitle="Pilih layanan konseling sesuai dengan kebutuhanmu!"
         columns={4}>
-        {/* {serviceTypes.map((serviceType) => (
+        {serviceTypes.map((serviceType) => (
           <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
-        ))} */}
+        ))}
         {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
             <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
           ))} */}
