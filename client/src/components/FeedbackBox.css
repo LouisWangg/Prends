@@ -2,11 +2,13 @@
 .feedbackBox {
   background-color: whitesmoke;
   border: 2px solid black;
-  padding: 28px; 
+  padding: 28px;
   border-radius: 0px;
-  min-width: 350px;
-  max-width: 350px;
-  min-height: 380px;
-  max-height: 380px;
+  min-width: 450px;
+  max-width: 450px;
+  /* 350 */
+  min-height: 320px;
+  max-height: 320px;
+  /* 380 */
   margin: auto;
 }

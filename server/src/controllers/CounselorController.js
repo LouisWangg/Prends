@@ -1,4 +1,5 @@
-const { fn, literal } = require("sequelize");
+const sequelize = require("../config/database");
+const { fn, literal, col } = require("sequelize");
 const counselorModel = require("../models/CounselorModel");
 const counselorImageModel = require("../models/CounselorImageModel");
 const counselorFeedbackModel = require("../models/CounselorFeedbackModel");
@@ -9,39 +10,53 @@ const counselorFeedbackModel = require("../models/CounselorFeedbackModel");
 // Get Counselor datas for Home page
 const getHomePageCounselors = async (req, res) => {
   try {
-    const datas = await counselorModel.findAll({
-      attributes: ["counselorId", "name", "price", "discountFlag", "discountPrice", "itemType", 
-        [fn("COUNT", literal("DISTINCT CounselorFeedbackModels.counselorFeedbackId")), "feedBackCount"]
-      ],
-      include: [
-        {
-          model: counselorFeedbackModel,
-          attributes: []
-        },
-        {
-          model: counselorImageModel,
-          attributes: ["image"],
-          separate: true // run a separate subquery to fetch the related counselorImageModel records after the main query
-        }],
-      group: ["counselorModel.counselorId"],
-      order: [[literal("feedBackCount"), "DESC"]],
-      limit: 4
+    const [counselors] = await sequelize.query(`
+      SELECT 
+        c."counselorId",
+        c."name",
+        c."price",
+        c."discountFlag",
+        c."discountPrice",
+        c."itemType",
+        COUNT(f."counselorFeedbackId") AS "feedbackCount"
+      FROM "Counselors" c
+      LEFT JOIN "CounselorFeedbacks" f ON f."counselorId" = c."counselorId"
+      GROUP BY 
+        c."counselorId",
+        c."name",
+        c."price",
+        c."discountFlag",
+        c."discountPrice",
+        c."itemType"
+      ORDER BY "feedbackCount" DESC
+      LIMIT 4
+    `);
+
+    // Fetch images separately
+    const counselorIds = counselors.map(c => c.counselorId);
+    const counselorImages = await sequelize.query(`
+      SELECT "counselorId", "image"
+      FROM "CounselorImages"
+      WHERE "counselorId" IN (:ids)
+    `, {
+      replacements: { ids: counselorIds },
+      type: sequelize.QueryTypes.SELECT
     });
 
-    // Map results to convert image buffer to base64 string
-    const response = datas.map(item => {
-      const plain = item.get({ plain: true });
+    // Attach images to each counselor and convert to base64
+    const imageMap = counselorImages.reduce((acc, img) => {
+      if (!acc[img.counselorId]) acc[img.counselorId] = [];
+      acc[img.counselorId].push({
+        ...img,
+        image: img.image ? img.image.toString("base64") : null
+      });
+      return acc;
+    }, {});
 
-      if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-        // Assuming one image per serviceType, take the first image buffer
-        plain.CounselorImages = plain.CounselorImages.map(img => ({
-          ...img,
-          image: img.image ? img.image.toString('base64') : null,
-        }));
-      }
-
-      return plain;
-    });
+    const response = counselors.map(c => ({
+      ...c,
+      CounselorImages: imageMap[c.counselorId] || []
+    }));
 
     res.json(response);
   } catch (error) {
@@ -51,5 +66,5 @@ const getHomePageCounselors = async (req, res) => {
 };
 
 module.exports = {
-  getHomePageCounselors
+  getHomePageCounselors,
 };
