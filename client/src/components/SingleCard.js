@@ -59,7 +59,7 @@ const SingleCard = ({ type, data }) => {
                     )}
                 </div>
                 <CardContent sx={{ textAlign: "center" }}>
-                    <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
+                    <Typography variant="subtitle1" sx={{ marginBottom: "5px", textWrap: "nowrap" }}>
                         {singleCard.name}
                     </Typography>
                     <Typography variant="caption" className="singleCardPrice">

@@ -7,7 +7,7 @@ const SharedDescription = sequelize.define('SharedDescription', {
         primaryKey: true,
         autoIncrement: true
     },
-    type: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },

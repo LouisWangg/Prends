@@ -1,4 +1,4 @@
-const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
+const counselorImageModel = require("../models/CounselorImageModel");
 
 // Upload image by id
 const uploadImage = async (req, res) => {
@@ -6,13 +6,12 @@ const uploadImage = async (req, res) => {
     const { id } = req.params;
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
-    // Upload an image for a specific service type
-    await serviceTypeImageModel.create({
-      serviceTypeId: id,
+    await counselorImageModel.create({
+      counselorId: id,
       image: req.file.buffer,
     });
 
-    res.send("Service type image uploaded successfully");
+    res.send("Counselor image uploaded successfully");
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");

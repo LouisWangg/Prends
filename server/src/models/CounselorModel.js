@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const sharedColumn = require('./SharedColumn');
-const CounselorLevel = require('./CounselorLevelModel');
 const CounselorImage = require('./CounselorImageModel');
+const CounselorPrice = require('./CounselorPriceModel');
 const CounselorFeedback = require('./CounselorFeedbackModel');
 
 const Counselor = sequelize.define('Counselor', {
@@ -12,22 +12,16 @@ const Counselor = sequelize.define('Counselor', {
         autoIncrement: true
     },
     ...sharedColumn,
-    duration: {
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
-        allowNull: false,
-        defaultValue: []
+    level: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    counselingType: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false,
-        defaultValue: []
-    }
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-Counselor.hasOne(CounselorLevel, { foreignKey: 'counselorId' });
-CounselorLevel.belongsTo(Counselor, { foreignKey: 'counselorId' });
+Counselor.hasMany(CounselorPrice, { foreignKey: 'counselorId' });
+CounselorPrice.belongsTo(Counselor, { foreignKey: 'counselorId' });
 
 Counselor.hasMany(CounselorImage, { foreignKey: 'counselorId' });
 CounselorImage.belongsTo(Counselor, { foreignKey: 'counselorId' });

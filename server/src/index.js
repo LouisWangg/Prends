@@ -19,13 +19,19 @@ app.use(express.json());
 const userRoute = require("./routes/UserRoute");
 const serviceTypeRoute = require("./routes/ServiceTypeRoute");
 const serviceTypeImageRoute = require("./routes/ServiceTypeImageRoute");
+const serviceTypeFeedbackRoute = require("./routes/ServiceTypeFeedbackRoute");
 const classRoute = require("./routes/ClassRoute");
+const counselorRoute = require("./routes/CounselorRoute");
+const counselorImageRoute = require("./routes/CounselorImageRoute");
 
 // Register routes
 app.use("/users", userRoute);
 app.use("/serviceTypes", serviceTypeRoute);
 app.use("/serviceTypeImages", serviceTypeImageRoute);
+app.use("/serviceTypeFeedbacks", serviceTypeFeedbackRoute);
 app.use("/classes", classRoute);
+app.use("/counselors", counselorRoute);
+app.use("/counselorImages", counselorImageRoute);
 
 // Server start
 app.listen(5000, () => {

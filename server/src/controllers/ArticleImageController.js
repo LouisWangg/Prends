@@ -6,7 +6,6 @@ const uploadImage = async (req, res) => {
     const { id } = req.params;
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
-    // Upload an image for a specific service type
     await articleImageModel.create({
       articleId: id,
       image: req.file.buffer,
@@ -20,5 +19,5 @@ const uploadImage = async (req, res) => {
 };
 
 module.exports = {
-  uploadImage,
+  uploadImage
 };

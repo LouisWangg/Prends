@@ -106,40 +106,17 @@ const Home = () => {
         {serviceTypes.map((serviceType) => (
           <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
         ))}
-        {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
-            <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
-          ))} */}
       </HomeSection>
-
-      {
-        // <div className="homeWrapper">
-        //   <Typography variant="h4">Konseling dengan Psikolog Tersertifikasi!</Typography>
-        //   <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
-        //     Pilih layanan konseling sesuai dengan kebutuhanmu!
-        //   </Typography>
-        //   <Box
-        //     sx={{
-        //       display: "grid",
-        //       gridTemplateColumns: "repeat(4, 1fr)",
-        //       gap: 3,
-        //     }}
-        //   >
-        //     {/* {serviceTypes.map((serviceType) => (
-        //     <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
-        //   ))} */}
-        //     {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
-        //     <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
-        //   ))} */}
-        //   </Box>
-        // </div>
-      }
       {/* ================================================================================================================== */}
       <HomeSection
         title="Kata Prendsters yang sudah cobain layanan konseling di prends!"
         subTitle=""
         columns={3}
       >
-        <Box className="feedbackBox">
+        {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
+          <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
+        ))}
+        {/* <Box className="feedbackBox">
           <Typography variant="h5" style={{ marginBottom: "10px" }}>
             Lebih Tenang
           </Typography>
@@ -173,10 +150,7 @@ const Home = () => {
             terulangnya, beberapa bulan lalu sampe konsul di @prends.id it
             works.
           </Typography>
-        </Box>
-        {/* {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
-            <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
-          ))} */}
+        </Box> */}
       </HomeSection>
       {/* <div className="homeWrapper">
         <div className="posterContainer">
