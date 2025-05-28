@@ -18,56 +18,8 @@ const AboutUs = () => {
       <h1 className="pageTitle">Let's be Prends!</h1>
       <div className="aboutUsContainer">
         <h6>Filosofi</h6>
-        <p>
-          <strong>#Kleexplained! : Life After Breakup</strong>
-          <br />
-          bersama Shanen Emily, M. Psi., Psikolog
-        </p>
-        <br />
 
-        <p>
-          <strong>Pokok Pembahasan : </strong>
-        </p>
-        <ol>
-          <li>Bagaimana menjalani hari setelah hubungan berakhir?</li>
-          <li>Belajar Move On. Bagaimana?</li>
-          <li>Apa saja yang membuat move on lebih sulit?</li>
-          <li>Mencari orang baru atau sendiri dulu?</li>
-          <li>Bagaimana saat kenangan itu datang lagi?</li>
-          <li>Berdamai dengan rasa sedih, apakah bisa?</li>
-          <li>Panduan Bertahan Hidup Setelah Putus</li>
-          <li>
-            Activity untuk membantu kamu berproses setelah hubungan berakhir
-          </li>
-        </ol>
-        <br />
-
-        <p>
-          <strong>FAQ :</strong>
-        </p>
-        <p>
-          <strong>Apa itu #Kleexplained?</strong>
-        </p>
-        <p>
-          #Kleexplained adalah seri rekaman kelas persembahan expert prends yang
-          bekerja sama dengan Klee untuk membawakan topik tertentu. Dengan
-          durasi maksimal 2 jam, tiap kelas #Kleexplained siap membahas hingga
-          tuntas.
-        </p>
-        <br />
-
-        <p>
-          <strong>Apa yang saya dapatkan dari membeli #Kleexplained?</strong>
-        </p>
-        <p>Dengan membeli kelas #Kleexplained!, kamu akan mendapatkan :</p>
-        <ol>
-          <li>Akses rekaman selamanya</li>
-          <li>Materi dalam bentuk PDF</li>
-          <li>Voucher potongan harga konseling di prends</li>
-        </ol>
-        <br />
-
-        <p>
+        {/* <p>
           <strong>Perhatian :</strong>
         </p>
         <ol>
@@ -95,7 +47,7 @@ const AboutUs = () => {
             </Link>
           </li>
         </ol>
-        <br />
+        <br /> */}
 
         <p>
           Prends berasal dari bahasa Prancis yang berarti mengambil. Prends

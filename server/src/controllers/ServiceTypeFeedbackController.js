@@ -1,10 +1,10 @@
 const { Op } = require("sequelize");
-const serviceTypeFeedbackModel = require("../models/ServiceTypeFeedbackModel");
+const ServiceTypeFeedbackModel = require("../models/ServiceTypeFeedbackModel");
 
 // Get Feedback datas for Home page
 const getHomePageFeedbacks = async (req, res) => {
   try {
-    const datas = await serviceTypeFeedbackModel.findAll({
+    const datas = await ServiceTypeFeedbackModel.findAll({
       attributes: ["serviceTypeFeedbackId", "title", "description"],
       order: [['createdAt', 'ASC']],
       limit: 3

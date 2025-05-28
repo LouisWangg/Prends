@@ -76,7 +76,7 @@ const Navbar = () => {
             Layanan
             {isServiceOpen ? (
               <>
-                <RxChevronUp className="menuIcon" />
+                <RxChevronUp className="navbarMenuIcon" />
                 <ul className="dropdown-menu">
                   <li>
                     <Link
@@ -129,7 +129,7 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="menuIcon" />
+              <RxChevronDown className="navbarMenuIcon" />
             )}
           </li>
           <li
@@ -143,7 +143,7 @@ const Navbar = () => {
             KLEEXPERT
             {isExpertOpen ? (
               <>
-                <RxChevronUp className="menuIcon" />
+                <RxChevronUp className="navbarMenuIcon" />
                 <ul className="dropdown-menu">
                   <li>
                     <Link
@@ -172,7 +172,7 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="menuIcon" />
+              <RxChevronDown className="navbarMenuIcon" />
             )}
           </li>
           <li
@@ -186,7 +186,7 @@ const Navbar = () => {
             KLEEDEMY
             {isAcademyOpen ? (
               <>
-                <RxChevronUp className="menuIcon" />
+                <RxChevronUp className="navbarMenuIcon" />
                 <ul className="dropdown-menu">
                   <li>
                     <Link
@@ -207,7 +207,7 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="menuIcon" />
+              <RxChevronDown className="navbarMenuIcon" />
             )}
           </li>
           <li

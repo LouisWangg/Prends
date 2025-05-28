@@ -1,9 +1,9 @@
-const classModel = require("../models/ClassModel");
+const ClassModel = require("../models/ClassModel");
 
 // Get Class datas for Home page
 const getHomePageClasses = async (req, res) => {
   try {
-    const datas = await classModel.findAll({
+    const datas = await ClassModel.findAll({
       attributes: [
         "classId",
         "name",
@@ -40,7 +40,7 @@ const uploadImage = async (req, res) => {
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
     // Upload an image for a specific class
-    await classModel.update(
+    await ClassModel.update(
       { image: req.file.buffer },
       { where: { classId: id }}
     );

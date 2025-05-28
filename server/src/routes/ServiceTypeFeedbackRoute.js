@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const serviceTypeFeedbackController = require("../controllers/ServiceTypeFeedbackController");
+const ServiceTypeFeedbackController = require("../controllers/ServiceTypeFeedbackController");
 
-router.get("/getHomePageFeedbacks", serviceTypeFeedbackController.getHomePageFeedbacks);
+router.get("/getHomePageFeedbacks", ServiceTypeFeedbackController.getHomePageFeedbacks);
 
 module.exports = router;

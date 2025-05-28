@@ -48,12 +48,12 @@ const SingleCard = ({ type, data }) => {
         singleCardContent = (
             <Card className="singleCard">
                 <div className="singleCardImageWrapper">
-                        <CardMedia
-                            component="img"
-                            image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
-                            alt={singleCard.name}
-                            className="singleCardImage"
-                        />
+                    <CardMedia
+                        component="img"
+                        image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+                        alt={singleCard.name}
+                        className="singleCardImage"
+                    />
                     {singleCard.discountFlag && (
                         <div className="obralBadge">Obral</div>
                     )}
@@ -103,7 +103,7 @@ const SingleCard = ({ type, data }) => {
             <Card className="articleCard">
                 <CardMedia
                     component="img"
-                    height="320px"
+                    height="200px"
                     image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
                     alt={singleCard.title}
                     className="cardImage"
@@ -112,10 +112,7 @@ const SingleCard = ({ type, data }) => {
                     <Typography variant="h4" className="cardTitle">
                         {singleCard.title}
                     </Typography>
-                    <Typography variant="caption" sx={{ fontSize: "10px" }}>
-                        {singleCard.date}
-                    </Typography>
-                    <Typography variant="body1">{singleCard.description}</Typography>
+                    <Typography variant="body1">{singleCard.subTitle}</Typography>
                 </CardContent>
             </Card>
         );
@@ -134,9 +131,9 @@ const SingleCard = ({ type, data }) => {
                         {singleCard.title}
                     </Typography>
                     <Typography variant="caption" sx={{ fontSize: "10px" }}>
-                        {singleCard.date}
+                        {singleCard.createdAt}
                     </Typography>
-                    <Typography variant="body1">{singleCard.description}</Typography>
+                    <Typography variant="body1">{singleCard.subTitle}</Typography>
                 </CardContent>
             </Card>
         );

@@ -12,3 +12,12 @@
   /* 380 */
   margin: auto;
 }
+
+@media (max-width: 1300px) {
+  .feedbackBox {
+    min-width: 360px;
+    max-width: 360px;
+    min-height: 380px;
+    max-height: 380px;
+  }
+}

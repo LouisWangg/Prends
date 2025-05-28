@@ -1,13 +1,15 @@
 const sequelize = require("../config/database");
 
 const User = require("./UserModel");
+const Class = require("./ClassModel");
 const ServiceType = require("./ServiceTypeModel");
 const ServiceTypeImage = require("./ServiceTypeImageModel");
 const ServiceTypeFeedback = require("./ServiceTypeFeedbackModel");
-const Class = require("./ClassModel");
 const Counselor = require("./CounselorModel");
 const CounselorImage = require("./CounselorImageModel");
 const CounselorFeedback = require("./CounselorFeedbackModel");
+const Article = require("./ArticleModel");
+const ArticleImage = require("./ArticleImageModel");
 
 // Define associations here
 User.hasMany(ServiceTypeFeedback, { foreignKey: 'userId' });
@@ -25,14 +27,19 @@ CounselorImage.belongsTo(Counselor, { foreignKey: 'counselorId' });
 Counselor.hasMany(CounselorFeedback, { foreignKey: 'counselorId' });
 CounselorFeedback.belongsTo(Counselor, { foreignKey: 'counselorId' });
 
+ArticleImage.hasMany(Article, { foreignKey: 'articleImageId' });
+Article.belongsTo(ArticleImage, { foreignKey: 'articleImageId' });
+
 module.exports = {
   sequelize,
   User,
+  Class,
   ServiceType,
   ServiceTypeImage,
   ServiceTypeFeedback,
-  Class,
   Counselor,
   CounselorImage,
-  CounselorFeedback
+  CounselorFeedback,
+  Article,
+  ArticleImage
 };

@@ -1,8 +1,8 @@
 const sequelize = require("../config/database");
 const { fn, literal, col } = require("sequelize");
-const counselorModel = require("../models/CounselorModel");
-const counselorImageModel = require("../models/CounselorImageModel");
-const counselorFeedbackModel = require("../models/CounselorFeedbackModel");
+const CounselorModel = require("../models/CounselorModel");
+const CounselorImageModel = require("../models/CounselorImageModel");
+const CounselorFeedbackModel = require("../models/CounselorFeedbackModel");
 
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
@@ -18,9 +18,9 @@ const getHomePageCounselors = async (req, res) => {
         c."discountFlag",
         c."discountPrice",
         c."itemType",
-        COUNT(f."counselorFeedbackId") AS "feedbackCount"
+        COUNT(cf."counselorFeedbackId") AS "feedbackCount"
       FROM "Counselors" c
-      LEFT JOIN "CounselorFeedbacks" f ON f."counselorId" = c."counselorId"
+      LEFT JOIN "CounselorFeedbacks" cf ON cf."counselorId" = c."counselorId"
       GROUP BY 
         c."counselorId",
         c."name",
@@ -66,5 +66,5 @@ const getHomePageCounselors = async (req, res) => {
 };
 
 module.exports = {
-  getHomePageCounselors,
+  getHomePageCounselors
 };

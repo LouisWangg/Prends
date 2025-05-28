@@ -1,14 +1,14 @@
 const { Op } = require("sequelize");
-const articleModel = require("../models/ArticleModel");
-const articleImageModel = require("../models/ArticleImageModel");
+const ArticleModel = require("../models/ArticleModel");
+const ArticleImageModel = require("../models/ArticleImageModel");
 
 // Get 3 newest Article datas for Home page
 const getHomePageArticles = async (req, res) => {
   try {
-    const datas = await articleModel.findAll({
+    const articles = await ArticleModel.findAll({
       attributes: ["articleId", "title", "subTitle"],
       include: [{
-        model: articleImageModel,
+        model: ArticleImageModel,
         attributes: ["image"],
       }],
       order: [["createdAt", "DESC"]],
@@ -16,8 +16,8 @@ const getHomePageArticles = async (req, res) => {
     });
 
     // Map results to convert image buffer to base64 string
-    const response = datas.map(item => {
-      const plain = item.get({ plain: true });
+    const response = articles.map(article => {
+      const plain = article.get({ plain: true });
 
       if (plain.ArticleImage) {
         plain.ArticleImage.image = plain.ArticleImage.image
@@ -38,18 +38,18 @@ const getHomePageArticles = async (req, res) => {
 // Get Articles for Article page
 const getArticles = async (req, res) => {
   try {
-    const datas = await articleModel.findAll({
-      attributes: ["title", "createdAt", "subTitle"],
+    const articles = await ArticleModel.findAll({
+      attributes: ["articleId", "title", "createdAt", "subTitle"],
       include: [{
-        model: articleImageModel,
+        model: ArticleImageModel,
         attributes: ["image"],
       }],
       order: [["createdAt", "DESC"]]
     });
 
     // Map results to convert image buffer to base64 string
-    const response = datas.map(item => {
-      const plain = item.get({ plain: true });
+    const response = articles.map(article => {
+      const plain = article.get({ plain: true });
 
       if (plain.ArticleImage) {
         plain.ArticleImage.image = plain.ArticleImage.image

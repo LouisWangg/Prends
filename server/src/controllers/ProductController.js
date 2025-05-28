@@ -1,9 +1,9 @@
-const productModel = require("../models/ProductModel");
+const ProductModel = require("../models/ProductModel");
 
 // Get Card datas
 const getProducts = async (req, res) => {
   try {
-    const datas = await productModel.findAll({
+    const datas = await ProductModel.findAll({
         attributes: ['productId', 'name', 'price', 'discountFlag', 'discountPrice']
     });
     res.json(datas);

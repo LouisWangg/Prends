@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const counselorController = require("../controllers/CounselorController");
+const CounselorController = require("../controllers/CounselorController");
 
-router.get("/getHomePageCounselors", counselorController.getHomePageCounselors);
+router.get("/getHomePageCounselors", CounselorController.getHomePageCounselors);
 
 module.exports = router;

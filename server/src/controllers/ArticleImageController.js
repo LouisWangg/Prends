@@ -1,4 +1,4 @@
-const articleImageModel = require("../models/ArticleImageModel");
+const ArticleImageModel = require("../models/ArticleImageModel");
 
 // Upload image by id
 const uploadImage = async (req, res) => {
@@ -6,7 +6,7 @@ const uploadImage = async (req, res) => {
     const { id } = req.params;
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
-    await articleImageModel.create({
+    await ArticleImageModel.create({
       articleId: id,
       image: req.file.buffer,
     });

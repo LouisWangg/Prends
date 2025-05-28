@@ -1,4 +1,4 @@
-const counselorImageModel = require("../models/CounselorImageModel");
+const CounselorImageModel = require("../models/CounselorImageModel");
 
 // Upload image by id
 const uploadImage = async (req, res) => {
@@ -6,7 +6,7 @@ const uploadImage = async (req, res) => {
     const { id } = req.params;
     if (!req.file) return res.status(400).send("No image file uploaded.");
 
-    await counselorImageModel.create({
+    await CounselorImageModel.create({
       counselorId: id,
       image: req.file.buffer,
     });

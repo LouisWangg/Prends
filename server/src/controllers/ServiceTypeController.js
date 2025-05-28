@@ -1,11 +1,11 @@
 const { Op } = require("sequelize");
-const serviceTypeModel = require("../models/ServiceTypeModel");
-const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
+const ServiceTypeModel = require("../models/ServiceTypeModel");
+const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 
 // Get Konseling Individu datas
 const getIndividualCounselings = async (req, res) => {
   try {
-    const datas = await serviceTypeModel.findAll({
+    const datas = await ServiceTypeModel.findAll({
       attributes: ["serviceTypeId", "name", "price", "discountFlag", "discountPrice", "itemType", "type"],
       where: {
         type: {
@@ -13,7 +13,7 @@ const getIndividualCounselings = async (req, res) => {
         },
       },
       include: [{
-        model: serviceTypeImageModel,
+        model: ServiceTypeImageModel,
         attributes: ["image"], // specify the columns you want from the images table
       }],
     });
@@ -44,7 +44,7 @@ const getIndividualCounselings = async (req, res) => {
 const getIndividualCounseling = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await serviceTypeModel.findByPk(id, {
+    const data = await ServiceTypeModel.findByPk(id, {
       attributes: [
         "itemType",
         "name",

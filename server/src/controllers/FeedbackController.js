@@ -1,9 +1,9 @@
-const feedbackModel = require("../models/FeedbackModel");
+const FeedbackModel = require("../models/FeedbackModel");
 
 // Get Card datas
 const getHomePageFeedbacks = async (req, res) => {
   try {
-    const datas = await feedbackModel.findAll({
+    const datas = await FeedbackModel.findAll({
       attributes: ['title', 'description'],
       where: {
         feedbackId: {

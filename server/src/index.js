@@ -16,22 +16,26 @@ app.use(cors());
 app.use(express.json());
 
 // Import routes
-const userRoute = require("./routes/UserRoute");
-const serviceTypeRoute = require("./routes/ServiceTypeRoute");
-const serviceTypeImageRoute = require("./routes/ServiceTypeImageRoute");
-const serviceTypeFeedbackRoute = require("./routes/ServiceTypeFeedbackRoute");
-const classRoute = require("./routes/ClassRoute");
-const counselorRoute = require("./routes/CounselorRoute");
-const counselorImageRoute = require("./routes/CounselorImageRoute");
+const UserRoute = require("./routes/UserRoute");
+const ClassRoute = require("./routes/ClassRoute");
+const ServiceTypeRoute = require("./routes/ServiceTypeRoute");
+const ServiceTypeImageRoute = require("./routes/ServiceTypeImageRoute");
+const ServiceTypeFeedbackRoute = require("./routes/ServiceTypeFeedbackRoute");
+const CounselorRoute = require("./routes/CounselorRoute");
+const CounselorImageRoute = require("./routes/CounselorImageRoute");
+const ArticleRoute = require("./routes/ArticleRoute");
+const ArticleImageRoute = require("./routes/ArticleImageRoute");
 
 // Register routes
-app.use("/users", userRoute);
-app.use("/serviceTypes", serviceTypeRoute);
-app.use("/serviceTypeImages", serviceTypeImageRoute);
-app.use("/serviceTypeFeedbacks", serviceTypeFeedbackRoute);
-app.use("/classes", classRoute);
-app.use("/counselors", counselorRoute);
-app.use("/counselorImages", counselorImageRoute);
+app.use("/users", UserRoute);
+app.use("/classes", ClassRoute);
+app.use("/serviceTypes", ServiceTypeRoute);
+app.use("/serviceTypeImages", ServiceTypeImageRoute);
+app.use("/serviceTypeFeedbacks", ServiceTypeFeedbackRoute);
+app.use("/counselors", CounselorRoute);
+app.use("/counselorImages", CounselorImageRoute);
+app.use("/articles", ArticleRoute);
+app.use("/articleImages", ArticleImageRoute);
 
 // Server start
 app.listen(5000, () => {
