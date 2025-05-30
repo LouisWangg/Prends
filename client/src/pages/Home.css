@@ -69,7 +69,8 @@
 .viewAllWrapper {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
+  align-items: center;
+  grid-column: 1 / -1;
 }
 
 .viewAllBtn {

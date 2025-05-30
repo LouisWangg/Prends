@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cards } from "../data/Cards"; // Importing the card data
 import { Button, Typography, Box } from "@mui/material";
 import SingleCard from "../components/SingleCard.js";
+import { fetchArticles } from "../services/ArticleService.js";
 import "./Article.css";
 
 const ITEMS_PER_PAGE = 6;
 
 const Article = () => {
+  const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   // Calculate the start and end indices for the cards to display
@@ -32,9 +34,18 @@ const Article = () => {
     }
   };
 
+  const getArticles = async () => {
+    const datas = await fetchArticles();
+    setArticles(datas);
+  };
+
+  useEffect(() => {
+    getArticles();
+  }, []); // Empty dependency array ensures this runs only once
+
   return (
     <Box sx={{ padding: 2, margin: "0px 40px 0 40px" }}>
-      <h1 className="pageTitle">#Kleexplained!</h1>
+      <h1 className="pageTitle">#Prendsight!</h1>
       <Box
         sx={{
           display: "grid",
@@ -42,8 +53,8 @@ const Article = () => {
           gap: 3,
         }}
       >
-        {currentCards.map((card) => (
-        <SingleCard id={card.id} type={"article"} />
+        {articles.map((article) => (
+          <SingleCard type={"Article"} data={article} />
         ))}
       </Box>
 

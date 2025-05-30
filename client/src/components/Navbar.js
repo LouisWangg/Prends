@@ -233,7 +233,7 @@ const Navbar = () => {
               );
             }}
           >
-            <Link>Bantuan</Link>
+            <a>Bantuan</a>
           </li>
         </ul>
         <div className="navbarButtons">

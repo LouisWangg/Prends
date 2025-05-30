@@ -8,7 +8,8 @@ import HomeSection from "../components/HomeSection.js";
 import FeedbackBox from "../components/FeedbackBox.js";
 import QnaSection from "../components/QnaSection.js";
 import { slides } from "../data/Carousel.js";
-import { fetchUsers } from "../services/UserService"; // Import user service
+import { fetchUsers } from "../services/UserService";
+import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
 import { fetchHomePageCounselors } from "../services/CounselorService.js";
@@ -18,6 +19,7 @@ import "./Home.css";
 
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
+  const [qnas, setQnas] = useState([]);
   const [users, setUsers] = useState([]);
   const [classes, setClasses] = useState([]);
   const [articles, setArticles] = useState([]);
@@ -55,16 +57,22 @@ const Home = () => {
     setServiceTypeFeedbacks(datas);
   };
 
+  const getHomePageQnas = async () => {
+    const datas = await fetchHomePageQnas();
+    setQnas(datas);
+  };
+
   // useEffect is for handling side effects like fetching data, subscriptions, timers, etc.
   // It’s designed to run after the initial render and is triggered only once in this case
   // (because of the empty dependency array [])
   useEffect(() => {
     getUsers();
+    getHomePageQnas();
     getHomePageClasses();
     getHomePageArticles();
+    getHomePageFeedbacks();
     getHomePageCounselors();
     getIndividualCounselings();
-    getHomePageFeedbacks();
   }, []); // Empty dependency array ensures this runs only once
 
   return (
@@ -78,7 +86,11 @@ const Home = () => {
         columns={4}
       >
         {serviceTypes.map((serviceType) => (
-          <SingleCard key={serviceType.serviceTypeId} type={serviceType.itemType} data={serviceType} />
+          <SingleCard
+            key={serviceType.serviceTypeId}
+            type={serviceType.itemType}
+            data={serviceType}
+          />
         ))}
       </HomeSection>
 
@@ -88,7 +100,10 @@ const Home = () => {
         columns={3}
       >
         {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
-          <FeedbackBox key={serviceTypeFeedback.serviceTypeFeedbackId} data={serviceTypeFeedback} />
+          <FeedbackBox
+            key={serviceTypeFeedback.serviceTypeFeedbackId}
+            data={serviceTypeFeedback}
+          />
         ))}
       </HomeSection>
 
@@ -98,7 +113,11 @@ const Home = () => {
         columns={4}
       >
         {classes.map((singleClass) => (
-          <SingleCard key={singleClass.classId} type={singleClass.itemType} data={singleClass} />
+          <SingleCard
+            key={singleClass.classId}
+            type={singleClass.itemType}
+            data={singleClass}
+          />
         ))}
       </HomeSection>
 
@@ -108,12 +127,16 @@ const Home = () => {
         columns={4}
       >
         {counselors.map((counselor) => (
-          <SingleCard key={counselor.counselorId} type={counselor.itemType} data={counselor} />
+          <SingleCard
+            key={counselor.counselorId}
+            type={counselor.itemType}
+            data={counselor}
+          />
         ))}
+        <div className="viewAllWrapper">
+          <button className="viewAllBtn">Lihat semua</button>
+        </div>
       </HomeSection>
-      <div className="viewAllWrapper">
-        <button className="viewAllBtn">Lihat semua</button>
-      </div>
 
       <HomeSection
         title="Baca artikel terbaru dari #Prendsight!"
@@ -121,12 +144,16 @@ const Home = () => {
         columns={3}
       >
         {articles.map((article) => (
-          <SingleCard key={article.articleId} type="HomeArticle" data={article} />
+          <SingleCard
+            key={article.articleId}
+            type="HomeArticle"
+            data={article}
+          />
         ))}
       </HomeSection>
 
       <Line />
-      <QnaSection />
+      <QnaSection data={qnas} />
     </Fragment>
   );
 };

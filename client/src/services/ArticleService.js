@@ -12,3 +12,14 @@ export const fetchHomePageArticles = async () => {
     return null;
   }
 };
+
+// Get Article datas for Article page
+export const fetchArticles = async () => {
+  try {
+    const response = await axios.get(`${url}/getArticles`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch Article datas: `, error);
+    return null;
+  }
+};

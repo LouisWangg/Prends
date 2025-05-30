@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import "./SingleCard.css";
 import "./ArticleCard.css";
-import { cards } from "../data/Cards"; // Importing the card data
 
 const SingleCard = ({ type, data }) => {
     let imageData;
@@ -109,7 +108,7 @@ const SingleCard = ({ type, data }) => {
                     className="cardImage"
                 />
                 <CardContent sx={{ textAlign: "center" }}>
-                    <Typography variant="h4" className="cardTitle">
+                    <Typography variant="h4" className="homeCardTitle">
                         {singleCard.title}
                     </Typography>
                     <Typography variant="body1">{singleCard.subTitle}</Typography>
@@ -130,10 +129,10 @@ const SingleCard = ({ type, data }) => {
                     <Typography variant="h4" className="cardTitle">
                         {singleCard.title}
                     </Typography>
-                    <Typography variant="caption" sx={{ fontSize: "10px" }}>
+                    <Typography variant="caption">
                         {singleCard.createdAt}
                     </Typography>
-                    <Typography variant="body1">{singleCard.subTitle}</Typography>
+                    <Typography variant="body1" sx={{ marginTop: "5px" }}>{singleCard.subTitle}</Typography>
                 </CardContent>
             </Card>
         );

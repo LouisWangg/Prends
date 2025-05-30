@@ -10,6 +10,7 @@ const CounselorImage = require("./CounselorImageModel");
 const CounselorFeedback = require("./CounselorFeedbackModel");
 const Article = require("./ArticleModel");
 const ArticleImage = require("./ArticleImageModel");
+const Qna = require("./QnaModel");
 
 // Define associations here
 User.hasMany(ServiceTypeFeedback, { foreignKey: 'userId' });
@@ -41,5 +42,6 @@ module.exports = {
   CounselorImage,
   CounselorFeedback,
   Article,
-  ArticleImage
+  ArticleImage,
+  Qna
 };

@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 const ArticleModel = require("../models/ArticleModel");
 const ArticleImageModel = require("../models/ArticleImageModel");
 
@@ -7,21 +8,23 @@ const getHomePageArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.findAll({
       attributes: ["articleId", "title", "subTitle"],
-      include: [{
-        model: ArticleImageModel,
-        attributes: ["image"],
-      }],
+      include: [
+        {
+          model: ArticleImageModel,
+          attributes: ["image"],
+        },
+      ],
       order: [["createdAt", "DESC"]],
-      limit: 3
+      limit: 3,
     });
 
     // Map results to convert image buffer to base64 string
-    const response = articles.map(article => {
+    const response = articles.map((article) => {
       const plain = article.get({ plain: true });
 
       if (plain.ArticleImage) {
         plain.ArticleImage.image = plain.ArticleImage.image
-          ? plain.ArticleImage.image.toString('base64')
+          ? plain.ArticleImage.image.toString("base64")
           : null;
       }
 
@@ -39,21 +42,24 @@ const getHomePageArticles = async (req, res) => {
 const getArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.findAll({
-      attributes: ["articleId", "title", "createdAt", "subTitle"],
-      include: [{
-        model: ArticleImageModel,
-        attributes: ["image"],
-      }],
-      order: [["createdAt", "DESC"]]
+      attributes: ["articleId", "title", 
+        [sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), 'createdAt'], "subTitle"],
+      include: [
+        {
+          model: ArticleImageModel,
+          attributes: ["image"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
     });
 
     // Map results to convert image buffer to base64 string
-    const response = articles.map(article => {
+    const response = articles.map((article) => {
       const plain = article.get({ plain: true });
 
       if (plain.ArticleImage) {
         plain.ArticleImage.image = plain.ArticleImage.image
-          ? plain.ArticleImage.image.toString('base64')
+          ? plain.ArticleImage.image.toString("base64")
           : null;
       }
 
@@ -69,5 +75,5 @@ const getArticles = async (req, res) => {
 
 module.exports = {
   getHomePageArticles,
-  getArticles
+  getArticles,
 };

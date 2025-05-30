@@ -77,36 +77,36 @@ const Footer = () => {
             className="right"
             style={{ display: "flex", justifyContent: "flex-end" }}
           >
-            <a
+            {/* <a
               href="https://www.facebook.com/klee.indonesia/?_rdc=1&_rdr"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaFacebook className="rightIcon" />
-            </a>
+            </a> */}
             <a
-              href="https://www.instagram.com/klee.id/"
+              href="https://www.instagram.com/prends.id/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaInstagram className="rightIcon" />
             </a>
             <a
-              href="https://www.youtube.com/kleeindonesia"
+              href="https://www.youtube.com/@prendsindonesia"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaYoutube className="rightIcon" />
             </a>
             <a
-              href="https://www.tiktok.com/@klee.id"
+              href="https://www.tiktok.com/@prends.id"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaTiktok className="rightIcon" />
             </a>
             <a
-              href="https://x.com/klee_id"
+              href="https://x.com/prendstwt"
               target="_blank"
               rel="noopener noreferrer"
             >

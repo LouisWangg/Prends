@@ -15,6 +15,7 @@ a {
 }
 
 a:hover {
+  color: black;
   text-decoration-thickness: 2px;
 }
 

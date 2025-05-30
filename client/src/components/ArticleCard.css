@@ -18,10 +18,18 @@
 }
 
 .cardTitle {
-  margin-bottom: 10px !important;
+  margin-bottom: 3px !important;
 }
 
 .articleCard:hover .cardTitle {
+  text-decoration: underline;
+}
+
+.homeCardTitle {
+  margin-bottom: 10px !important;
+}
+
+.articleCard:hover .homeCardTitle {
   text-decoration: underline;
 }
 
