@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Card,
     CardContent,
@@ -9,10 +10,9 @@ import "./SingleCard.css";
 import "./ArticleCard.css";
 
 const SingleCard = ({ type, data }) => {
-    let imageData;
-    let singleCardContent;
+    let imageData, singleCardContent;
     const singleCard = data;
-    // const singleCard = cards.find((singleCard) => singleCard.id === id);
+    const navigate = useNavigate();
 
     if (type.includes("Service")) {
         imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
@@ -34,13 +34,14 @@ const SingleCard = ({ type, data }) => {
     };
 
     const changePageHandle = () => {
-        if (type.includes("Counseling") || type.includes("Class")) {
-            // pindah page detail sesuai type
-        } else if (type.includes("Level")) {
+        navigate(`/detailPage`);
+        // if (type.includes("Counseling") || type.includes("Class")) {
+        //     // pindah page detail sesuai type
+        // } else if (type.includes("Level")) {
 
-        } else if (type.includes("Article")) {
+        // } else if (type.includes("Article")) {
 
-        }
+        // }
     };
 
     if (type.includes("Service") || type.includes("Class") || type.includes("Counselor")) {

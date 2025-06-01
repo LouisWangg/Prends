@@ -3,18 +3,18 @@
   padding: 20px 5%;
 }
 
-.left,
-.right {
+.leftSection,
+.rightSection {
   flex: 1;
 }
 
-a {
+.footerLink {
   color: black;
   text-decoration: underline;
   text-decoration-thickness: 0.5px;
 }
 
-a:hover {
+.footerLink:hover {
   color: black;
   text-decoration-thickness: 2px;
 }
@@ -34,13 +34,24 @@ a:hover {
   cursor: pointer;
 }
 
-.rightIcon {
+.footerButton {
+  color: black;
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+}
+
+.footerButton:hover {
+  color: black;
+  text-decoration-thickness: 2px;
+}
+
+.footerIcon {
   width: 20px;
   height: 20px;
   margin-left: 30px;
 }
 
-.socialMedias .right a {
+.socialMedias .rightSection .footerButton {
   width: 50px;
   height: 50px;
   margin-right: 10px;
@@ -49,7 +60,7 @@ a:hover {
   transform-origin: right center; /* optional, default is center */
 }
 
-.socialMedias .right a:hover {
+.socialMedias .rightSection .footerButton:hover {
   transform: scale(1.2);
 }
 

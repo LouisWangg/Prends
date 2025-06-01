@@ -237,24 +237,15 @@ const Navbar = () => {
           </li>
         </ul>
         <div className="navbarButtons">
-          <button className="button" onClick={() => changePath("/login")}>
-            <SlMagnifier className="icon" />
+          <button className="navbarButton" onClick={() => changePath("/login")}>
+            <SlMagnifier className="navbarIcon" />
           </button>
-          <button className="button" onClick={() => changePath("/login")}>
-            <CiUser style={{ width: "25px", height: "25px" }} />
-          </button>
-          <button className="button" onClick={() => changePath("/login")}>
-            <BsBag className="icon" />
-          </button>
-          {/* <a className="navbarButton" href="/">
-            <SlMagnifier className="icon" />
-          </a>
-          <a className="navbarButton" href="/login">
-            <CiUser style={{ width: "25px", height: "25px" }} />
-          </a>
-          <a className="navbarButton" href="/login">
-            <BsBag className="icon" />
-          </a> */}
+          <Link className="navbarButton" to="/login">
+            <CiUser className="userIcon" />
+          </Link>
+          <Link className="navbarButton" to="/login">
+            <BsBag className="navbarIcon" />
+          </Link>
         </div>
       </div>
     </Fragment>

@@ -1,6 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
-import { Button, Box, Typography } from "@mui/material";
-import { RxChevronUp, RxChevronDown } from "react-icons/rx";
+import React, { Fragment, useEffect, useState } from "react";
 import Line from "../components/Line";
 import Carousel from "../components/Carousel.js";
 import SingleCard from "../components/SingleCard.js";

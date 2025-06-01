@@ -15,7 +15,7 @@ const Footer = () => {
   return (
     <Fragment>
       <div className="footerContainer">
-        <div className="left">
+        <div className="leftSection">
           <h4>Butuh Bantuan?</h4>
           <p style={{ marginTop: "20px", marginBottom: "8px" }}>
             Hubungi Customer Service kami di :{" "}
@@ -31,50 +31,38 @@ const Footer = () => {
                   "noopener, noreferrer"
                 );
               }}
+              className="footerLink"
             >
               0851-7202-0718
             </Link>
           </p>
-          <p>Email : customercare.klee@gmail.com</p>
-
-          <h6 style={{ marginTop: "30px", marginBottom: "8px" }}>Info Kerja Sama</h6>
-          <p style={{ marginBottom: "8px" }}>
-            WhatsApp :{" "}
-            <Link
-              onClick={(event) => {
-                event.preventDefault();
-                window.open(
-                  "https://api.whatsapp.com/send/?phone=6285158883689&text&type=phone_number&app_absent=0",
-                  "_blank",
-                  "noopener, noreferrer"
-                );
-              }}
-            >
-              0851-5888-3689
-            </Link>
-          </p>
-          <p>Email : partnership.klee@gmail.com</p>
+          <p>Email : customercare.prends@gmail.com</p>
+          <p>Info Kerjasama : prends.indonesia@gmail.com</p>
         </div>
-        <div className="right">
+
+        <div className="rightSection">
           <h4>Perhatian :</h4>
           <p style={{ marginTop: "18px", marginBottom: "8px" }}>
-            Layanan konseling di Klee <b>tidak direkomendasikan</b> untuk kamu
+            Layanan konseling di prends <b>tidak direkomendasikan</b> untuk kamu
             yang dalam kondisi terancam. Hubungi <b>119</b> jika kamu butuh
             pertolongan sesegera mungkin.
           </p>
         </div>
       </div>
+
       <div style={{ marginBottom: "30px", padding: "20px 5%" }}>
-        <h4>Bergabung ke update dan info terbaru dari Klee!</h4>
+        <h4>Bergabung ke update dan info terbaru dari prends!</h4>
         <div className="socialMedias">
-          <div className="left">
-            <input placeholder="Email" style={{width: "400px"}} />
-            <button>
-              <RxChevronRight />
-            </button>
+          <div className="leftSection">
+            <div className="emailInputWrapper">
+              <input placeholder="Email" style={{ width: "400px" }} />
+              <button>
+                <RxChevronRight />
+              </button>
+            </div>
           </div>
           <div
-            className="right"
+            className="rightSection"
             style={{ display: "flex", justifyContent: "flex-end" }}
           >
             {/* <a
@@ -82,35 +70,39 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaFacebook className="rightIcon" />
+              <FaFacebook className="footerIcon" />
             </a> */}
             <a
               href="https://www.instagram.com/prends.id/"
               target="_blank"
               rel="noopener noreferrer"
+              className="footerButton"
             >
-              <FaInstagram className="rightIcon" />
+              <FaInstagram className="footerIcon" />
             </a>
             <a
               href="https://www.youtube.com/@prendsindonesia"
               target="_blank"
               rel="noopener noreferrer"
+              className="footerButton"
             >
-              <FaYoutube className="rightIcon" />
+              <FaYoutube className="footerIcon" />
             </a>
             <a
               href="https://www.tiktok.com/@prends.id"
               target="_blank"
               rel="noopener noreferrer"
+              className="footerButton"
             >
-              <FaTiktok className="rightIcon" />
+              <FaTiktok className="footerIcon" />
             </a>
             <a
               href="https://x.com/prendstwt"
               target="_blank"
               rel="noopener noreferrer"
+              className="footerButton"
             >
-              <FaXTwitter className="rightIcon" />
+              <FaXTwitter className="footerIcon" />
             </a>
           </div>
         </div>
@@ -127,7 +119,7 @@ const Footer = () => {
         <small>
           2025,{" "}
           <Link to="/" className="footerLinkText">
-            Klee.id
+            prends
           </Link>
         </small>
       </div>
