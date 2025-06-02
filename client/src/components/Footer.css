@@ -21,10 +21,23 @@
 
 .socialMedias {
   display: flex;
+  align-items: center; /* Ensures both children match in height */
+  justify-content: space-between;
 }
 
-.socialMedias input {
-  padding: 10px;
+.socialMedias .leftSection {
+  display: flex;
+  align-items: center; /* Ensures both children match in height */
+}
+
+.leftSection .emailInputWrapper {
+  padding-top: 5px;
+}
+
+.socialMedias .rightSection {
+  display: flex;
+  align-items: center; /* Ensures both children match in height */
+  padding-top: 20px;
 }
 
 .socialMedias button {
@@ -32,6 +45,35 @@
   color: black;
   border: 10px black;
   cursor: pointer;
+}
+
+.emailInputWrapper {
+  position: relative;
+  width: 400px;
+}
+
+.emailInputWrapper input {
+  width: 100%;
+  padding: 12px 40px 12px 20px;
+  font-size: 16px;
+  border: 1px solid #888;
+  box-sizing: border-box;
+}
+
+.emailInputWrapper input:hover {
+  outline: 1px solid #888;
+}
+
+.emailInputWrapper button {
+  position: absolute;
+  top: 45%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #000;
 }
 
 .footerButton {
@@ -55,9 +97,11 @@
   width: 50px;
   height: 50px;
   margin-right: 10px;
-  display: inline-block; /* ensure it's treated as a box for transform */
+  display: inline-block;
+  /* ensure it's treated as a box for transform */
   transition: transform 0.2s ease;
-  transform-origin: right center; /* optional, default is center */
+  transform-origin: right center;
+  /* optional, default is center */
 }
 
 .socialMedias .rightSection .footerButton:hover {
@@ -68,8 +112,8 @@
   color: grey;
   display: flex;
   justify-content: center;
-  align-items: center; 
-  gap: 3px; 
+  align-items: center;
+  gap: 3px;
   font-weight: bold;
   font-size: 15px;
   margin-bottom: 20px;

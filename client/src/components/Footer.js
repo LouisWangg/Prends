@@ -65,13 +65,6 @@ const Footer = () => {
             className="rightSection"
             style={{ display: "flex", justifyContent: "flex-end" }}
           >
-            {/* <a
-              href="https://www.facebook.com/klee.indonesia/?_rdc=1&_rdr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaFacebook className="footerIcon" />
-            </a> */}
             <a
               href="https://www.instagram.com/prends.id/"
               target="_blank"

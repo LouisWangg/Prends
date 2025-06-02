@@ -1,46 +1,71 @@
-.nav {
-  position: fixed; /* Position the navbar absolutely */
-  top: 0; /* Align it to the top of the parent or viewport */
-  left: 0; /* Align it to the left of the parent or viewport */
-  width: 100%; /* Make it span the full width */
-  z-index: 1000; /* Ensure it appears above other elements */
+.navbarWrapper {
+  /*   
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  z-index: 1000; 
   color: black;
   background-color: white;
   display: flex;
   align-items: center;
   padding: 20px 5%;
-  margin-bottom: 25px;
+  margin-bottom: 25px; 
+*/
+
+  position: static;
+  width: 100%;
+  color: black;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 20px 5%;
+  transition: transform 0.3s ease;
 }
 
-ul {
+.navbarWrapper.sticky {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+  /* optional */
+  transition: all 0.3s ease;
+  transform: translateY(0%);
+}
+
+.navbarListPage {
   background-color: white;
   margin: auto;
   padding: 10px 30px;
-  /* border-radius: 30px; */
-  /* box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1); */
   display: flex;
   list-style: none;
 }
 
-li {
+.navbarLink {
   margin-right: 20px;
 }
 
-li a {
-  color: black;
+.navbarLink:hover {
   cursor: pointer;
-  margin-right: 10px;
-  text-decoration: none;
-}
-
-.active a {
-  color: black;
   text-decoration: underline;
 }
 
-li a:hover {
+.navbarLink.navbarLinkActive {
+  text-decoration: underline;
+}
+
+.navbarLink a {
   color: black;
-  text-decoration: underline !important;
+  margin-right: 10px;
+}
+
+.navbarLink a:hover {
+  color: black;
+}
+
+.navbarLinkIcon {
+  margin-left: 8px;
+  margin-bottom: 3px;
 }
 
 .navbarButtons {
@@ -58,10 +83,6 @@ li a:hover {
   justify-content: center;
   text-decoration: none;
   padding: 0;
-}
-
-.navbarButton:active {
-  border: none;
 }
 
 .navbarButton:hover {
@@ -82,11 +103,6 @@ li a:hover {
   top: 2px;
 }
 
-.navbarMenuIcon {
-  margin-left: 8px;
-  margin-bottom: 3px;
-}
-
 .dropdown {
   cursor: pointer;
 }
@@ -95,7 +111,7 @@ li a:hover {
   text-decoration: underline;
 }
 
-.dropdown-menu {
+.dropdownMenu {
   position: absolute;
   top: 100%;
   left: 0;
@@ -110,17 +126,17 @@ li a:hover {
   white-space: nowrap;
 }
 
-.dropdown-menu li {
+.dropdownMenu li {
   padding: 8px 20px;
 }
 
-.dropdown-menu li a {
+.dropdownMenu li a {
   color: black;
   text-decoration: none;
   font-weight: lighter;
 }
 
-.dropdown-menu li a:hover {
+.dropdownMenu li a:hover {
   color: black;
   text-decoration: underline;
   font-weight: normal;

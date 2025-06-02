@@ -1,18 +1,17 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { SlMagnifier } from "react-icons/sl";
 import { CiUser } from "react-icons/ci";
 import { BsBag } from "react-icons/bs";
 import { RxChevronUp, RxChevronDown } from "react-icons/rx";
+
 import "./Navbar.css";
 import logo from "../assets/Logo.png";
 
-const Navbar = () => {
-  const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Reference to the dropdown
+const Navbar = ({ isSticky }) => {
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [isExpertOpen, setIsExpertOpen] = useState(false);
-  const [isAcademyOpen, setIsAcademyOpen] = useState(false);
+  const [isClassOpen, setIsClassOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
 
   const toggleServiceMenu = () => {
@@ -23,61 +22,53 @@ const Navbar = () => {
     setIsExpertOpen(!isExpertOpen);
   };
 
-  const toggleAcademyMenu = () => {
-    setIsAcademyOpen(!isAcademyOpen);
+  const toggleClassMenu = () => {
+    setIsClassOpen(!isClassOpen);
   };
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
   };
 
-  const changePath = (path) => {
-    navigate(path);
-  };
-
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const closeAllDropdowns = () => {
       setIsServiceOpen(false);
       setIsExpertOpen(false);
-      setIsAcademyOpen(false);
+      setIsClassOpen(false);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    document.addEventListener("mousedown", closeAllDropdowns);
+    return () => document.removeEventListener("mousedown", closeAllDropdowns);
   }, []);
 
   return (
-    <Fragment>
-      <div className="nav">
+      <div className={`navbarWrapper ${isSticky ? "sticky" : ""}`}>
         <img src={logo} alt="logo" width={100} height={70} />
-        <ul>
+        <ul className="navbarListPage">
           <li
-            className={activeLink === "/" ? "active" : ""}
+            className={`navbarLink ${activeLink === "/" ? "navbarLinkActive" : ""}`}
             onClick={() => handleLinkClick("/")}
           >
             <Link to="/">Beranda</Link>
           </li>
           <li
-            className={activeLink === "/article" ? "active" : ""}
+            className={`navbarLink ${activeLink === "/article" ? "navbarLinkActive" : ""}`}
             onClick={() => handleLinkClick("/article")}
           >
             <Link to="/article">Artikel</Link>
           </li>
           <li
-            className={`dropdown ${activeLink === "/services" ? "active" : ""}`}
+            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
             onClick={() => {
               toggleServiceMenu();
               handleLinkClick("/services");
             }}
-            ref={dropdownRef}
           >
             Layanan
             {isServiceOpen ? (
               <>
-                <RxChevronUp className="navbarMenuIcon" />
-                <ul className="dropdown-menu">
+                <RxChevronUp className="navbarLinkIcon" />
+                <ul className="dropdownMenu">
                   <li>
                     <Link
                       to="/services/topic1"
@@ -129,22 +120,21 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="navbarMenuIcon" />
+              <RxChevronDown className="navbarLinkIcon" />
             )}
           </li>
           <li
-            className={`dropdown ${activeLink === "/services" ? "active" : ""}`}
+            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
             onClick={() => {
               toggleExpertMenu();
               handleLinkClick("/services");
             }}
-            ref={dropdownRef}
           >
             KLEEXPERT
             {isExpertOpen ? (
               <>
-                <RxChevronUp className="navbarMenuIcon" />
-                <ul className="dropdown-menu">
+                <RxChevronUp className="navbarLinkIcon" />
+                <ul className="dropdownMenu">
                   <li>
                     <Link
                       to="/services/topic9"
@@ -172,22 +162,21 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="navbarMenuIcon" />
+              <RxChevronDown className="navbarLinkIcon" />
             )}
           </li>
           <li
-            className={`dropdown ${activeLink === "/services" ? "active" : ""}`}
+            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
             onClick={() => {
-              toggleAcademyMenu();
+              toggleClassMenu();
               handleLinkClick("/services");
             }}
-            ref={dropdownRef}
           >
             KLEEDEMY
-            {isAcademyOpen ? (
+            {isClassOpen ? (
               <>
-                <RxChevronUp className="navbarMenuIcon" />
-                <ul className="dropdown-menu">
+                <RxChevronUp className="navbarLinkIcon" />
+                <ul className="dropdownMenu">
                   <li>
                     <Link
                       to="/services/topic7"
@@ -207,17 +196,17 @@ const Navbar = () => {
                 </ul>
               </>
             ) : (
-              <RxChevronDown className="navbarMenuIcon" />
+              <RxChevronDown className="navbarLinkIcon" />
             )}
           </li>
           <li
-            className={activeLink === "/kleemart" ? "active" : ""}
+            className={`navbarLink ${activeLink === "/kleemart" ? "navbarLinkActive" : ""}`}
             onClick={() => handleLinkClick("/kleemart")}
           >
             <Link to="/kleemart">KLEEMART</Link>
           </li>
           <li
-            className={activeLink === "/aboutUs" ? "active" : ""}
+            className={`navbarLink ${activeLink === "/aboutUs" ? "navbarLinkActive" : ""}`}
             onClick={() => handleLinkClick("/aboutUs")}
           >
             <Link to="/aboutUs">Tentang Kami</Link>
@@ -225,7 +214,6 @@ const Navbar = () => {
           <li
             onClick={(event) => {
               event.preventDefault();
-              // handleLinkClick("/");
               window.open(
                 "https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0",
                 "_blank",
@@ -233,11 +221,11 @@ const Navbar = () => {
               );
             }}
           >
-            <a>Bantuan</a>
+            <span className="navbarLink">Bantuan</span>
           </li>
         </ul>
         <div className="navbarButtons">
-          <button className="navbarButton" onClick={() => changePath("/login")}>
+          <button className="navbarButton">
             <SlMagnifier className="navbarIcon" />
           </button>
           <Link className="navbarButton" to="/login">
@@ -248,7 +236,6 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
-    </Fragment>
   );
 };
 
