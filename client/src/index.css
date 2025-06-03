@@ -13,6 +13,7 @@ code {
 }
 
 .container {
+  /* border: 1px solid red; */
   max-width: 100%;
   padding: 0;
 }
@@ -30,4 +31,16 @@ code {
 
 input:hover {
   border: 2px solid gray;
+}
+
+.customUnderline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px; /* Thinner line */
+  color: inherit; /* Optional: matches surrounding text */
+}
+
+.customUnderline:hover{
+  text-decoration: underline;
+  text-decoration-thickness: 2px; /* Thinner line */
+  color: inherit; /* Optional: matches surrounding text */
 }

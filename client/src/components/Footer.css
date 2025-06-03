@@ -66,7 +66,7 @@
 
 .emailInputWrapper button {
   position: absolute;
-  top: 45%;
+  top: 50%;
   right: 10px;
   transform: translateY(-50%);
   background: transparent;

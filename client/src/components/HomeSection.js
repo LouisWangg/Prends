@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 const HomeSection = ({ title, subTitle, children, columns }) => {
     return (
-        <div style={{ margin: "70px" }}>
+        <div style={{ margin: "40px" }}>
             <Typography variant="h4">{title}</Typography>
             <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
                 {subTitle}
@@ -12,7 +12,7 @@ const HomeSection = ({ title, subTitle, children, columns }) => {
                 sx={{
                     display: "grid",
                     gridTemplateColumns: `repeat(${columns}, 1fr)`,
-                    gap: 3,
+                    gap: 3
                 }}
             >
                 {children}

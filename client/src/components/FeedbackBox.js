@@ -7,7 +7,7 @@ const FeedbackBox = ({ data }) => {
     return (
         <Box className="feedbackBox">
             <Typography variant="h5" style={{ marginBottom: "10px" }}>{feedback.title}</Typography>
-            <Typography variant="subtitle1">{feedback.description}</Typography>
+            <Typography variant="subtitle1" style={{ textAlign: "justify"}}>{feedback.description}</Typography>
         </Box>
     );
 };

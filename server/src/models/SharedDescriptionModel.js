@@ -7,16 +7,16 @@ const SharedDescription = sequelize.define('SharedDescription', {
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+    title: {
+        type: DataTypes.TEXT,
+        allowNull: true
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
     }
 }, {
-    timestamps: false, // or true if your table has createdAt/updatedAt
+    timestamps: false
 });
 
 module.exports = SharedDescription;

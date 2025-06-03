@@ -42,7 +42,7 @@ const Footer = () => {
 
         <div className="rightSection">
           <h4>Perhatian :</h4>
-          <p style={{ marginTop: "18px", marginBottom: "8px" }}>
+          <p style={{ marginTop: "18px", marginBottom: "8px", textAlign: "justify" }}>
             Layanan konseling di prends <b>tidak direkomendasikan</b> untuk kamu
             yang dalam kondisi terancam. Hubungi <b>119</b> jika kamu butuh
             pertolongan sesegera mungkin.

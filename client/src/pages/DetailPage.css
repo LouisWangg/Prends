@@ -1,20 +1,23 @@
 .detailPageWrapper {
   display: flex;
   justify-content: center;
-  margin: 0 50px;
+  margin: 0 110px;
   box-sizing: border-box;
 }
 
 .detailPageImage {
   flex: 3;
-  width: 1000px;
-  height: 1000px;
+  width: 100%;
+  height: fit-content;
+  position: sticky;
+  top: 110px; /* adjust based on your header or navbar height */
+  align-self: flex-start;
   margin-right: 120px;
 }
 
 .detailPageImage img {
-  width: 500px;
-  height: 800px;
+  width: 400px;
+  height: 510px;
   object-fit: cover;
   border: 2px solid black;
 }
@@ -30,20 +33,12 @@
 .detailPageFieldSet {
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
-}
-
-.expertWrapper {
-  margin-top: 20px;
-}
-
-.quantityWrapper {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .detailPageLegend {
   color: dimgray;
-  font-size: 16px;
+  font-size: 14px !important;
 }
 
 .detailPageLabel {
@@ -54,9 +49,12 @@
   border-radius: 100px;
   margin-right: 15px;
   padding: 5px 20px;
+  box-sizing: border-box;
+  min-width: fit-content;
+  white-space: nowrap;
 }
 
-.detailPageLabel.durationActive {
+.detailPageLabel.activeMode {
   color: white;
   background-color: black;
 }
@@ -65,7 +63,88 @@
   display: none;
 }
 
-.detailPageLabel.expertLevelActive {
+.quantityWrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.quantityInputWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 140px;
+}
+
+input[type=number] {
+  appearance: textfield;         /* ✅ Standard property */
+  -moz-appearance: textfield;    /* ✅ Firefox */
+  -webkit-appearance: none;      /* ✅ Chrome, Safari */
+}
+
+/* Hide spin buttons in WebKit browsers (Chrome, Safari) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantityInputWrapper input {
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 16px;
+  border: 1px solid #888;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.quantityInputWrapper button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.quantityInputWrapper button:first-of-type {
+  left: 12px;
+}
+
+.quantityInputWrapper button:last-of-type {
+  right: 12px;
+}
+
+.transactionButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 85%;
+  margin-bottom: 20px;
+}
+
+.basketBtn {
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 0;
+  margin: 30px 0 10px 0;
+}
+
+.buyBtn {
   color: white;
   background-color: black;
+  border: none;
+  margin: 0 0 10px 0;
+}
+
+.basketBtn, 
+.buyBtn {
+  padding: 10px 0;
+  transition: box-shadow 0.2s ease;
+}
+
+.basketBtn:hover,
+.buyBtn:hover {
+  box-shadow: 0 0 0 1px black;
 }

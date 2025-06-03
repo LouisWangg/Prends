@@ -39,33 +39,6 @@
   font-size: 55px !important;
 }
 
-.basketBtn {
-  text-transform: capitalize !important;
-  color: black !important;
-  border-radius: 0 !important;
-  border-color: black !important;
-  margin: 30px 0 10px 0 !important;
-  padding: 10px 0 !important;
-}
-
-.basketBtn:hover {
-  outline: 2px solid black !important;
-}
-
-.buyBtn {
-  text-transform: capitalize !important;
-  color: white !important;
-  background-color: black !important;
-  border-radius: 0 !important;
-  border-color: black !important;
-  margin: 0 0 10px 0 !important;
-  padding: 10px 0 !important;
-}
-
-.buyBtn:hover {
-  outline: 3px solid black !important;
-}
-
 .viewAllWrapper {
   display: flex;
   justify-content: center;

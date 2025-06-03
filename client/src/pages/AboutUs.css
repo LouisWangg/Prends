@@ -1,18 +1,6 @@
 .aboutUsContainer {
   text-align: justify;
-  margin: 0 400px 0 400px;
-}
-
-.customUnderline {
-  text-decoration: underline;
-  text-decoration-thickness: 1px; /* Thinner line */
-  color: inherit; /* Optional: matches surrounding text */
-}
-
-.customUnderline:hover{
-  text-decoration: underline;
-  text-decoration-thickness: 2px; /* Thinner line */
-  color: inherit; /* Optional: matches surrounding text */
+  margin: 0 350px 0 350px;
 }
 
 .imageContainer {

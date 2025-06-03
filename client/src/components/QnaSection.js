@@ -35,6 +35,7 @@ const QnaSection = ({ data }) => {
               "noopener,noreferrer"
             );
           }}
+          className="customUnderline"
         >
           0851-7202-0718
         </a>{" "}
