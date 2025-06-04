@@ -25,6 +25,7 @@ const CounselorRoute = require("./routes/CounselorRoute");
 const CounselorImageRoute = require("./routes/CounselorImageRoute");
 const ArticleRoute = require("./routes/ArticleRoute");
 const ArticleImageRoute = require("./routes/ArticleImageRoute");
+const SharedDescriptionRoute = require("./routes/SharedDescriptionRoute");
 const QnaRoute = require("./routes/QnaRoute");
 
 // Register routes
@@ -37,6 +38,7 @@ app.use("/counselors", CounselorRoute);
 app.use("/counselorImages", CounselorImageRoute);
 app.use("/articles", ArticleRoute);
 app.use("/articleImages", ArticleImageRoute);
+app.use("/sharedDescriptions", SharedDescriptionRoute);
 app.use("/qnas", QnaRoute);
 
 // Server start

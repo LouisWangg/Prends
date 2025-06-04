@@ -10,9 +10,10 @@ import "./SingleCard.css";
 import "./ArticleCard.css";
 
 const SingleCard = ({ type, data }) => {
+    const navigate = useNavigate();
+
     let imageData, singleCardContent;
     const singleCard = data;
-    const navigate = useNavigate();
 
     if (type.includes("Service")) {
         imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
@@ -34,14 +35,15 @@ const SingleCard = ({ type, data }) => {
     };
 
     const changePageHandle = () => {
-        navigate(`/detailPage`);
-        // if (type.includes("Counseling") || type.includes("Class")) {
-        //     // pindah page detail sesuai type
-        // } else if (type.includes("Level")) {
-
-        // } else if (type.includes("Article")) {
-
-        // }
+        const ids = [];
+        if (type.includes("Service")) {
+            ids.push(1, 2, 3);
+        } else if (type.includes("Class")) {
+            ids.push(1, 7);
+        } else if (type.includes("Counselor")) {
+            ids.push(1);
+        }
+        navigate(`/detailPage`, { state: { ids, singleCard } });
     };
 
     if (type.includes("Service") || type.includes("Class") || type.includes("Counselor")) {

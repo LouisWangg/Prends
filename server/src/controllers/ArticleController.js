@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const sequelize = require("../config/database");
+const Sequelize = require("../config/database");
 const ArticleModel = require("../models/ArticleModel");
 const ArticleImageModel = require("../models/ArticleImageModel");
 
@@ -43,7 +43,7 @@ const getArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.findAll({
       attributes: ["articleId", "title", 
-        [sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), 'createdAt'], "subTitle"],
+        [Sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), 'createdAt'], "subTitle"],
       include: [
         {
           model: ArticleImageModel,

@@ -1,13 +1,19 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { FiPlus, FiMinus } from "react-icons/fi";
+import { fetchDescriptionsByIds } from "../services/SharedDescriptionService";
 import "./DetailPage.css";
 import image from "../assets/Asset1.png";
 
 const DetailPage = () => {
+  const location = useLocation();
+  const { ids, singleCard } = location.state || [];
+
   const [duration, setDuration] = useState(1);
   const [expertLevel, setExpertLevel] = useState("junior");
   const [quantity, setQuantity] = useState(1);
+  const [descriptions, setDescriptions] = useState([]);
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -29,6 +35,15 @@ const DetailPage = () => {
     const value = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity(value);
   };
+
+  const getDescriptions = async () => {
+    const datas = await fetchDescriptionsByIds(ids);
+    setDescriptions(datas);
+  };
+
+  useEffect(() => {
+    getDescriptions();
+  }, []);
 
   return (
     <Fragment>
@@ -127,11 +142,11 @@ const DetailPage = () => {
             <button className="buyBtn">Beli sekarang</button>
           </div>
 
-          <div style={{marginBottom:"35px"}}>
+          <div style={{ marginBottom: "35px" }}>
             <b>Apa itu sesi konseling online individual?</b>
             <p>Dalam sesi indivual, hanya diperkenankan <b>1 orang klien dengan 1 orang psikolog </b>(1 on 1).</p>
           </div>
-          <div style={{marginBottom:"35px"}}>
+          <div style={{ marginBottom: "35px" }}>
             <b>Apa perbedaan Junior, Middle, dan Senior Expert?</b>
             <p>
               Junior Expert adalah psikolog yang memiliki pengalaman dalam menangani klien di bawah 3 tahun.
@@ -152,6 +167,16 @@ const DetailPage = () => {
           <div>
             <b>Dimana konseling online chat akan berlangsung?</b>
             <p>Konseling chat dilakukan melalui Google Chat.</p>
+          </div>
+          <div>
+            <b>Perhatian :</b>
+            <ol className="detailPageOrderedList">
+              {descriptions.map((description) => (
+                <li key={description.sharedDescriptionId}>{
+                  <span dangerouslySetInnerHTML={{ __html: description.description }} />}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </div>

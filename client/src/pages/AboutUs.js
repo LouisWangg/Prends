@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import image from "../assets/AboutUs.png";
 import "./AboutUs.css";
 
 const AboutUs = () => {
@@ -25,26 +24,17 @@ const AboutUs = () => {
         <ol>
           <li>
             Syarat dan ketentuan pengembalian dana dapat kamu cek di{" "}
-            <Link
-              to="#"
-              url="/refundPolicy"
-              onClick={(event) => openNewTab(event)}
-              className="customUnderline"
-            >
+            <a href="/refundPolicy" class="customUnderline" target="_blank" rel="noopener noreferrer">
               https://prends.id/policies/refund-policy
-            </Link>
+            </a>
           </li>
           <li>
             Jika ada pertanyaan atau kendala seputar kelas ini, bisa kamu
             tanyakan ke Customer Service melalui{" "}
-            <Link
-              to="#"
-              url="https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0"
-              onClick={(event) => openNewTab(event)}
-              className="customUnderline"
-            >
+            <a href="https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0"
+              class="customUnderline" target="_blank" rel="noopener noreferrer">
               s.id/askprends
-            </Link>
+            </a>
           </li>
         </ol>
         <br /> */}
