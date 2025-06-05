@@ -13,13 +13,13 @@ export const fetchIndividualCounselings = async () => {
   }
 };
 
-// Get Konseling Individu data by ID
-export const fetchIndividualCounselingById = async (id) => {
+// Get Service detail data by ID
+export const fetchServiceDetailById = async (id) => {
   try {
-    const response = await axios.get(`${url}/getIndividualCounseling/${id}`);
+    const response = await axios.get(`${url}/getServiceDetailById/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Individual Counseling data by id: ${id}`, error);
+    console.error(`Failed to fetch Service detail data by id: ${id}`, error);
     return null;
   }
 };

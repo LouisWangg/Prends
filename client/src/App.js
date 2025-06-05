@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -14,16 +15,17 @@ import RefundPolicy from "./pages/RefundPolicy";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/detailPage" element={<DetailPage />} />
+          <Route path="/detail-page/:type/:id" element={<DetailPage />} />
           <Route path="/article" element={<Article />} />
           <Route path="/store" element={<Store />} />
           <Route path="/aboutUs" element={<AboutUs />} />
-          <Route path="/refundPolicy" element={<RefundPolicy />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
         </Route>
       </Routes>
     </Router>

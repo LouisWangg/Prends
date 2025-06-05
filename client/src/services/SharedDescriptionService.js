@@ -14,3 +14,14 @@ export const fetchDescriptionsByIds = async (ids) => {
     return null;
   }
 };
+
+// Get Description datas for Detail page
+export const fetchDescriptions = async (type, id) => {
+  try {
+    const response = await axios.get(`${url}/getDescriptions/${type}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch Shared Description datas: `, error);
+    return null;
+  }
+};

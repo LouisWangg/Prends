@@ -1,19 +1,23 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { FiPlus, FiMinus } from "react-icons/fi";
-import { fetchDescriptionsByIds } from "../services/SharedDescriptionService";
+
 import "./DetailPage.css";
 import image from "../assets/Asset1.png";
+import formatToRupiah from "../utils/FormatPrice";
+import { fetchServiceDetailById } from "../services/ServiceTypeService";
+// import { fetchDescriptions } from "../services/SharedDescriptionService";
 
 const DetailPage = () => {
-  const location = useLocation();
-  const { ids, singleCard } = location.state || [];
+  const { type, id } = useParams();
 
   const [duration, setDuration] = useState(1);
   const [expertLevel, setExpertLevel] = useState("junior");
   const [quantity, setQuantity] = useState(1);
   const [descriptions, setDescriptions] = useState([]);
+  const [notices, setNotices] = useState([]);
+  const [serviceDetail, setServiceDetail] = useState({});
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -36,13 +40,25 @@ const DetailPage = () => {
     setQuantity(value);
   };
 
-  const getDescriptions = async () => {
-    const datas = await fetchDescriptionsByIds(ids);
-    setDescriptions(datas);
+  // const getDescriptions = async () => {
+  //   const datas = await fetchDescriptions(type, id);
+  //   setDescriptions(datas);
+  // };
+
+  // const getNotices = async () => {
+  //   const datas = await fetchDescriptions(type, id);
+  //   setNotices(datas);
+  // };
+
+  const getServiceDetailById = async (id) => {
+    const data = await fetchServiceDetailById(id);
+    setServiceDetail(data);
   };
 
   useEffect(() => {
-    getDescriptions();
+    // getDescriptions();
+    // getNotices();
+    getServiceDetailById(id);
   }, []);
 
   return (
@@ -53,8 +69,8 @@ const DetailPage = () => {
         </div>
         <div className="detailPageContent">
           <Typography variant="body1">prends</Typography>
-          <Typography variant="h3" className="detailPageTitle">Konseling Online Chat Individual</Typography>
-          <Typography variant="h6">Rp 200.000,00</Typography>
+          <Typography variant="h3" className="detailPageTitle">{serviceDetail.name}</Typography>
+          <Typography variant="h6">{formatToRupiah(serviceDetail.discountPrice)}</Typography>
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Durasi Konseling</legend>
@@ -141,40 +157,25 @@ const DetailPage = () => {
             <button className="basketBtn">Tambahkan ke keranjang</button>
             <button className="buyBtn">Beli sekarang</button>
           </div>
+          
 
-          <div style={{ marginBottom: "35px" }}>
-            <b>Apa itu sesi konseling online individual?</b>
-            <p>Dalam sesi indivual, hanya diperkenankan <b>1 orang klien dengan 1 orang psikolog </b>(1 on 1).</p>
-          </div>
-          <div style={{ marginBottom: "35px" }}>
-            <b>Apa perbedaan Junior, Middle, dan Senior Expert?</b>
-            <p>
-              Junior Expert adalah psikolog yang memiliki pengalaman dalam menangani klien di bawah 3 tahun.
-              Umumnya berpengalaman dalam menangani kasus remaja, dewasa dengan usia di bawah 25 tahun dan belum
-              menikah. Psikolog yang ada di level Junior Expert rata-rata berusia di bawah 30 tahun.
-              <br /> <br />
-              Middle Expert adalah psikolog yang memiliki pengalaman dalam menangani klien selama lebih dari
-              3 tahun. Umumnya berpengalaman dalam menangani kasus anak-anak, remaja, dewasa belum menikah,
-              dewasa sudah menikah, pasangan, hingga keluarga. Psikolog yang ada di level Middle Expert rata-rata
-              berusia di atas 30 tahun.
-              <br /> <br />
-              Senior Expert adalah psikolog yang memiliki pengalaman dalam menangani klien selama lebih dari
-              8 tahun. Umumnya berpengalaman dalam menangani kasus anak-anak, remaja, dewasa belum menikah,
-              dewasa sudah menikah, pasangan, hingga keluarga. Psikolog yang ada di level Senior Expert rata-rata
-              berusia di atas 35 tahun.
-            </p>
-          </div>
-          <div>
-            <b>Dimana konseling online chat akan berlangsung?</b>
-            <p>Konseling chat dilakukan melalui Google Chat.</p>
-          </div>
+
           <div>
             <b>Perhatian :</b>
-            <ol className="detailPageOrderedList">
-              {descriptions.map((description) => (
-                <li key={description.sharedDescriptionId}>{
-                  <span dangerouslySetInnerHTML={{ __html: description.description }} />}
-                </li>
+            <ol className="detailPageNoticeOrderedList">
+              {descriptions.map((description, index) => (
+                <Fragment>
+                  <li key={description.sharedDescriptionId}>{
+                    <span dangerouslySetInnerHTML={{ __html: description.description }} />}
+                  </li>
+
+                  {/* Inject after second item (index 1) */}
+                  {index === 1 && (
+                    <li>
+                      {serviceDetail.description}
+                    </li>
+                  )}
+                </Fragment>
               ))}
             </ol>
           </div>
