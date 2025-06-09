@@ -21,7 +21,7 @@ const SingleCard = ({ type, data }) => {
     imageData = singleCard?.ArticleImage?.image || null;
   }
 
-  const changePageHandle = () => {
+  const handleChangePage = () => {
     let id;
 
     if (type.includes("Service")) {
@@ -45,7 +45,7 @@ const SingleCard = ({ type, data }) => {
         <div className="singleCardImageWrapper">
           <CardMedia
             component="img"
-            image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+            src={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
             alt={singleCard.name}
             className="singleCardImage"
           />
@@ -86,7 +86,7 @@ const SingleCard = ({ type, data }) => {
     //         <Card className="singleCard">
     //             <CardMedia
     //                 component="img"
-    //                 image={singleCard.image}
+    //                 src={singleCard.image}
     //                 alt={singleCard.title}
     //                 className="singleCardImage"
     //             />
@@ -106,7 +106,7 @@ const SingleCard = ({ type, data }) => {
         <CardMedia
           component="img"
           height="200px"
-          image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+          src={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
           alt={singleCard.title}
           className="cardImage"
         />
@@ -124,7 +124,7 @@ const SingleCard = ({ type, data }) => {
         <CardMedia
           component="img"
           height="320px"
-          image={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
+          src={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
           alt={singleCard.title}
           className="cardImage"
         />
@@ -141,7 +141,7 @@ const SingleCard = ({ type, data }) => {
     );
   }
 
-  return <div onClick={changePageHandle}>{singleCardContent}</div>;
+  return <div onClick={handleChangePage}>{singleCardContent}</div>;
 };
 
 export default SingleCard;

@@ -4,10 +4,10 @@ import { Box, Typography } from "@mui/material";
 import { FiPlus, FiMinus } from "react-icons/fi";
 
 import "./DetailPage.css";
-import image from "../assets/Asset1.png";
 import formatToRupiah from "../utils/FormatPrice";
+import Description from "../components/Description";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
-// import { fetchDescriptions } from "../services/SharedDescriptionService";
+import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -17,7 +17,7 @@ const DetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [descriptions, setDescriptions] = useState([]);
   const [notices, setNotices] = useState([]);
-  const [serviceDetail, setServiceDetail] = useState({});
+  const [detailData, setDetailData] = useState({});
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -40,37 +40,46 @@ const DetailPage = () => {
     setQuantity(value);
   };
 
-  // const getDescriptions = async () => {
-  //   const datas = await fetchDescriptions(type, id);
-  //   setDescriptions(datas);
-  // };
+  const getDescriptionsAndNotices = async () => {
+    const datas = await fetchDescriptionsAndNotices(type, id);
+    // setDescriptions(datas.descriptions);
+    setNotices(datas.notices)
+  };
 
-  // const getNotices = async () => {
-  //   const datas = await fetchDescriptions(type, id);
-  //   setNotices(datas);
-  // };
-
-  const getServiceDetailById = async (id) => {
-    const data = await fetchServiceDetailById(id);
-    setServiceDetail(data);
+  const getDetailData = async (type, id, setDetailData) => {
+    let data;
+    if (type.includes("service")) {
+      data = await fetchServiceDetailById(id);
+    } else if (type.includes("class")) {
+      // data = await fetchClassById(id);
+    } else if (type.includes("counselor")) {
+      // data = await fetchCounselorById(id);
+    } else if (type.includes("article")) {
+      // data = await fetchArticleById(id);
+    }
+    setDetailData(data);
   };
 
   useEffect(() => {
-    // getDescriptions();
-    // getNotices();
-    getServiceDetailById(id);
-  }, []);
+    getDetailData(type, id, setDetailData);
+    getDescriptionsAndNotices();
+  }, [type, id]);
 
   return (
     <Fragment>
       <div className="detailPageWrapper">
         <div className="detailPageImage">
-          <img src={image} alt="Product" />
+          <img
+            src={
+              detailData?.ServiceTypeImages?.[0]?.image
+                ? `data:image/jpeg;base64,${detailData.ServiceTypeImages[0].image}`
+                : null
+            } alt={detailData.name} />
         </div>
         <div className="detailPageContent">
           <Typography variant="body1">prends</Typography>
-          <Typography variant="h3" className="detailPageTitle">{serviceDetail.name}</Typography>
-          <Typography variant="h6">{formatToRupiah(serviceDetail.discountPrice)}</Typography>
+          <Typography variant="h3" className="detailPageTitle">{detailData.name}</Typography>
+          <Typography variant="h6">{formatToRupiah(detailData.discountPrice)}</Typography>
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Durasi Konseling</legend>
@@ -157,24 +166,24 @@ const DetailPage = () => {
             <button className="basketBtn">Tambahkan ke keranjang</button>
             <button className="buyBtn">Beli sekarang</button>
           </div>
-          
 
+            {/* <Description data={} /> */}
 
           <div>
             <b>Perhatian :</b>
             <ol className="detailPageNoticeOrderedList">
-              {descriptions.map((description, index) => (
-                <Fragment>
-                  <li key={description.sharedDescriptionId}>{
-                    <span dangerouslySetInnerHTML={{ __html: description.description }} />}
+              {notices.map((notice, index) => (
+                <Fragment key={notice.sharedDescriptionId}>
+                  <li>{
+                    <span dangerouslySetInnerHTML={{ __html: notice.description }} />}
                   </li>
 
                   {/* Inject after second item (index 1) */}
-                  {index === 1 && (
+                  {/* {index === 1 && (
                     <li>
-                      {serviceDetail.description}
+                      {detailData.description}
                     </li>
-                  )}
+                  )} */}
                 </Fragment>
               ))}
             </ol>

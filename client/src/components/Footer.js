@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { RxChevronRight } from "react-icons/rx";
 import {
-  FaFacebook,
   FaInstagram,
   FaYoutube,
   FaTiktok,

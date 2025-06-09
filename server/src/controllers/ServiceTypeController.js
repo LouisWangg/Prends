@@ -71,7 +71,7 @@ const getServiceDetailById = async (req, res) => {
       return res.status(404).json({ message: "Data not found" });
     }
 
-    const convertedData = data.get({ convertedData: true });
+    const convertedData = data.get({ plain: true });
 
     if (convertedData.ServiceTypeImages && convertedData.ServiceTypeImages.length > 0) {
       convertedData.ServiceTypeImages = convertedData.ServiceTypeImages.map((img) => ({

@@ -15,10 +15,10 @@ export const fetchDescriptionsByIds = async (ids) => {
   }
 };
 
-// Get Description datas for Detail page
-export const fetchDescriptions = async (type, id) => {
+// Get Description and Notice datas for Detail page
+export const fetchDescriptionsAndNotices = async (type, id) => {
   try {
-    const response = await axios.get(`${url}/getDescriptions/${type}/${id}`);
+    const response = await axios.get(`${url}/getDescriptionsAndNotices/${type}/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Shared Description datas: `, error);
