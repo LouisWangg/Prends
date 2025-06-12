@@ -169,3 +169,24 @@ input[type="number"]::-webkit-outer-spin-button {
   text-align: justify;
   margin-bottom: 35px;
 }
+
+.shareWrapper {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+
+.shareWrapper:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.shareWrapper:hover button {
+  text-decoration: underline;
+}
+
+.shareWrapper button {
+  margin-left: 3px;
+  border: none;
+  background: none;
+}

@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { FiPlus, FiMinus } from "react-icons/fi";
+import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
 
 import "./DetailPage.css";
 import formatToRupiah from "../utils/FormatPrice";
@@ -40,10 +40,16 @@ const DetailPage = () => {
     setQuantity(value);
   };
 
+  const handleShareClick = () => {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => alert("Link copied!"))
+      .catch(() => alert("Failed to copy link"));
+  };
+
   const getDescriptionsAndNotices = async () => {
     const datas = await fetchDescriptionsAndNotices(type, id);
-    // setDescriptions(datas.descriptions);
-    setNotices(datas.notices)
+    setDescriptions(datas.descriptions);
+    setNotices(datas.notices);
   };
 
   const getDetailData = async (type, id, setDetailData) => {
@@ -74,16 +80,25 @@ const DetailPage = () => {
               detailData?.ServiceTypeImages?.[0]?.image
                 ? `data:image/jpeg;base64,${detailData.ServiceTypeImages[0].image}`
                 : null
-            } alt={detailData.name} />
+            }
+            alt={detailData.name}
+          />
         </div>
         <div className="detailPageContent">
           <Typography variant="body1">prends</Typography>
-          <Typography variant="h3" className="detailPageTitle">{detailData.name}</Typography>
-          <Typography variant="h6">{formatToRupiah(detailData.discountPrice)}</Typography>
+          <Typography variant="h3" className="detailPageTitle">
+            {detailData.name}
+          </Typography>
+          <Typography variant="h6">
+            {formatToRupiah(detailData.discountPrice)}
+          </Typography>
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Durasi Konseling</legend>
-            <Box component="label" className={`detailPageLabel ${duration === 1 ? "activeMode" : ""}`}>
+            <Box
+              component="label"
+              className={`detailPageLabel ${duration === 1 ? "activeMode" : ""}`}
+            >
               <input
                 type="radio"
                 name="duration"
@@ -95,7 +110,10 @@ const DetailPage = () => {
               1 jam
             </Box>
 
-            <Box component="label" className={`detailPageLabel ${duration === 2 ? "activeMode" : ""}`}>
+            <Box
+              component="label"
+              className={`detailPageLabel ${duration === 2 ? "activeMode" : ""}`}
+            >
               <input
                 type="radio"
                 name="duration"
@@ -110,7 +128,10 @@ const DetailPage = () => {
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Expert</legend>
-            <Box component="label" className={`detailPageLabel ${expertLevel === "junior" ? "activeMode" : ""}`}>
+            <Box
+              component="label"
+              className={`detailPageLabel ${expertLevel === "junior" ? "activeMode" : ""}`}
+            >
               <input
                 type="radio"
                 name="expertLevel"
@@ -122,7 +143,10 @@ const DetailPage = () => {
               Junior Expert
             </Box>
 
-            <Box component="label" className={`detailPageLabel ${expertLevel === "middle" ? "activeMode" : ""}`}>
+            <Box
+              component="label"
+              className={`detailPageLabel ${expertLevel === "middle" ? "activeMode" : ""}`}
+            >
               <input
                 type="radio"
                 name="expertLevel"
@@ -134,7 +158,10 @@ const DetailPage = () => {
               Middle Expert
             </Box>
 
-            <Box component="label" className={`detailPageLabel ${expertLevel === "senior" ? "activeMode" : ""}`}>
+            <Box
+              component="label"
+              className={`detailPageLabel ${expertLevel === "senior" ? "activeMode" : ""}`}
+            >
               <input
                 type="radio"
                 name="expertLevel"
@@ -148,9 +175,20 @@ const DetailPage = () => {
           </fieldset>
 
           <div className="quantityWrapper">
-            <Typography variant="body2" className="detailPageLegend" sx={{ marginBottom: "8px" }}>Jumlah</Typography>
+            <Typography
+              variant="body2"
+              className="detailPageLegend"
+              sx={{ marginBottom: "8px" }}
+            >
+              Jumlah
+            </Typography>
             <div className="quantityInputWrapper">
-              <button onClick={handleDecreaseQuantity} aria-label="Decrease quantity"><FiMinus /></button>
+              <button
+                onClick={handleDecreaseQuantity}
+                aria-label="Decrease quantity"
+              >
+                <FiMinus />
+              </button>
               <input
                 type="number"
                 min={1}
@@ -158,7 +196,12 @@ const DetailPage = () => {
                 onChange={handleQuantityChange}
                 readOnly
               />
-              <button onClick={handleIncreaseQuantity} aria-label="Increase quantity"><FiPlus /></button>
+              <button
+                onClick={handleIncreaseQuantity}
+                aria-label="Increase quantity"
+              >
+                <FiPlus />
+              </button>
             </div>
           </div>
 
@@ -167,30 +210,43 @@ const DetailPage = () => {
             <button className="buyBtn">Beli sekarang</button>
           </div>
 
-            {/* <Description data={} /> */}
+          {descriptions.map((description, index) => (
+            <Fragment key={description.sharedDescriptionId}>
+              <Description data={description} secondData={detailData} />
+            </Fragment>
+          ))}
 
           <div>
             <b>Perhatian :</b>
             <ol className="detailPageNoticeOrderedList">
               {notices.map((notice, index) => (
                 <Fragment key={notice.sharedDescriptionId}>
-                  <li>{
-                    <span dangerouslySetInnerHTML={{ __html: notice.description }} />}
+                  <li>
+                    {
+                      <span
+                        dangerouslySetInnerHTML={{ __html: notice.description }}
+                      />
+                    }
                   </li>
-
-                  {/* Inject after second item (index 1) */}
-                  {/* {index === 1 && (
-                    <li>
-                      {detailData.description}
-                    </li>
-                  )} */}
                 </Fragment>
               ))}
             </ol>
           </div>
+
+          <div className="shareWrapper" onClick={handleShareClick}>
+            <FiShare />
+            <button>Share</button>
+          </div>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "300px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "300px",
+        }}
+      >
         <p>sampaii</p>
       </div>
     </Fragment>
