@@ -4,6 +4,7 @@ const User = require("./UserModel");
 const Class = require("./ClassModel");
 const ServiceType = require("./ServiceTypeModel");
 const ServiceTypeImage = require("./ServiceTypeImageModel");
+const ServiceTypePrice = require("./ServiceTypePriceModel");
 const ServiceTypeFeedback = require("./ServiceTypeFeedbackModel");
 const Counselor = require("./CounselorModel");
 const CounselorImage = require("./CounselorImageModel");
@@ -16,6 +17,9 @@ const SharedDescription = require("./SharedDescriptionModel");
 // Define associations here
 User.hasMany(ServiceTypeFeedback, { foreignKey: 'userId' });
 ServiceTypeFeedback.belongsTo(User, { foreignKey: 'userId' });
+
+ServiceType.hasMany(ServiceTypePrice, { foreignKey: 'serviceTypeId' });
+ServiceTypePrice.belongsTo(ServiceType, { foreignKey: 'serviceTypeId' });
 
 ServiceType.hasMany(ServiceTypeImage, { foreignKey: "serviceTypeId" });
 ServiceTypeImage.belongsTo(ServiceType, { foreignKey: "serviceTypeId" });
@@ -38,6 +42,7 @@ module.exports = {
   Class,
   ServiceType,
   ServiceTypeImage,
+  ServiceTypePrice,
   ServiceTypeFeedback,
   Counselor,
   CounselorImage,
