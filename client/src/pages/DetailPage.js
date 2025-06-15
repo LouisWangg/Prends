@@ -7,6 +7,7 @@ import "./DetailPage.css";
 import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
+import { fetchServicePricingById } from "../services/ServiceTypePriceService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
 
 const DetailPage = () => {
@@ -18,6 +19,7 @@ const DetailPage = () => {
   const [descriptions, setDescriptions] = useState([]);
   const [notices, setNotices] = useState([]);
   const [detailData, setDetailData] = useState({});
+  const [pricingMap, setPricingMap] = useState({});
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -52,7 +54,7 @@ const DetailPage = () => {
     setNotices(datas.notices);
   };
 
-  const getDetailData = async (type, id, setDetailData) => {
+  const getDetailData = async () => {
     let data;
     if (type.includes("service")) {
       data = await fetchServiceDetailById(id);
@@ -66,10 +68,28 @@ const DetailPage = () => {
     setDetailData(data);
   };
 
+  const getPricingData = async () => {
+    const data = await fetchServicePricingById(id);
+    const grouped = data.reduce((acc, item) => {
+      const { duration, level, price, serviceDiscountFlag, serviceDiscountPrice } = item;
+      const levelKey = level.toLowerCase();
+      if (!acc[duration]) acc[duration] = {};
+      acc[duration][levelKey] = { price, serviceDiscountFlag, serviceDiscountPrice };
+      return acc;
+    }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+    setPricingMap(grouped);
+  };
+
   useEffect(() => {
-    getDetailData(type, id, setDetailData);
+    getDetailData();
     getDescriptionsAndNotices();
+    getPricingData();
   }, [type, id]);
+
+  const selectedPrice =
+    pricingMap?.[duration]?.[expertLevel]?.serviceDiscountFlag
+      ? pricingMap[duration][expertLevel].serviceDiscountPrice
+      : pricingMap?.[duration]?.[expertLevel]?.price;
 
   return (
     <Fragment>
@@ -90,7 +110,27 @@ const DetailPage = () => {
             {detailData.name}
           </Typography>
           <Typography variant="h6">
-            {formatToRupiah(detailData.discountPrice)}
+            {/* {selectedPrice ? formatToRupiah(selectedPrice) : "-"} */}
+            {pricingMap?.[duration]?.[expertLevel]?.serviceDiscountFlag ? (
+              <div className="discountedPriceWrapper">
+                <span
+                  style={{
+                    textDecoration: "line-through",
+                    color: "gray",
+                    marginRight: "8px",
+                  }}
+                >
+                  {formatToRupiah(pricingMap?.[duration]?.[expertLevel]?.price)}
+                </span>
+
+                <div className="discountedPriceAndBadgeWrapper">
+                  {formatToRupiah(selectedPrice)}
+                  <span>Obral</span>
+                </div>
+              </div>
+            ) : (
+              <>{formatToRupiah(selectedPrice)}</>
+            )}
           </Typography>
 
           <fieldset className="detailPageFieldSet">
@@ -239,15 +279,8 @@ const DetailPage = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "300px",
-        }}
-      >
-        <p>sampaii</p>
+      <div className="starRatingWrapper">
+        <Typography variant="h5">Ulasan Pelanggan</Typography>
       </div>
     </Fragment>
   );
