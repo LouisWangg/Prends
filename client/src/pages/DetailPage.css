@@ -10,7 +10,7 @@
   width: 100%;
   height: fit-content;
   position: sticky;
-  top: 110px;
+  top: 145px;
   /* adjust based on your header or navbar height */
   align-self: flex-start;
   margin-right: 120px;
@@ -218,9 +218,72 @@ input[type="number"]::-webkit-outer-spin-button {
   background: none;
 }
 
-.starRatingWrapper {
+.starRatingTitleWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 80px;
+}
+
+.starRatingWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.leftStar {
+  font-size: 22px;
+}
+
+.leftStar:last-of-type {
+  margin-right: 8px;
+}
+
+.upperRow,
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottomRow img {
+  margin-left: 8px;
+}
+
+.starRatingLine {
+  width: 1px;
+  height: 110px;
+  background-color: gray;
+  margin: 0 130px;
+}
+
+.rightRow {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 2px;
+}
+
+.stars {
+  display: flex;
+}
+
+.ratingBarWrapper {
+  flex-grow: 1;
+  min-width: 100px;
+  height: 14px;
+  background-color: #eee;
+  overflow: hidden;
+}
+
+.ratingBarFill {
+  height: 100%;
+  background-color: black;
+}
+
+.ratingCount {
+  min-width: 20px;
+  font-size: 14px;
+  color: #555;
 }

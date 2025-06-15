@@ -6,7 +6,7 @@ import HomeSection from "../components/HomeSection.js";
 import FeedbackBox from "../components/FeedbackBox.js";
 import QnaSection from "../components/QnaSection.js";
 import { slides } from "../data/Carousel.js";
-import { fetchUsers } from "../services/UserService";
+// import { fetchUsers } from "../services/UserService";
 import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
@@ -18,17 +18,17 @@ import "./Home.css";
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
   const [qnas, setQnas] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [classes, setClasses] = useState([]);
   const [articles, setArticles] = useState([]);
   const [counselors, setCounselors] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
   const [serviceTypeFeedbacks, setServiceTypeFeedbacks] = useState([]);
 
-  const getUsers = async () => {
-    const datas = await fetchUsers();
-    setUsers(datas);
-  };
+  // const getUsers = async () => {
+  //   const datas = await fetchUsers();
+  //   setUsers(datas);
+  // };
 
   const getHomePageClasses = async () => {
     const datas = await fetchHomePageClasses();
@@ -64,7 +64,7 @@ const Home = () => {
   // It’s designed to run after the initial render and is triggered only once in this case
   // (because of the empty dependency array [])
   useEffect(() => {
-    getUsers();
+    // getUsers();
     getHomePageQnas();
     getHomePageClasses();
     getHomePageArticles();

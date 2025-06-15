@@ -3,10 +3,12 @@ create-react-app = create react project folder
 react-router-dom = for router problems
 react-icons = icon
 prettier = formatter for developing
+eslint plugin react hooks = enforce correct usage of hooks and check dependency array
 axios = for error handling, response handling, automatic json transformation
 
 ============== COMMAND ==============
 npx create-react-app client(nama folder)
 npm install react-router-dom
 npm install react-icons
-npm install --save-dev prettier
+npm install prettier --save-dev 
+npm install eslint-plugin-react-hooks --save-dev

@@ -1,9 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
+import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 import "./DetailPage.css";
+import judgeMeIcon from "../assets/judgeme-icon.svg";
 import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
@@ -43,18 +45,19 @@ const DetailPage = () => {
   };
 
   const handleShareClick = () => {
-    navigator.clipboard.writeText(window.location.href)
+    navigator.clipboard
+      .writeText(window.location.href)
       .then(() => alert("Link copied!"))
       .catch(() => alert("Failed to copy link"));
   };
 
-  const getDescriptionsAndNotices = async () => {
+  const getDescriptionsAndNotices = useCallback(async () => {
     const datas = await fetchDescriptionsAndNotices(type, id);
     setDescriptions(datas.descriptions);
     setNotices(datas.notices);
-  };
+  }, [type, id]);
 
-  const getDetailData = async () => {
+  const getDetailData = useCallback(async () => {
     let data;
     if (type.includes("service")) {
       data = await fetchServiceDetailById(id);
@@ -66,30 +69,40 @@ const DetailPage = () => {
       // data = await fetchArticleById(id);
     }
     setDetailData(data);
-  };
+  }, [type, id]);
 
-  const getPricingData = async () => {
+  const getPricingData = useCallback(async () => {
     const data = await fetchServicePricingById(id);
     const grouped = data.reduce((acc, item) => {
-      const { duration, level, price, serviceDiscountFlag, serviceDiscountPrice } = item;
+      const {
+        duration,
+        level,
+        price,
+        serviceDiscountFlag,
+        serviceDiscountPrice,
+      } = item;
       const levelKey = level.toLowerCase();
       if (!acc[duration]) acc[duration] = {};
-      acc[duration][levelKey] = { price, serviceDiscountFlag, serviceDiscountPrice };
+      acc[duration][levelKey] = {
+        price,
+        serviceDiscountFlag,
+        serviceDiscountPrice,
+      };
       return acc;
     }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
     setPricingMap(grouped);
-  };
+  }, [id]);
 
   useEffect(() => {
     getDetailData();
     getDescriptionsAndNotices();
     getPricingData();
-  }, [type, id]);
+  }, [getDetailData, getDescriptionsAndNotices, getPricingData]);
 
-  const selectedPrice =
-    pricingMap?.[duration]?.[expertLevel]?.serviceDiscountFlag
-      ? pricingMap[duration][expertLevel].serviceDiscountPrice
-      : pricingMap?.[duration]?.[expertLevel]?.price;
+  const selectedPrice = pricingMap?.[duration]?.[expertLevel]
+    ?.serviceDiscountFlag
+    ? pricingMap[duration][expertLevel].serviceDiscountPrice
+    : pricingMap?.[duration]?.[expertLevel]?.price;
 
   return (
     <Fragment>
@@ -279,8 +292,92 @@ const DetailPage = () => {
           </div>
         </div>
       </div>
+      <div className="starRatingTitleWrapper">
+        <Typography variant="h5">Ulasan pelanggan</Typography>
+      </div>
       <div className="starRatingWrapper">
-        <Typography variant="h5">Ulasan Pelanggan</Typography>
+        <div className="starRatingLeftWrapper">
+          <div className="upperRow">
+            <HiStar className="leftStar" />
+            <HiStar className="leftStar" />
+            <HiStar className="leftStar" />
+            <HiStar className="leftStar" />
+            <HiStar className="leftStar" />
+            <span>5.00 dari 5</span>
+          </div>
+          <div className="bottomRow">
+            <span>Berdasarkan 12 ulasan</span>
+            <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
+          </div>
+        </div>
+        <div className="starRatingLine" />
+        <div className="starRatingRightWrapper">
+          <div className="rightRow">
+            <div className="stars">
+              <HiStar />
+              <HiStar />
+              <HiStar />
+              <HiStar />
+              <HiStar />
+            </div>
+            <div className="ratingBarWrapper">
+              <div className="ratingBarFill" style={{ width: "100%" }}></div>
+            </div>
+            <div className="ratingCount">26</div>
+          </div>
+          <div className="rightRow">
+            <div className="stars">
+              <HiStar />
+              <HiStar />
+              <HiStar />
+              <HiStar />
+              <HiOutlineStar />
+            </div>
+            <div className="ratingBarWrapper">
+              <div className="ratingBarFill" style={{ width: "80%" }}></div>
+            </div>
+            <div className="ratingCount">26</div>
+          </div>
+          <div className="rightRow">
+            <div className="stars">
+              <HiStar />
+              <HiStar />
+              <HiStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+            </div>
+            <div className="ratingBarWrapper">
+              <div className="ratingBarFill" style={{ width: "60%" }}></div>
+            </div>
+            <div className="ratingCount">26</div>
+          </div>
+          <div className="rightRow">
+            <div className="stars">
+              <HiStar />
+              <HiStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+            </div>
+            <div className="ratingBarWrapper">
+              <div className="ratingBarFill" style={{ width: "40%" }}></div>
+            </div>
+            <div className="ratingCount">26</div>
+          </div>
+          <div className="rightRow">
+            <div className="stars">
+              <HiStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+              <HiOutlineStar />
+            </div>
+            <div className="ratingBarWrapper">
+              <div className="ratingBarFill" style={{ width: "20%" }}></div>
+            </div>
+            <div className="ratingCount">26</div>
+          </div>
+        </div>
       </div>
     </Fragment>
   );
