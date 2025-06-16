@@ -46,6 +46,12 @@
   font-weight: 500;
 }
 
+.obralText {
+  text-decoration: line-through;
+  color: gray;
+  margin-right: 8px;
+}
+
 .obralBadge {
   position: absolute;
   bottom: 8px;

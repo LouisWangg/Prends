@@ -61,13 +61,7 @@ const SingleCard = ({ type, data }) => {
           <Typography variant="caption" className="singleCardPrice">
             {singleCard.discountFlag ? (
               <>
-                <span
-                  style={{
-                    textDecoration: "line-through",
-                    color: "gray",
-                    marginRight: "8px",
-                  }}
-                >
+                <span className="obralText">
                   {formatToRupiah(singleCard.price)}
                 </span>
                 <span style={{ color: "black" }}>

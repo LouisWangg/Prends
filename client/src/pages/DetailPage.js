@@ -6,6 +6,7 @@ import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 import "./DetailPage.css";
 import judgeMeIcon from "../assets/judgeme-icon.svg";
+import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
@@ -16,7 +17,8 @@ const DetailPage = () => {
   const { type, id } = useParams();
 
   const [duration, setDuration] = useState(1);
-  const [expertLevel, setExpertLevel] = useState("junior");
+  const [durationList, setDurationList] = useState([]);
+  const [level, setLevel] = useState("junior");
   const [quantity, setQuantity] = useState(1);
   const [descriptions, setDescriptions] = useState([]);
   const [notices, setNotices] = useState([]);
@@ -27,8 +29,8 @@ const DetailPage = () => {
     setDuration(parseInt(event.target.value, 10));
   };
 
-  const handleExpertLevelChange = (event) => {
-    setExpertLevel(event.target.value);
+  const handleLevelChange = (event) => {
+    setLevel(event.target.value);
   };
 
   const handleDecreaseQuantity = () => {
@@ -74,23 +76,15 @@ const DetailPage = () => {
   const getPricingData = useCallback(async () => {
     const data = await fetchServicePricingById(id);
     const grouped = data.reduce((acc, item) => {
-      const {
-        duration,
-        level,
-        price,
-        serviceDiscountFlag,
-        serviceDiscountPrice,
-      } = item;
+      const { duration, level, price, serviceDiscountFlag, serviceDiscountPrice } = item;
       const levelKey = level.toLowerCase();
+
       if (!acc[duration]) acc[duration] = {};
-      acc[duration][levelKey] = {
-        price,
-        serviceDiscountFlag,
-        serviceDiscountPrice,
-      };
+      acc[duration][levelKey] = { price, serviceDiscountFlag, serviceDiscountPrice };
       return acc;
     }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
     setPricingMap(grouped);
+    setDurationList(Object.keys(grouped).map((d) => parseInt(d, 10)));
   }, [id]);
 
   useEffect(() => {
@@ -99,10 +93,10 @@ const DetailPage = () => {
     getPricingData();
   }, [getDetailData, getDescriptionsAndNotices, getPricingData]);
 
-  const selectedPrice = pricingMap?.[duration]?.[expertLevel]
+  const selectedPrice = pricingMap?.[duration]?.[level]
     ?.serviceDiscountFlag
-    ? pricingMap[duration][expertLevel].serviceDiscountPrice
-    : pricingMap?.[duration]?.[expertLevel]?.price;
+    ? pricingMap[duration][level].serviceDiscountPrice
+    : pricingMap?.[duration]?.[level]?.price;
 
   return (
     <Fragment>
@@ -123,17 +117,10 @@ const DetailPage = () => {
             {detailData.name}
           </Typography>
           <Typography variant="h6">
-            {/* {selectedPrice ? formatToRupiah(selectedPrice) : "-"} */}
-            {pricingMap?.[duration]?.[expertLevel]?.serviceDiscountFlag ? (
+            {pricingMap?.[duration]?.[level]?.serviceDiscountFlag ? (
               <div className="discountedPriceWrapper">
-                <span
-                  style={{
-                    textDecoration: "line-through",
-                    color: "gray",
-                    marginRight: "8px",
-                  }}
-                >
-                  {formatToRupiah(pricingMap?.[duration]?.[expertLevel]?.price)}
+                <span className="obralText">
+                  {formatToRupiah(pricingMap?.[duration]?.[level]?.price)}
                 </span>
 
                 <div className="discountedPriceAndBadgeWrapper">
@@ -148,83 +135,45 @@ const DetailPage = () => {
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Durasi Konseling</legend>
-            <Box
-              component="label"
-              className={`detailPageLabel ${duration === 1 ? "activeMode" : ""}`}
-            >
-              <input
-                type="radio"
-                name="duration"
-                value="1"
-                checked={duration === 1}
-                onChange={handleDurationChange}
-                className="detailPageRadio"
-              />
-              1 jam
-            </Box>
-
-            <Box
-              component="label"
-              className={`detailPageLabel ${duration === 2 ? "activeMode" : ""}`}
-            >
-              <input
-                type="radio"
-                name="duration"
-                value="2"
-                checked={duration === 2}
-                onChange={handleDurationChange}
-                className="detailPageRadio"
-              />
-              2 jam
-            </Box>
+            {durationList.map((durationValue) => (
+              <Box
+                key={durationValue}
+                component="label"
+                className={`detailPageLabel ${duration === durationValue ? "activeMode" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="duration"
+                  value={durationValue}
+                  checked={duration === durationValue}
+                  onChange={handleDurationChange}
+                  className="detailPageRadio"
+                />
+                {durationValue} jam
+              </Box>
+            ))}
           </fieldset>
 
           <fieldset className="detailPageFieldSet">
             <legend className="detailPageLegend">Expert</legend>
-            <Box
-              component="label"
-              className={`detailPageLabel ${expertLevel === "junior" ? "activeMode" : ""}`}
-            >
-              <input
-                type="radio"
-                name="expertLevel"
-                value="junior"
-                checked={expertLevel === "junior"}
-                onChange={handleExpertLevelChange}
-                className="detailPageRadio"
-              />
-              Junior Expert
-            </Box>
-
-            <Box
-              component="label"
-              className={`detailPageLabel ${expertLevel === "middle" ? "activeMode" : ""}`}
-            >
-              <input
-                type="radio"
-                name="expertLevel"
-                value="middle"
-                checked={expertLevel === "middle"}
-                onChange={handleExpertLevelChange}
-                className="detailPageRadio"
-              />
-              Middle Expert
-            </Box>
-
-            <Box
-              component="label"
-              className={`detailPageLabel ${expertLevel === "senior" ? "activeMode" : ""}`}
-            >
-              <input
-                type="radio"
-                name="expertLevel"
-                value="senior"
-                checked={expertLevel === "senior"}
-                onChange={handleExpertLevelChange}
-                className="detailPageRadio"
-              />
-              Senior Expert
-            </Box>
+            {pricingMap[duration] &&
+              Object.keys(pricingMap[duration]).map((levelValue) => (
+                <Box
+                  key={levelValue}
+                  component="label"
+                  className={`detailPageLabel ${level === levelValue ? "activeMode" : ""}`}
+                >
+                  <input
+                    type="radio"
+                    name="level"
+                    value={levelValue}
+                    checked={level === levelValue}
+                    onChange={handleLevelChange}
+                    className="detailPageRadio"
+                  />
+                  {levelLabeling[levelValue] || levelValue}
+                </Box>
+              ))}
           </fieldset>
 
           <div className="quantityWrapper">
@@ -298,11 +247,9 @@ const DetailPage = () => {
       <div className="starRatingWrapper">
         <div className="starRatingLeftWrapper">
           <div className="upperRow">
-            <HiStar className="leftStar" />
-            <HiStar className="leftStar" />
-            <HiStar className="leftStar" />
-            <HiStar className="leftStar" />
-            <HiStar className="leftStar" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <HiStar key={i} className="leftStar" />
+            ))}
             <span>5.00 dari 5</span>
           </div>
           <div className="bottomRow">
@@ -312,71 +259,26 @@ const DetailPage = () => {
         </div>
         <div className="starRatingLine" />
         <div className="starRatingRightWrapper">
-          <div className="rightRow">
-            <div className="stars">
-              <HiStar />
-              <HiStar />
-              <HiStar />
-              <HiStar />
-              <HiStar />
+          {[5, 4, 3, 2, 1].map((starCount, index) => (
+            <div className="rightRow" key={index}>
+              <div className="stars">
+                {Array.from({ length: 5 }).map((_, i) =>
+                  i < starCount ? (
+                    <HiStar key={i} />
+                  ) : (
+                    <HiOutlineStar key={i} />
+                  )
+                )}
+              </div>
+              <div className="ratingBarWrapper">
+                <div
+                  className="ratingBarFill"
+                  style={{ width: `${starCount * 20}%` }}
+                ></div>
+              </div>
+              <div className="ratingCount">26</div>
             </div>
-            <div className="ratingBarWrapper">
-              <div className="ratingBarFill" style={{ width: "100%" }}></div>
-            </div>
-            <div className="ratingCount">26</div>
-          </div>
-          <div className="rightRow">
-            <div className="stars">
-              <HiStar />
-              <HiStar />
-              <HiStar />
-              <HiStar />
-              <HiOutlineStar />
-            </div>
-            <div className="ratingBarWrapper">
-              <div className="ratingBarFill" style={{ width: "80%" }}></div>
-            </div>
-            <div className="ratingCount">26</div>
-          </div>
-          <div className="rightRow">
-            <div className="stars">
-              <HiStar />
-              <HiStar />
-              <HiStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-            </div>
-            <div className="ratingBarWrapper">
-              <div className="ratingBarFill" style={{ width: "60%" }}></div>
-            </div>
-            <div className="ratingCount">26</div>
-          </div>
-          <div className="rightRow">
-            <div className="stars">
-              <HiStar />
-              <HiStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-            </div>
-            <div className="ratingBarWrapper">
-              <div className="ratingBarFill" style={{ width: "40%" }}></div>
-            </div>
-            <div className="ratingCount">26</div>
-          </div>
-          <div className="rightRow">
-            <div className="stars">
-              <HiStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-              <HiOutlineStar />
-            </div>
-            <div className="ratingBarWrapper">
-              <div className="ratingBarFill" style={{ width: "20%" }}></div>
-            </div>
-            <div className="ratingCount">26</div>
-          </div>
+          ))}
         </div>
       </div>
     </Fragment>
