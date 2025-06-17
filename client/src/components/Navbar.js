@@ -229,7 +229,7 @@ const Navbar = ({ isSticky }) => {
             <SlMagnifier className="navbarIcon" />
           </button>
           <Link className="navbarButton" to="/login">
-            <CiUser className="userIcon" />
+            <CiUser className="navbarUserIcon" />
           </Link>
           <Link className="navbarButton" to="/login">
             <BsBag className="navbarIcon" />

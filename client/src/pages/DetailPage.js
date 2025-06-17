@@ -1,11 +1,12 @@
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
+import { FiPlus, FiMinus, FiShare, FiUser } from "react-icons/fi";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 import "./DetailPage.css";
 import judgeMeIcon from "../assets/judgeme-icon.svg";
+import diamondTransparency from "../assets/diamond.svg";
 import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
@@ -24,6 +25,7 @@ const DetailPage = () => {
   const [notices, setNotices] = useState([]);
   const [detailData, setDetailData] = useState({});
   const [pricingMap, setPricingMap] = useState({});
+  const [sortOption, setSortOption] = useState("");
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -98,8 +100,18 @@ const DetailPage = () => {
     ? pricingMap[duration][level].serviceDiscountPrice
     : pricingMap?.[duration]?.[level]?.price;
 
+  const eachCount = {
+    5: 73,
+    4: 12,
+    3: 5,
+    2: 3,
+    1: 7
+  };
+
+  const totalCount = Object.values(eachCount).reduce((a, b) => a + b, 0);
+
   return (
-    <Fragment>
+    <div style={{ margin: "30px 70px" }}>
       <div className="detailPageWrapper">
         <div className="detailPageImage">
           <img
@@ -248,7 +260,7 @@ const DetailPage = () => {
         <div className="starRatingLeftWrapper">
           <div className="upperRow">
             {Array.from({ length: 5 }).map((_, i) => (
-              <HiStar key={i} className="leftStar" />
+              <HiStar key={i} className="starSize" />
             ))}
             <span>5.00 dari 5</span>
           </div>
@@ -259,29 +271,78 @@ const DetailPage = () => {
         </div>
         <div className="starRatingLine" />
         <div className="starRatingRightWrapper">
-          {[5, 4, 3, 2, 1].map((starCount, index) => (
-            <div className="rightRow" key={index}>
-              <div className="stars">
-                {Array.from({ length: 5 }).map((_, i) =>
-                  i < starCount ? (
-                    <HiStar key={i} />
-                  ) : (
-                    <HiOutlineStar key={i} />
-                  )
-                )}
+          {[5, 4, 3, 2, 1].map((starCount, index) => {
+            const count = eachCount[starCount] || 0;
+            const percentage = totalCount ? (count / totalCount) * 100 : 0;
+
+            return (
+              <div className="rightRow" key={index}>
+                <div className="stars">
+                  {Array.from({ length: 5 }).map((_, i) =>
+                    i < starCount ? (
+                      <HiStar key={i} />
+                    ) : (
+                      <HiOutlineStar key={i} />
+                    )
+                  )}
+                </div>
+                <div className="ratingBarWrapper">
+                  <div
+                    className="ratingBarFill"
+                    style={{ width: `${percentage}%` }}
+                  ></div>
+                </div>
+                <div className="ratingCount">{count}</div>
               </div>
-              <div className="ratingBarWrapper">
-                <div
-                  className="ratingBarFill"
-                  style={{ width: `${starCount * 20}%` }}
-                ></div>
-              </div>
-              <div className="ratingCount">26</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
-    </Fragment>
+      <hr className="detailPageLine" />
+      <div className="diamondWrapper">
+        <a
+          href="https://judge.me/reviews/stores/kleeverse.com" target="_blank"
+          rel="noopener noreferrer" className="diamondImageAndText"
+          title="Diamond Transparent Shop. Published 100% of verified reviews received in total">
+          <img src={diamondTransparency} alt="Diamond Transparent Shop" />
+          <p className="diamondText">100.0</p>
+        </a>
+        <div className="bottomRow">
+          <a href="https://judge.me/reviews/stores/kleeverse.com" target="_blank" rel="noopener noreferrer">Verified</a>
+          <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
+        </div>
+      </div>
+      <hr className="detailPageLine" />
+      <select
+        value={sortOption}
+        onChange={(e) => setSortOption(e.target.value)} className="commentSortSelector"
+      >
+        <option value="newest">Terbaru</option>
+        <option value="oldest">Terlama</option>
+      </select>
+      <hr className="detailPageLine" />
+      <div className="commentWrapper">
+        <div className="starAndDateWrapper">
+          <div className="stars">
+            <HiStar className="starSize" />
+            <HiStar className="starSize" />
+            <HiStar className="starSize" />
+            <HiStar className="starSize" />
+            <HiStar className="starSize" />
+          </div>
+          <span>04/26/2025</span>
+        </div>
+        <div className="identityWrapper">
+          <FiUser className="commentUserIcon" />
+          <span>Nama User</span>
+        </div>
+        <div className="contentWrapper">
+          <p><b>Kesan dan pesan</b></p>
+          <p>Tidak ada yang berkesan dalam acara ini</p>
+        </div>
+        <hr className="detailPageLine" />
+      </div>
+    </div>
   );
 };
 

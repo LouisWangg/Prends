@@ -1,7 +1,7 @@
 .detailPageWrapper {
   display: flex;
   justify-content: center;
-  margin: 0 110px;
+  margin: 0 40px;
   box-sizing: border-box;
 }
 
@@ -232,11 +232,11 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-top: 30px;
 }
 
-.leftStar {
+.starSize {
   font-size: 22px;
 }
 
-.leftStar:last-of-type {
+.starSize:last-of-type {
   margin-right: 8px;
 }
 
@@ -286,4 +286,78 @@ input[type="number"]::-webkit-outer-spin-button {
   min-width: 20px;
   font-size: 14px;
   color: #555;
+}
+
+.diamondWrapper,
+.diamondImageAndText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.diamondWrapper a:hover {
+  text-decoration: none;
+}
+
+.diamondText {
+  color: steelblue;
+  font-weight: bold;
+  font-size: small;
+  margin: 0;
+}
+
+.bottomRow a {
+  color: black;
+  text-decoration: underline;
+}
+
+.detailPageLine {
+  color: gray;
+  /* margin: 30px 70px; */
+}
+
+.commentSortSelector {
+  padding: 8px 28px 8px 2px;
+  border: none;
+  font-size: 14px;
+  transition: border 0.2s, box-shadow 0.2s;
+  outline: none;
+  cursor: pointer;
+}
+
+.commentSortSelector:focus {
+  outline: 1px solid #888;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.commentSortSelector option {
+  padding: 10px;
+}
+
+.starAndDateWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.starAndDateWrapper span {
+  font-size: 12px;
+  color: gray;
+}
+
+.identityWrapper {
+  margin-bottom: 8px;
+}
+
+.commentUserIcon {
+  height: 38px;
+  width: 38px;
+  margin: 10px 10px 0 0;
+  background-color: whitesmoke;
+  padding: 6px;
+}
+
+.contentWrapper p {
+  margin-bottom: 6px;
 }
