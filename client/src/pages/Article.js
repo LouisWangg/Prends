@@ -11,15 +11,8 @@ const Article = () => {
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Calculate the start and end indices for the cards to display
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-
   // Sort the cards in descending order by their index (or a relevant property)
   const sortedCards = [...cards].reverse();
-
-  // Slice the cards array to get only the cards for the current page
-  const currentCards = sortedCards.slice(startIndex, endIndex);
 
   // Handle page changes
   const nextPage = () => {

@@ -12,6 +12,7 @@ import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
+import { fetchServiceFeedbacksById } from "../services/ServiceTypeFeedbackService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
 
 const DetailPage = () => {
@@ -26,6 +27,8 @@ const DetailPage = () => {
   const [detailData, setDetailData] = useState({});
   const [pricingMap, setPricingMap] = useState({});
   const [sortOption, setSortOption] = useState("");
+  const [feedback, setFeedback] = useState([]);
+  const [feedbackCount, setFeedbackCount] = useState([]);
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -78,37 +81,63 @@ const DetailPage = () => {
   const getPricingData = useCallback(async () => {
     const data = await fetchServicePricingById(id);
     const grouped = data.reduce((acc, item) => {
-      const { duration, level, price, serviceDiscountFlag, serviceDiscountPrice } = item;
+      const {
+        duration,
+        level,
+        price,
+        serviceDiscountFlag,
+        serviceDiscountPrice,
+      } = item;
       const levelKey = level.toLowerCase();
 
       if (!acc[duration]) acc[duration] = {};
-      acc[duration][levelKey] = { price, serviceDiscountFlag, serviceDiscountPrice };
+      acc[duration][levelKey] = {
+        price,
+        serviceDiscountFlag,
+        serviceDiscountPrice,
+      };
       return acc;
     }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
     setPricingMap(grouped);
     setDurationList(Object.keys(grouped).map((d) => parseInt(d, 10)));
   }, [id]);
 
+  const getServiceFeedbacksById = useCallback(async () => {
+    const datas = await fetchServiceFeedbacksById(id);
+    setFeedback(datas.datas);
+    setFeedbackCount(datas.counts);
+  }, [id]);
+
   useEffect(() => {
     getDetailData();
     getDescriptionsAndNotices();
     getPricingData();
-  }, [getDetailData, getDescriptionsAndNotices, getPricingData]);
+    getServiceFeedbacksById();
+  }, [
+    getDetailData,
+    getDescriptionsAndNotices,
+    getPricingData,
+    getServiceFeedbacksById,
+  ]);
 
-  const selectedPrice = pricingMap?.[duration]?.[level]
-    ?.serviceDiscountFlag
+  const selectedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountFlag
     ? pricingMap[duration][level].serviceDiscountPrice
     : pricingMap?.[duration]?.[level]?.price;
 
   const eachCount = {
-    5: 73,
-    4: 12,
-    3: 5,
-    2: 3,
-    1: 7
+    5: feedbackCount.ratingFive,
+    4: feedbackCount.ratingFour,
+    3: feedbackCount.ratingThree,
+    2: feedbackCount.ratingTwo,
+    1: feedbackCount.ratingOne,
   };
 
-  const totalCount = Object.values(eachCount).reduce((a, b) => a + b, 0);
+  const totalScore = Object.entries(eachCount).reduce(
+    (sum, [rating, count]) => sum + rating * count,
+    0
+  );
+
+  const averageRating = feedbackCount.total === 0 ? 0 : (totalScore / feedbackCount.total).toFixed(2);
 
   return (
     <div style={{ margin: "30px 70px" }}>
@@ -262,10 +291,10 @@ const DetailPage = () => {
             {Array.from({ length: 5 }).map((_, i) => (
               <HiStar key={i} className="starSize" />
             ))}
-            <span>5.00 dari 5</span>
+            <span>{averageRating} dari 5</span>
           </div>
           <div className="bottomRow">
-            <span>Berdasarkan 12 ulasan</span>
+            <span>Berdasarkan {feedbackCount.total} ulasan</span>
             <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
           </div>
         </div>
@@ -273,7 +302,9 @@ const DetailPage = () => {
         <div className="starRatingRightWrapper">
           {[5, 4, 3, 2, 1].map((starCount, index) => {
             const count = eachCount[starCount] || 0;
-            const percentage = totalCount ? (count / totalCount) * 100 : 0;
+            const percentage = feedbackCount.total
+              ? (count / feedbackCount.total) * 100
+              : 0;
 
             return (
               <div className="rightRow" key={index}>
@@ -301,21 +332,31 @@ const DetailPage = () => {
       <hr className="detailPageLine" />
       <div className="diamondWrapper">
         <a
-          href="https://judge.me/reviews/stores/kleeverse.com" target="_blank"
-          rel="noopener noreferrer" className="diamondImageAndText"
-          title="Diamond Transparent Shop. Published 100% of verified reviews received in total">
+          href="https://judge.me/reviews/stores/kleeverse.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="diamondImageAndText"
+          title="Diamond Transparent Shop. Published 100% of verified reviews received in total"
+        >
           <img src={diamondTransparency} alt="Diamond Transparent Shop" />
           <p className="diamondText">100.0</p>
         </a>
         <div className="bottomRow">
-          <a href="https://judge.me/reviews/stores/kleeverse.com" target="_blank" rel="noopener noreferrer">Verified</a>
+          <a
+            href="https://judge.me/reviews/stores/kleeverse.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Verified
+          </a>
           <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
         </div>
       </div>
       <hr className="detailPageLine" />
       <select
         value={sortOption}
-        onChange={(e) => setSortOption(e.target.value)} className="commentSortSelector"
+        onChange={(e) => setSortOption(e.target.value)}
+        className="commentSortSelector"
       >
         <option value="newest">Terbaru</option>
         <option value="oldest">Terlama</option>
@@ -337,7 +378,9 @@ const DetailPage = () => {
           <span>Nama User</span>
         </div>
         <div className="contentWrapper">
-          <p><b>Kesan dan pesan</b></p>
+          <p>
+            <b>Kesan dan pesan</b>
+          </p>
           <p>Tidak ada yang berkesan dalam acara ini</p>
         </div>
         <hr className="detailPageLine" />

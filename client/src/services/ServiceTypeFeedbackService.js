@@ -8,7 +8,18 @@ export const fetchHomePageFeedbacks = async () => {
     const response = await axios.get(`${url}/getHomePageFeedbacks`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Feedback datas: `, error);
+    console.error(`Failed to fetch fetchHomePageFeedbacks datas: `, error);
+    return null;
+  }
+};
+
+// Get Feedback datas for each Service
+export const fetchServiceFeedbacksById = async (id) => {
+  try {
+    const response = await axios.get(`${url}/getServiceFeedbacksById/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch fetchServiceFeedbacksById datas by id: ${id}`, error);
     return null;
   }
 };

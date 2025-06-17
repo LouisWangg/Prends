@@ -25,21 +25,18 @@ const QnaSection = ({ data }) => {
         <br />
         <br />
         Kamu bisa WhatsApp ke{" "}
-        <a
-          href="#"
-          onClick={(event) => {
-            event.preventDefault();
+        <button
+          onClick={() => {
             window.open(
               "https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0",
               "_blank",
               "noopener,noreferrer"
             );
           }}
-          className="customUnderline"
+          className="linkButton customUnderline"
         >
-          0851-7202-0718
-        </a>{" "}
-        ya!
+          0851-7202-0718 
+        </button> {" "} ya!
       </p>
     );
   };
