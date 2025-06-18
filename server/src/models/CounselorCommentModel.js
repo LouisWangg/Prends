@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const CounselorFeedback = sequelize.define('CounselorFeedback', {
-    counselorFeedbackId: {
+const CounselorComment = sequelize.define('CounselorComment', {
+    counselorCommentId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -47,4 +47,4 @@ const CounselorFeedback = sequelize.define('CounselorFeedback', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-module.exports = CounselorFeedback;
+module.exports = CounselorComment;

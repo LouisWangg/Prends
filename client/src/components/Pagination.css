@@ -1,0 +1,26 @@
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.paginationWrapper button {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.paginationWrapper button.active {
+  background-color: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+.paginationWrapper button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

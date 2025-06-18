@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const CounselorFeedback = require('./CounselorFeedbackModel');
-const ServiceTypeFeedback = require('./ServiceTypeFeedbackModel');
+const CounselorComment = require('./CounselorCommentModel');
+const ServiceTypeComment = require('./ServiceTypeCommentModel');
 
 const User = sequelize.define('User', {
     userId: {
@@ -33,10 +33,10 @@ const User = sequelize.define('User', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-User.hasMany(CounselorFeedback, { foreignKey: 'userId' });
-CounselorFeedback.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(CounselorComment, { foreignKey: 'userId' });
+CounselorComment.belongsTo(User, { foreignKey: 'userId' });
 
-User.hasMany(ServiceTypeFeedback, { foreignKey: 'userId' });
-ServiceTypeFeedback.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(ServiceTypeComment, { foreignKey: 'userId' });
+ServiceTypeComment.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = User;

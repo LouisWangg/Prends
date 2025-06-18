@@ -1,5 +1,5 @@
 /* DescriptionBox.css */
-.feedbackBox {
+.commentBox {
   background-color: whitesmoke;
   border: 2px solid black;
   padding: 28px;
@@ -14,7 +14,7 @@
 }
 
 @media (max-width: 1300px) {
-  .feedbackBox {
+  .commentBox {
     min-width: 360px;
     max-width: 360px;
     min-height: 380px;

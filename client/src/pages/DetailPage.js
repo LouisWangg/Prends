@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { FiPlus, FiMinus, FiShare, FiUser } from "react-icons/fi";
+import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 import "./DetailPage.css";
@@ -10,13 +10,16 @@ import diamondTransparency from "../assets/diamond.svg";
 import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
 import Description from "../components/Description";
+import CommentSection from "../components/CommentSection";
+import Pagination from "../components/Pagination";
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
-import { fetchServiceFeedbacksById } from "../services/ServiceTypeFeedbackService";
+import { fetchServiceCommentsById } from "../services/ServiceTypeCommentService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
+  const commentsPerPage = 5;
 
   const [duration, setDuration] = useState(1);
   const [durationList, setDurationList] = useState([]);
@@ -27,8 +30,9 @@ const DetailPage = () => {
   const [detailData, setDetailData] = useState({});
   const [pricingMap, setPricingMap] = useState({});
   const [sortOption, setSortOption] = useState("");
-  const [feedback, setFeedback] = useState([]);
-  const [feedbackCount, setFeedbackCount] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [commentCount, setCommentCount] = useState([]);
+  const [currentPage, setCurrentPage] = useState([]);
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -57,6 +61,12 @@ const DetailPage = () => {
       .then(() => alert("Link copied!"))
       .catch(() => alert("Failed to copy link"));
   };
+
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+    setCurrentPage(1); // 🔥 reset to first page
+  };
+
 
   const getDescriptionsAndNotices = useCallback(async () => {
     const datas = await fetchDescriptionsAndNotices(type, id);
@@ -102,22 +112,22 @@ const DetailPage = () => {
     setDurationList(Object.keys(grouped).map((d) => parseInt(d, 10)));
   }, [id]);
 
-  const getServiceFeedbacksById = useCallback(async () => {
-    const datas = await fetchServiceFeedbacksById(id);
-    setFeedback(datas.datas);
-    setFeedbackCount(datas.counts);
+  const getServiceCommentsById = useCallback(async () => {
+    const datas = await fetchServiceCommentsById(id);
+    setComments(datas.datas);
+    setCommentCount(datas.counts);
   }, [id]);
 
   useEffect(() => {
     getDetailData();
     getDescriptionsAndNotices();
     getPricingData();
-    getServiceFeedbacksById();
+    getServiceCommentsById();
   }, [
     getDetailData,
     getDescriptionsAndNotices,
     getPricingData,
-    getServiceFeedbacksById,
+    getServiceCommentsById,
   ]);
 
   const selectedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountFlag
@@ -125,11 +135,11 @@ const DetailPage = () => {
     : pricingMap?.[duration]?.[level]?.price;
 
   const eachCount = {
-    5: feedbackCount.ratingFive,
-    4: feedbackCount.ratingFour,
-    3: feedbackCount.ratingThree,
-    2: feedbackCount.ratingTwo,
-    1: feedbackCount.ratingOne,
+    5: commentCount.ratingFive,
+    4: commentCount.ratingFour,
+    3: commentCount.ratingThree,
+    2: commentCount.ratingTwo,
+    1: commentCount.ratingOne,
   };
 
   const totalScore = Object.entries(eachCount).reduce(
@@ -137,10 +147,16 @@ const DetailPage = () => {
     0
   );
 
-  const averageRating = feedbackCount.total === 0 ? 0 : (totalScore / feedbackCount.total).toFixed(2);
+  const averageRating = commentCount.total === 0 ? 0 : (totalScore / commentCount.total).toFixed(2);
+
+  const totalPages = Math.ceil(comments.length / commentsPerPage);
+  const paginatedComments = comments.slice(
+    (currentPage - 1) * commentsPerPage,
+    currentPage * commentsPerPage
+  );
 
   return (
-    <div style={{ margin: "30px 70px" }}>
+    <div style={{ margin: "0 70px" }}>
       <div className="detailPageWrapper">
         <div className="detailPageImage">
           <img
@@ -157,6 +173,12 @@ const DetailPage = () => {
           <Typography variant="h3" className="detailPageTitle">
             {detailData.name}
           </Typography>
+          <div className="detailPageRateWrapper">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <HiStar key={i} className="starSize" />
+            ))}
+            <span>{commentCount.total} ulasan</span>
+          </div>
           <Typography variant="h6">
             {pricingMap?.[duration]?.[level]?.serviceDiscountFlag ? (
               <div className="discountedPriceWrapper">
@@ -294,7 +316,7 @@ const DetailPage = () => {
             <span>{averageRating} dari 5</span>
           </div>
           <div className="bottomRow">
-            <span>Berdasarkan {feedbackCount.total} ulasan</span>
+            <span>Berdasarkan {commentCount.total} ulasan</span>
             <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
           </div>
         </div>
@@ -302,8 +324,8 @@ const DetailPage = () => {
         <div className="starRatingRightWrapper">
           {[5, 4, 3, 2, 1].map((starCount, index) => {
             const count = eachCount[starCount] || 0;
-            const percentage = feedbackCount.total
-              ? (count / feedbackCount.total) * 100
+            const percentage = commentCount.total
+              ? (count / commentCount.total) * 100
               : 0;
 
             return (
@@ -355,36 +377,28 @@ const DetailPage = () => {
       <hr className="detailPageLine" />
       <select
         value={sortOption}
-        onChange={(e) => setSortOption(e.target.value)}
+        onChange={handleSortChange}
         className="commentSortSelector"
       >
         <option value="newest">Terbaru</option>
         <option value="oldest">Terlama</option>
       </select>
       <hr className="detailPageLine" />
-      <div className="commentWrapper">
-        <div className="starAndDateWrapper">
-          <div className="stars">
-            <HiStar className="starSize" />
-            <HiStar className="starSize" />
-            <HiStar className="starSize" />
-            <HiStar className="starSize" />
-            <HiStar className="starSize" />
-          </div>
-          <span>04/26/2025</span>
-        </div>
-        <div className="identityWrapper">
-          <FiUser className="commentUserIcon" />
-          <span>Nama User</span>
-        </div>
-        <div className="contentWrapper">
-          <p>
-            <b>Kesan dan pesan</b>
-          </p>
-          <p>Tidak ada yang berkesan dalam acara ini</p>
-        </div>
-        <hr className="detailPageLine" />
-      </div>
+
+      {/* {comments.map((comment) => (
+        <CommentSection data={comment} />
+      ))} */}
+
+      {paginatedComments.map((comment) => (
+        <CommentSection key={comment.id} data={comment} />
+      ))}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+
     </div>
   );
 };

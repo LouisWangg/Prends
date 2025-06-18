@@ -3,7 +3,7 @@ import Line from "../components/Line";
 import Carousel from "../components/Carousel.js";
 import SingleCard from "../components/SingleCard.js";
 import HomeSection from "../components/HomeSection.js";
-import FeedbackBox from "../components/FeedbackBox.js";
+import CommentBox from "../components/CommentBox.js";
 import QnaSection from "../components/QnaSection.js";
 import { slides } from "../data/Carousel.js";
 // import { fetchUsers } from "../services/UserService";
@@ -12,7 +12,7 @@ import { fetchHomePageClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
 import { fetchHomePageCounselors } from "../services/CounselorService.js";
 import { fetchIndividualCounselings } from "../services/ServiceTypeService.js";
-import { fetchHomePageFeedbacks } from "../services/ServiceTypeFeedbackService.js";
+import { fetchHomePageComments } from "../services/ServiceTypeCommentService.js";
 import "./Home.css";
 
 const Home = () => {
@@ -23,7 +23,7 @@ const Home = () => {
   const [articles, setArticles] = useState([]);
   const [counselors, setCounselors] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
-  const [serviceTypeFeedbacks, setServiceTypeFeedbacks] = useState([]);
+  const [serviceTypeComments, setServiceTypeComments] = useState([]);
 
   // const getUsers = async () => {
   //   const datas = await fetchUsers();
@@ -50,9 +50,9 @@ const Home = () => {
     setServiceTypes(datas);
   };
 
-  const getHomePageFeedbacks = async () => {
-    const datas = await fetchHomePageFeedbacks();
-    setServiceTypeFeedbacks(datas);
+  const getHomePageComments = async () => {
+    const datas = await fetchHomePageComments();
+    setServiceTypeComments(datas);
   };
 
   const getHomePageQnas = async () => {
@@ -68,7 +68,7 @@ const Home = () => {
     getHomePageQnas();
     getHomePageClasses();
     getHomePageArticles();
-    getHomePageFeedbacks();
+    getHomePageComments();
     getHomePageCounselors();
     getIndividualCounselings();
   }, []); // Empty dependency array ensures this runs only once
@@ -97,10 +97,10 @@ const Home = () => {
         subTitle=""
         columns={3}
       >
-        {serviceTypeFeedbacks.map((serviceTypeFeedback) => (
-          <FeedbackBox
-            key={serviceTypeFeedback.serviceTypeFeedbackId}
-            data={serviceTypeFeedback}
+        {serviceTypeComments.map((serviceTypeComment) => (
+          <CommentBox
+            key={serviceTypeComment.serviceTypeCommentId}
+            data={serviceTypeComment}
           />
         ))}
       </HomeSection>

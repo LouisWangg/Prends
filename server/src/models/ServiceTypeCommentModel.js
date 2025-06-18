@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const ServiceTypeFeedback = sequelize.define('ServiceTypeFeedback', {
-    serviceTypeFeedbackId: {
+const ServiceTypeComment = sequelize.define('ServiceTypeComment', {
+    serviceTypeCommentId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -47,4 +47,4 @@ const ServiceTypeFeedback = sequelize.define('ServiceTypeFeedback', {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });
 
-module.exports = ServiceTypeFeedback;
+module.exports = ServiceTypeComment;

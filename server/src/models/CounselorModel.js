@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 const sharedColumn = require('./SharedColumn');
 const CounselorImage = require('./CounselorImageModel');
 const CounselorPrice = require('./CounselorPriceModel');
-const CounselorFeedback = require('./CounselorFeedbackModel');
+const CounselorComment = require('./CounselorCommentModel');
 
 const Counselor = sequelize.define('Counselor', {
     counselorId: {
@@ -26,7 +26,7 @@ CounselorPrice.belongsTo(Counselor, { foreignKey: 'counselorId' });
 Counselor.hasMany(CounselorImage, { foreignKey: 'counselorId' });
 CounselorImage.belongsTo(Counselor, { foreignKey: 'counselorId' });
 
-Counselor.hasMany(CounselorFeedback, { foreignKey: 'counselorId' });
-CounselorFeedback.belongsTo(Counselor, { foreignKey: 'counselorId' });
+Counselor.hasMany(CounselorComment, { foreignKey: 'counselorId' });
+CounselorComment.belongsTo(Counselor, { foreignKey: 'counselorId' });
 
 module.exports = Counselor;

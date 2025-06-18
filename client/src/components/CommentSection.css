@@ -1,0 +1,31 @@
+.starAndDateWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.starAndDateWrapper span {
+  font-size: 12px;
+  color: gray;
+}
+
+.identityWrapper {
+  margin-bottom: 8px;
+}
+
+.commentUserIcon {
+  height: 38px;
+  width: 38px;
+  margin: 10px 10px 0 0;
+  background-color: whitesmoke;
+  padding: 6px;
+}
+
+.contentWrapper {
+  margin-right: 50px;
+}
+
+.contentWrapper p {
+  margin-bottom: 6px;
+  text-align: justify;
+}
