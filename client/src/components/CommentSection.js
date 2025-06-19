@@ -1,6 +1,6 @@
 import React from "react";
 import { FiUser } from "react-icons/fi";
-import { HiStar, HiOutlineStar } from "react-icons/hi";
+import { HiStar } from "react-icons/hi";
 
 import "./CommentSection.css";
 
@@ -29,12 +29,13 @@ const CommentSection = ({ data }) => {
                     {Array.from({ length: 5 }).map((_, i) =>
                         i < starCount ? (
                             <HiStar key={i} className="starSize" />
-                        ) : (
-                            <HiOutlineStar key={i} className="starSize" />
-                        )
+                        ) : ({})
+                        // (
+                        //     <HiOutlineStar key={i} className="starSize" />
+                        // )
                     )}
                 </div>
-                <span>{data.createdAt}</span>
+                <span>{data.createdAtFormatted}</span>
             </div>
             <div className="identityWrapper">
                 <FiUser className="commentUserIcon" />

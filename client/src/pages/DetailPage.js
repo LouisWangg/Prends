@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 
@@ -9,6 +9,7 @@ import judgeMeIcon from "../assets/judgeme-icon.svg";
 import diamondTransparency from "../assets/diamond.svg";
 import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
+import Option from "../components/Option";
 import Description from "../components/Description";
 import CommentSection from "../components/CommentSection";
 import Pagination from "../components/Pagination";
@@ -19,20 +20,25 @@ import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionServic
 
 const DetailPage = () => {
   const { type, id } = useParams();
-  const commentsPerPage = 5;
 
   const [duration, setDuration] = useState(1);
   const [durationList, setDurationList] = useState([]);
+
   const [level, setLevel] = useState("junior");
   const [quantity, setQuantity] = useState(1);
+
   const [descriptions, setDescriptions] = useState([]);
   const [notices, setNotices] = useState([]);
+
   const [detailData, setDetailData] = useState({});
   const [pricingMap, setPricingMap] = useState({});
+
   const [sortOption, setSortOption] = useState("");
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState([]);
-  const [currentPage, setCurrentPage] = useState([]);
+  
+  const commentsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState((1));
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -62,9 +68,11 @@ const DetailPage = () => {
       .catch(() => alert("Failed to copy link"));
   };
 
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
+  const handleSortChange = async (e) => {
+    const newSort = e.target.value;
+    setSortOption(newSort);
     setCurrentPage(1); // 🔥 reset to first page
+    await getServiceCommentsById(newSort);
   };
 
 
@@ -112,11 +120,11 @@ const DetailPage = () => {
     setDurationList(Object.keys(grouped).map((d) => parseInt(d, 10)));
   }, [id]);
 
-  const getServiceCommentsById = useCallback(async () => {
-    const datas = await fetchServiceCommentsById(id);
+  const getServiceCommentsById = useCallback(async (sort = sortOption) => {
+    const datas = await fetchServiceCommentsById(id, sort);
     setComments(datas.datas);
     setCommentCount(datas.counts);
-  }, [id]);
+  }, [id, sortOption]);
 
   useEffect(() => {
     getDetailData();
@@ -155,6 +163,8 @@ const DetailPage = () => {
     currentPage * commentsPerPage
   );
 
+  const durationListToObject = Object.fromEntries(durationList.map(d => [d, null]));
+
   return (
     <div style={{ margin: "0 70px" }}>
       <div className="detailPageWrapper">
@@ -173,12 +183,14 @@ const DetailPage = () => {
           <Typography variant="h3" className="detailPageTitle">
             {detailData.name}
           </Typography>
+
           <div className="detailPageRateWrapper">
             {Array.from({ length: 5 }).map((_, i) => (
               <HiStar key={i} className="starSize" />
             ))}
             <span>{commentCount.total} ulasan</span>
           </div>
+          
           <Typography variant="h6">
             {pricingMap?.[duration]?.[level]?.serviceDiscountFlag ? (
               <div className="discountedPriceWrapper">
@@ -196,48 +208,23 @@ const DetailPage = () => {
             )}
           </Typography>
 
-          <fieldset className="detailPageFieldSet">
-            <legend className="detailPageLegend">Durasi Konseling</legend>
-            {durationList.map((durationValue) => (
-              <Box
-                key={durationValue}
-                component="label"
-                className={`detailPageLabel ${duration === durationValue ? "activeMode" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="duration"
-                  value={durationValue}
-                  checked={duration === durationValue}
-                  onChange={handleDurationChange}
-                  className="detailPageRadio"
-                />
-                {durationValue} jam
-              </Box>
-            ))}
-          </fieldset>
+          <Option
+            title="Durasi Konseling"
+            name="duration"
+            selected={duration.toString()}
+            options={durationListToObject}
+            onChange={handleDurationChange}
+            labelMapper={(key) => `${key} jam`}
+          />
 
-          <fieldset className="detailPageFieldSet">
-            <legend className="detailPageLegend">Expert</legend>
-            {pricingMap[duration] &&
-              Object.keys(pricingMap[duration]).map((levelValue) => (
-                <Box
-                  key={levelValue}
-                  component="label"
-                  className={`detailPageLabel ${level === levelValue ? "activeMode" : ""}`}
-                >
-                  <input
-                    type="radio"
-                    name="level"
-                    value={levelValue}
-                    checked={level === levelValue}
-                    onChange={handleLevelChange}
-                    className="detailPageRadio"
-                  />
-                  {levelLabeling[levelValue] || levelValue}
-                </Box>
-              ))}
-          </fieldset>
+          <Option
+            title="Expert"
+            name="level"
+            selected={level}
+            options={pricingMap[duration] || {}}
+            onChange={handleLevelChange}
+            labelMapper={(key) => levelLabeling[key] || key}
+          />
 
           <div className="quantityWrapper">
             <Typography
@@ -385,10 +372,6 @@ const DetailPage = () => {
       </select>
       <hr className="detailPageLine" />
 
-      {/* {comments.map((comment) => (
-        <CommentSection data={comment} />
-      ))} */}
-
       {paginatedComments.map((comment) => (
         <CommentSection key={comment.id} data={comment} />
       ))}
@@ -398,6 +381,11 @@ const DetailPage = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+
+      <div>
+        <Typography variant="h4">You may also like</Typography>
+        
+      </div>
 
     </div>
   );

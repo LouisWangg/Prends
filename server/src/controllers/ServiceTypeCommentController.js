@@ -21,11 +21,20 @@ const getHomePageComments = async (req, res) => {
 const getServiceCommentsById = async (req, res) => {
   try {
     const { id } = req.params;
+    const { sort } = req.query;
+    let orderClause;
+
+    if (sort === 'oldest') {
+      orderClause = [['createdAt', 'ASC']];
+    } else if (sort === 'newest') {
+      orderClause = [['createdAt', 'DESC']];
+    }
 
     const datas = await ServiceTypeCommentModel.findAll({
       attributes: [
         "serviceTypeCommentId", "userId", "title", "description", "ratingOne", "ratingTwo",
-        "ratingThree", "ratingFour", "ratingFive", [Sequelize.literal(`TO_CHAR("ServiceTypeComment"."createdAt", 'DD/MM/YYYY')`), 'createdAt']
+        "ratingThree", "ratingFour", "ratingFive", 
+        [Sequelize.literal(`TO_CHAR("ServiceTypeComment"."createdAt", 'DD/MM/YYYY')`), 'createdAtFormatted']
       ],
       include: [
         {
@@ -35,10 +44,8 @@ const getServiceCommentsById = async (req, res) => {
           ],
         },
       ],
-      where: {
-        serviceTypeId: id
-      },
-      order: [['createdAt', 'DESC']]
+      where: { serviceTypeId: id },
+      order: orderClause
     });
     const counts = await ServiceTypeCommentModel.findOne({
       attributes: [

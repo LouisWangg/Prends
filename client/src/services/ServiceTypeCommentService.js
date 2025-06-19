@@ -14,9 +14,11 @@ export const fetchHomePageComments = async () => {
 };
 
 // Get Comment datas for each Service
-export const fetchServiceCommentsById = async (id) => {
+export const fetchServiceCommentsById = async (id, sort = "newest") => {
   try {
-    const response = await axios.get(`${url}/getServiceCommentsById/${id}`);
+    const response = await axios.get(`${url}/getServiceCommentsById/${id}`, {
+      params: { sort }
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch fetchServiceCommentsById datas by id: ${id}`, error);
