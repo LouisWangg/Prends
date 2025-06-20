@@ -28,6 +28,7 @@ const ArticleRoute = require("./routes/ArticleRoute");
 const ArticleImageRoute = require("./routes/ArticleImageRoute");
 const SharedDescriptionRoute = require("./routes/SharedDescriptionRoute");
 const QnaRoute = require("./routes/QnaRoute");
+const RecommendationRoute = require("./routes/RecommendationRoute");
 
 // Register routes
 app.use("/users", UserRoute);
@@ -42,6 +43,7 @@ app.use("/articles", ArticleRoute);
 app.use("/articleImages", ArticleImageRoute);
 app.use("/sharedDescriptions", SharedDescriptionRoute);
 app.use("/qnas", QnaRoute);
+app.use("/recommendations", RecommendationRoute);
 
 // Server start
 app.listen(5000, () => {

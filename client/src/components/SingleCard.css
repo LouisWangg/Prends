@@ -41,15 +41,27 @@
   text-decoration: underline;
 }
 
+.singleCardContent {
+  text-align: center;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .singleCardPrice {
   font-size: 16px;
   font-weight: 500;
 }
 
-.obralText {
+.oldPrice {
   text-decoration: line-through;
   color: gray;
   margin-right: 8px;
+  font-size: 13px;
+}
+
+.newPrice {
+  color: black;
+  font-size: 18px;
 }
 
 .obralBadge {

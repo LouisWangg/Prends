@@ -7,24 +7,31 @@ import { HiStar, HiOutlineStar } from "react-icons/hi";
 import "./DetailPage.css";
 import judgeMeIcon from "../assets/judgeme-icon.svg";
 import diamondTransparency from "../assets/diamond.svg";
+
 import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
+import trimmingDash from "../utils/TrimDash";
+
 import Option from "../components/Option";
 import Description from "../components/Description";
 import CommentSection from "../components/CommentSection";
 import Pagination from "../components/Pagination";
+import HomeSection from "../components/HomeSection";
+import SingleCard from "../components/SingleCard";
+
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
 import { fetchServiceCommentsById } from "../services/ServiceTypeCommentService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
+import { fetchCombinedRecommendations } from "../services/RecommendationService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
 
   const [duration, setDuration] = useState(1);
-  const [durationList, setDurationList] = useState([]);
-
   const [level, setLevel] = useState("junior");
+  const [locationValue, setLocationValue] = useState("Tanah Abang - Jakarta");
+
   const [quantity, setQuantity] = useState(1);
 
   const [descriptions, setDescriptions] = useState([]);
@@ -36,9 +43,11 @@ const DetailPage = () => {
   const [sortOption, setSortOption] = useState("");
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState([]);
-  
+
   const commentsPerPage = 5;
   const [currentPage, setCurrentPage] = useState((1));
+
+  const [recomendations, setRecommendations] = useState([]);
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -46,6 +55,10 @@ const DetailPage = () => {
 
   const handleLevelChange = (event) => {
     setLevel(event.target.value);
+  };
+
+  const handleLocationChange = (event) => {
+    setLocationValue(event.target.value);
   };
 
   const handleDecreaseQuantity = () => {
@@ -102,22 +115,33 @@ const DetailPage = () => {
       const {
         duration,
         level,
+        location,
         price,
         serviceDiscountFlag,
         serviceDiscountPrice,
       } = item;
-      const levelKey = level.toLowerCase();
 
+      const levelKey = level.toLowerCase();
       if (!acc[duration]) acc[duration] = {};
-      acc[duration][levelKey] = {
-        price,
-        serviceDiscountFlag,
-        serviceDiscountPrice,
-      };
+
+      if (!location) {
+        acc[duration][levelKey] = {
+          price,
+          serviceDiscountFlag,
+          serviceDiscountPrice,
+        };
+      } else {
+        if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
+        acc[duration][levelKey][trimmingDash(location)] = {
+          price,
+          serviceDiscountFlag,
+          serviceDiscountPrice,
+        };
+      }
+
       return acc;
     }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
     setPricingMap(grouped);
-    setDurationList(Object.keys(grouped).map((d) => parseInt(d, 10)));
   }, [id]);
 
   const getServiceCommentsById = useCallback(async (sort = sortOption) => {
@@ -126,16 +150,23 @@ const DetailPage = () => {
     setCommentCount(datas.counts);
   }, [id, sortOption]);
 
+  const getCombinedRecommendations = useCallback(async () => {
+    const datas = await fetchCombinedRecommendations(id, "Individual");
+    setRecommendations(datas);
+  }, [id]);
+
   useEffect(() => {
     getDetailData();
     getDescriptionsAndNotices();
     getPricingData();
     getServiceCommentsById();
+    getCombinedRecommendations();
   }, [
     getDetailData,
     getDescriptionsAndNotices,
     getPricingData,
     getServiceCommentsById,
+    getCombinedRecommendations
   ]);
 
   const selectedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountFlag
@@ -163,8 +194,6 @@ const DetailPage = () => {
     currentPage * commentsPerPage
   );
 
-  const durationListToObject = Object.fromEntries(durationList.map(d => [d, null]));
-
   return (
     <div style={{ margin: "0 70px" }}>
       <div className="detailPageWrapper">
@@ -184,13 +213,15 @@ const DetailPage = () => {
             {detailData.name}
           </Typography>
 
-          <div className="detailPageRateWrapper">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <HiStar key={i} className="starSize" />
-            ))}
-            <span>{commentCount.total} ulasan</span>
-          </div>
-          
+          {Number(commentCount.total) !== 0 && (
+            <div className="detailPageRateWrapper">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <HiStar key={i} className="starSize" />
+              ))}
+              <span>{commentCount.total} ulasan</span>
+            </div>
+          )}
+
           <Typography variant="h6">
             {pricingMap?.[duration]?.[level]?.serviceDiscountFlag ? (
               <div className="discountedPriceWrapper">
@@ -212,7 +243,9 @@ const DetailPage = () => {
             title="Durasi Konseling"
             name="duration"
             selected={duration.toString()}
-            options={durationListToObject}
+            options={Object.fromEntries(
+              Object.keys(pricingMap).map((d) => [d.toString(), d.toString()])
+            )}
             onChange={handleDurationChange}
             labelMapper={(key) => `${key} jam`}
           />
@@ -221,10 +254,26 @@ const DetailPage = () => {
             title="Expert"
             name="level"
             selected={level}
-            options={pricingMap[duration] || {}}
+            options={Object.fromEntries(
+              Object.keys(pricingMap[duration] || {}).map((lvl) => [lvl, lvl])
+            )}
             onChange={handleLevelChange}
             labelMapper={(key) => levelLabeling[key] || key}
           />
+
+          {pricingMap[duration]?.[level]?.constructor === Object &&
+            typeof pricingMap[duration][level] === "object" &&
+            !Array.isArray(pricingMap[duration][level]) && (
+              <Option
+                title="Lokasi"
+                name="location"
+                selected={locationValue}
+                options={Object.fromEntries(
+                  Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
+                )}
+                onChange={handleLocationChange}
+              />
+            )}
 
           <div className="quantityWrapper">
             <Typography
@@ -291,102 +340,116 @@ const DetailPage = () => {
           </div>
         </div>
       </div>
-      <div className="starRatingTitleWrapper">
-        <Typography variant="h5">Ulasan pelanggan</Typography>
-      </div>
-      <div className="starRatingWrapper">
-        <div className="starRatingLeftWrapper">
-          <div className="upperRow">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <HiStar key={i} className="starSize" />
-            ))}
-            <span>{averageRating} dari 5</span>
-          </div>
-          <div className="bottomRow">
-            <span>Berdasarkan {commentCount.total} ulasan</span>
-            <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
-          </div>
-        </div>
-        <div className="starRatingLine" />
-        <div className="starRatingRightWrapper">
-          {[5, 4, 3, 2, 1].map((starCount, index) => {
-            const count = eachCount[starCount] || 0;
-            const percentage = commentCount.total
-              ? (count / commentCount.total) * 100
-              : 0;
 
-            return (
-              <div className="rightRow" key={index}>
-                <div className="stars">
-                  {Array.from({ length: 5 }).map((_, i) =>
-                    i < starCount ? (
-                      <HiStar key={i} />
-                    ) : (
-                      <HiOutlineStar key={i} />
-                    )
-                  )}
-                </div>
-                <div className="ratingBarWrapper">
-                  <div
-                    className="ratingBarFill"
-                    style={{ width: `${percentage}%` }}
-                  ></div>
-                </div>
-                <div className="ratingCount">{count}</div>
+      {Number(commentCount.total) !== 0 && (
+        <>
+          <div className="starRatingTitleWrapper">
+            <Typography variant="h5">Ulasan pelanggan</Typography>
+          </div>
+          <div className="starRatingWrapper">
+            <div className="starRatingLeftWrapper">
+              <div className="upperRow">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <HiStar key={i} className="starSize" />
+                ))}
+                <span>{averageRating} dari 5</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
-      <hr className="detailPageLine" />
-      <div className="diamondWrapper">
-        <a
-          href="https://judge.me/reviews/stores/kleeverse.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="diamondImageAndText"
-          title="Diamond Transparent Shop. Published 100% of verified reviews received in total"
-        >
-          <img src={diamondTransparency} alt="Diamond Transparent Shop" />
-          <p className="diamondText">100.0</p>
-        </a>
-        <div className="bottomRow">
-          <a
-            href="https://judge.me/reviews/stores/kleeverse.com"
-            target="_blank"
-            rel="noopener noreferrer"
+              <div className="bottomRow">
+                <span>Berdasarkan {commentCount.total} ulasan</span>
+                <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
+              </div>
+            </div>
+            <div className="starRatingLine" />
+            <div className="starRatingRightWrapper">
+              {[5, 4, 3, 2, 1].map((starCount, index) => {
+                const count = eachCount[starCount] || 0;
+                const percentage = commentCount.total
+                  ? (count / commentCount.total) * 100
+                  : 0;
+
+                return (
+                  <div className="rightRow" key={index}>
+                    <div className="stars">
+                      {Array.from({ length: 5 }).map((_, i) =>
+                        i < starCount ? (
+                          <HiStar key={i} />
+                        ) : (
+                          <HiOutlineStar key={i} />
+                        )
+                      )}
+                    </div>
+                    <div className="ratingBarWrapper">
+                      <div
+                        className="ratingBarFill"
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    </div>
+                    <div className="ratingCount">{count}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <hr className="detailPageLine" />
+          <div className="diamondWrapper">
+            <a
+              href="https://judge.me/reviews/stores/kleeverse.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="diamondImageAndText"
+              title="Diamond Transparent Shop. Published 100% of verified reviews received in total"
+            >
+              <img src={diamondTransparency} alt="Diamond Transparent Shop" />
+              <p className="diamondText">100.0</p>
+            </a>
+            <div className="bottomRow">
+              <a
+                href="https://judge.me/reviews/stores/kleeverse.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Verified
+              </a>
+              <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
+            </div>
+          </div>
+          <hr className="detailPageLine" />
+
+          <select
+            value={sortOption}
+            onChange={handleSortChange}
+            className="commentSortSelector"
           >
-            Verified
-          </a>
-          <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
-        </div>
-      </div>
-      <hr className="detailPageLine" />
-      <select
-        value={sortOption}
-        onChange={handleSortChange}
-        className="commentSortSelector"
-      >
-        <option value="newest">Terbaru</option>
-        <option value="oldest">Terlama</option>
-      </select>
-      <hr className="detailPageLine" />
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+          </select>
+          <hr className="detailPageLine" />
 
-      {paginatedComments.map((comment) => (
-        <CommentSection key={comment.id} data={comment} />
-      ))}
+          {paginatedComments.map((comment) => (
+            <CommentSection key={comment.id} data={comment} />
+          ))}
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      )}
 
-      <div>
+      <div className="recommendationWrapper">
         <Typography variant="h4">You may also like</Typography>
-        
+        <HomeSection title="" subTitle="" columns={4} style={{ margin: "0px" }}>
+          {recomendations.map((recomendation) => (
+            <SingleCard
+              key={`${recomendation.itemType}-${recomendation.counselorId || recomendation.serviceTypeId}`}
+              type={recomendation.itemType}
+              data={recomendation} style={{ margin: "0px" }}
+            />
+          ))}
+        </HomeSection>
       </div>
-
     </div>
   );
 };

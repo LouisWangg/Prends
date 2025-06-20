@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 
-const HomeSection = ({ title, subTitle, children, columns }) => {
+const HomeSection = ({ title, subTitle, children, columns, style = {} }) => {
     return (
-        <div style={{ margin: "40px" }}>
+        <div style={{ margin: "40px", ...style }}>
             <Typography variant="h4">{title}</Typography>
             <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
                 {subTitle}

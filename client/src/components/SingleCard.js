@@ -51,25 +51,22 @@ const SingleCard = ({ type, data }) => {
           />
           {singleCard.discountFlag && <div className="obralBadge">Obral</div>}
         </div>
-        <CardContent sx={{ textAlign: "center" }}>
-          <Typography
-            variant="subtitle1"
-            sx={{ marginBottom: "5px", textWrap: "nowrap" }}
-          >
+        <CardContent className="singleCardContent">
+          <Typography variant="subtitle1">
             {singleCard.name}
           </Typography>
           <Typography variant="caption" className="singleCardPrice">
             {singleCard.discountFlag ? (
               <>
-                <span className="obralText">
+                <span className="oldPrice">
                   {formatToRupiah(singleCard.price)}
                 </span>
-                <span style={{ color: "black" }}>
+                <span className="newPrice">
                   Dari {formatToRupiah(singleCard.discountPrice)}
                 </span>
               </>
             ) : (
-              <>Dari {formatToRupiah(singleCard.price)}</>
+              <span className="newPrice">Dari {formatToRupiah(singleCard.price)}</span>
             )}
           </Typography>
         </CardContent>

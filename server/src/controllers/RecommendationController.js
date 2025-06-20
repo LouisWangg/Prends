@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 
 const CounselorModel = require("../models/CounselorModel");
 const CounselorImageModel = require("../models/CounselorImageModel");
@@ -35,6 +35,20 @@ const getCombinedRecommendations = async (req, res) => {
             ],
             order: [['serviceTypeId', 'ASC']], // ensure sorted order
             limit: serviceLimit,
+        });
+
+        const convertedServiceTypes = serviceTypes.map((item) => {
+            const plain = item.get({ plain: true });
+
+            if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+                // Assuming one image per serviceType, take the first image buffer
+                plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+                    ...img,
+                    image: img.image ? img.image.toString("base64") : null,
+                }));
+            }
+
+            return plain;
         });
 
         const counselors = await CounselorModel.findAll({
@@ -74,11 +88,15 @@ const getCombinedRecommendations = async (req, res) => {
         });
 
         // No need to shuffle combined — services are first, counselors later
-        const combined = [...serviceTypes, ...convertedCounselors];
+        const combined = [...convertedServiceTypes, ...convertedCounselors];
 
         res.json(combined);
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error on getCombinedRecommendations");
     }
+};
+
+module.exports = {
+    getCombinedRecommendations
 };

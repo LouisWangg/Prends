@@ -44,6 +44,13 @@
   gap: 8px;
 }
 
+.obralText {
+  text-decoration: line-through;
+  color: gray;
+  margin-right: 8px;
+  font-size: 17px;
+}
+
 .discountedPriceAndBadgeWrapper {
   display: flex;
   align-items: center;
@@ -314,3 +321,6 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 10px;
 }
 
+.recommendationWrapper {
+  margin-top: 80px;
+}
