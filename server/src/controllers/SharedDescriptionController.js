@@ -30,16 +30,15 @@ const getDescriptionsAndNotices = async (req, res) => {
       if (idNum < 3) {
         descriptionIds.push(8, 9, 10, 11);
         noticeIds.push(1, 2, 3);
-      } else if (idNum < 5) {
-        if (idNum == 3) {
-          descriptionIds.push(8, 9, 10);
-          noticeIds.push(1, 2, 3);
-        } else {
-          descriptionIds.push(8, 9, 10);
-          noticeIds.push(1, 2, 3, 6);
-        }
+      } else if (idNum == 3) {
+        descriptionIds.push(8, 9, 10);
+        noticeIds.push(1, 2, 3);
+      } else if (idNum == 4) {
+        descriptionIds.push(8, 9, 10);
+        noticeIds.push(1, 2, 3, 6);
       }
     } else if (type.includes("class")) {
+      noticeIds.push(1, 7);
     } else if (type.includes("counselor")) {
     }
 
@@ -49,19 +48,26 @@ const getDescriptionsAndNotices = async (req, res) => {
       ),
     ];
 
-    // Query both in parallel
-    const [descriptions, notices] = await Promise.all([
-      SharedDescriptionModel.findAll({
+    const fetchDescriptions = descriptionIds.length > 0
+      ?  SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
         order: orderClause(descriptionIds),
-      }),
-      SharedDescriptionModel.findAll({
+      })
+      : Promise.resolve([]);
+    ;
+
+    const fetchNotices = noticeIds.length > 0
+      ?  SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: noticeIds } },
         order: orderClause(noticeIds),
-      }),
-    ]);
+      })
+      : Promise.resolve([]);
+    ;
+
+    // Query both in parallel
+    const [descriptions, notices] = await Promise.all([fetchDescriptions, fetchNotices]);
 
     const processedDescriptions = descriptions.map((desc) => {
       const { sharedDescriptionId, title, description } = desc.toJSON();

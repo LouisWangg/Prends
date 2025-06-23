@@ -23,7 +23,10 @@ import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
 import { fetchServiceCommentsById } from "../services/ServiceTypeCommentService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
-import { fetchCombinedRecommendations } from "../services/RecommendationService";
+import { fetchIndividualCounselingRecommendations } from "../services/RecommendationService";
+
+import { fetchClassDetailById } from "../services/ClassService";
+import { fetchCounselorDetailById } from "../services/CounselorService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -40,7 +43,7 @@ const DetailPage = () => {
   const [detailData, setDetailData] = useState({});
   const [pricingMap, setPricingMap] = useState({});
 
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState([]);
 
@@ -88,7 +91,6 @@ const DetailPage = () => {
     await getServiceCommentsById(newSort);
   };
 
-
   const getDescriptionsAndNotices = useCallback(async () => {
     const datas = await fetchDescriptionsAndNotices(type, id);
     setDescriptions(datas.descriptions);
@@ -100,9 +102,9 @@ const DetailPage = () => {
     if (type.includes("service")) {
       data = await fetchServiceDetailById(id);
     } else if (type.includes("class")) {
-      // data = await fetchClassById(id);
+      data = await fetchClassDetailById(id);
     } else if (type.includes("counselor")) {
-      // data = await fetchCounselorById(id);
+      data = await fetchCounselorDetailById(id);
     } else if (type.includes("article")) {
       // data = await fetchArticleById(id);
     }
@@ -110,39 +112,43 @@ const DetailPage = () => {
   }, [type, id]);
 
   const getPricingData = useCallback(async () => {
-    const data = await fetchServicePricingById(id);
-    const grouped = data.reduce((acc, item) => {
-      const {
-        duration,
-        level,
-        location,
-        price,
-        serviceDiscountFlag,
-        serviceDiscountPrice,
-      } = item;
+    let data, grouped;
 
-      const levelKey = level.toLowerCase();
-      if (!acc[duration]) acc[duration] = {};
-
-      if (!location) {
-        acc[duration][levelKey] = {
+    if (type === "service") {
+      data = await fetchServicePricingById(id);
+      grouped = data.reduce((acc, item) => {
+        const {
+          duration,
+          level,
+          location,
           price,
           serviceDiscountFlag,
           serviceDiscountPrice,
-        };
-      } else {
-        if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
-        acc[duration][levelKey][trimmingDash(location)] = {
-          price,
-          serviceDiscountFlag,
-          serviceDiscountPrice,
-        };
-      }
+        } = item;
 
-      return acc;
-    }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+        const levelKey = level.toLowerCase();
+        if (!acc[duration]) acc[duration] = {};
+
+        if (location === null) {
+          acc[duration][levelKey] = {
+            price,
+            serviceDiscountFlag,
+            serviceDiscountPrice,
+          };
+        } else {
+          if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
+          acc[duration][levelKey][trimmingDash(location)] = {
+            price,
+            serviceDiscountFlag,
+            serviceDiscountPrice,
+          };
+        }
+        return acc;
+      }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+    }
+
     setPricingMap(grouped);
-  }, [id]);
+  }, [type, id]);
 
   const getServiceCommentsById = useCallback(async (sort = sortOption) => {
     const datas = await fetchServiceCommentsById(id, sort);
@@ -150,28 +156,57 @@ const DetailPage = () => {
     setCommentCount(datas.counts);
   }, [id, sortOption]);
 
-  const getCombinedRecommendations = useCallback(async () => {
-    const datas = await fetchCombinedRecommendations(id, "Individual");
+  const getIndividualCounselingRecommendations = useCallback(async () => {
+    const datas = await fetchIndividualCounselingRecommendations(id, "Individual");
     setRecommendations(datas);
   }, [id]);
 
+  //bedain useEffect pas type nya class
   useEffect(() => {
-    getDetailData();
-    getDescriptionsAndNotices();
-    getPricingData();
-    getServiceCommentsById();
-    getCombinedRecommendations();
+    if (type === "service") {
+      getDetailData();
+      getDescriptionsAndNotices();
+      getPricingData();
+      getServiceCommentsById();
+      getIndividualCounselingRecommendations();
+    }
   }, [
+    type,
     getDetailData,
     getDescriptionsAndNotices,
     getPricingData,
     getServiceCommentsById,
-    getCombinedRecommendations
+    getIndividualCounselingRecommendations
   ]);
 
-  const selectedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountFlag
-    ? pricingMap[duration][level].serviceDiscountPrice
-    : pricingMap?.[duration]?.[level]?.price;
+  useEffect(() => {
+    if (type === "class") {
+      getDetailData();
+      getDescriptionsAndNotices();
+      getIndividualCounselingRecommendations();
+    }
+  }, [
+    type,
+    getDetailData,
+    getDescriptionsAndNotices,
+    getIndividualCounselingRecommendations
+  ]);
+
+  const isLocationBased = null;
+  let discountFlag, undiscountedPrice, discountedPrice;
+  if (type === "service") {
+    const isLocationBased = typeof pricingMap[duration]?.[level]?.[Object.keys(pricingMap[duration]?.[level] || {})[0]] === "object";
+
+    if (isLocationBased) {
+      discountFlag = pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[duration]?.[level]?.[locationValue]?.price;
+      discountedPrice = pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
+    } else {
+      discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
+      discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
+    }
+  }
 
   const eachCount = {
     5: commentCount.ratingFive,
@@ -194,9 +229,9 @@ const DetailPage = () => {
     currentPage * commentsPerPage
   );
 
-  return (
-    <div style={{ margin: "0 70px" }}>
-      <div className="detailPageWrapper">
+  const renderImage = () => {
+    if (type === "service") {
+      return (
         <div className="detailPageImage">
           <img
             src={
@@ -207,141 +242,152 @@ const DetailPage = () => {
             alt={detailData.name}
           />
         </div>
-        <div className="detailPageContent">
-          <Typography variant="body1">prends</Typography>
-          <Typography variant="h3" className="detailPageTitle">
-            {detailData.name}
-          </Typography>
+      )
+    } else if (type === "class") {
+      return (
+        <div className="detailPageImage">
+          <img
+            src={
+              detailData?.image
+                ? `data:image/jpeg;base64,${detailData.image}`
+                : null
+            }
+            alt={detailData.name}
+          />
+        </div>
+      )
+    }
+  };
 
-          {Number(commentCount.total) !== 0 && (
-            <div className="detailPageRateWrapper">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <HiStar key={i} className="starSize" />
-              ))}
-              <span>{commentCount.total} ulasan</span>
-            </div>
-          )}
+  const renderRating = () => {
+    if (commentCount.total !== undefined && Number(commentCount.total) !== 0) {
+      return (
+        <div className="detailPageRateWrapper">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <HiStar key={i} className="starSize" />
+          ))}
+          <span>{commentCount.total} ulasan</span>
+        </div>
+      )
+    }
+  };
 
-          <Typography variant="h6">
-            {pricingMap?.[duration]?.[level]?.serviceDiscountFlag ? (
-              <div className="discountedPriceWrapper">
-                <span className="obralText">
-                  {formatToRupiah(pricingMap?.[duration]?.[level]?.price)}
-                </span>
+  const renderPrice = () => {
+    if (type === "service") {
+      return (
+        <Typography variant="h6">
+          {discountFlag ? (
+            <div className="discountedPriceWrapper">
+              <span className="obralText">
+                {formatToRupiah(undiscountedPrice)}
+              </span>
 
-                <div className="discountedPriceAndBadgeWrapper">
-                  {formatToRupiah(selectedPrice)}
-                  <span>Obral</span>
-                </div>
+              <div className="discountedPriceAndBadgeWrapper">
+                {formatToRupiah(discountedPrice)}
+                <span>Obral</span>
               </div>
-            ) : (
-              <>{formatToRupiah(selectedPrice)}</>
-            )}
-          </Typography>
-
-          <Option
-            title="Durasi Konseling"
-            name="duration"
-            selected={duration.toString()}
-            options={Object.fromEntries(
-              Object.keys(pricingMap).map((d) => [d.toString(), d.toString()])
-            )}
-            onChange={handleDurationChange}
-            labelMapper={(key) => `${key} jam`}
-          />
-
-          <Option
-            title="Expert"
-            name="level"
-            selected={level}
-            options={Object.fromEntries(
-              Object.keys(pricingMap[duration] || {}).map((lvl) => [lvl, lvl])
-            )}
-            onChange={handleLevelChange}
-            labelMapper={(key) => levelLabeling[key] || key}
-          />
-
-          {pricingMap[duration]?.[level]?.constructor === Object &&
-            typeof pricingMap[duration][level] === "object" &&
-            !Array.isArray(pricingMap[duration][level]) && (
-              <Option
-                title="Lokasi"
-                name="location"
-                selected={locationValue}
-                options={Object.fromEntries(
-                  Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
-                )}
-                onChange={handleLocationChange}
-              />
-            )}
-
-          <div className="quantityWrapper">
-            <Typography
-              variant="body2"
-              className="detailPageLegend"
-              sx={{ marginBottom: "8px" }}
-            >
-              Jumlah
-            </Typography>
-            <div className="quantityInputWrapper">
-              <button
-                onClick={handleDecreaseQuantity}
-                aria-label="Decrease quantity"
-              >
-                <FiMinus />
-              </button>
-              <input
-                type="number"
-                min={1}
-                value={quantity}
-                onChange={handleQuantityChange}
-                readOnly
-              />
-              <button
-                onClick={handleIncreaseQuantity}
-                aria-label="Increase quantity"
-              >
-                <FiPlus />
-              </button>
             </div>
-          </div>
+          ) : (
+            <>{formatToRupiah(undiscountedPrice)}</>
+          )}
+        </Typography>
+      );
+    } else if (type === "class") {
+      return (
+        <Typography variant="h6">
+          {detailData.discountFlag ? (
+            <div className="discountedPriceWrapper">
+              <span className="obralText">
+                {formatToRupiah(detailData.price)}
+              </span>
 
-          <div className="transactionButtonWrapper">
-            <button className="basketBtn">Tambahkan ke keranjang</button>
-            <button className="buyBtn">Beli sekarang</button>
-          </div>
+              <div className="discountedPriceAndBadgeWrapper">
+                {formatToRupiah(detailData.discountPrice)}
+                <span>Obral</span>
+              </div>
+            </div>
+          ) : (
+            <>{formatToRupiah(detailData.price)}</>
+          )}
+        </Typography>
+      );
+    }
+  };
 
+  const renderDurasiOption = () => {
+    if (type === "service") {
+      return (
+        <Option
+          title="Durasi Konseling"
+          name="duration"
+          selected={duration.toString()}
+          options={Object.fromEntries(
+            Object.keys(pricingMap).map((d) => [d.toString(), d.toString()])
+          )}
+          onChange={handleDurationChange}
+          labelMapper={(key) => `${key} jam`}
+        />
+      )
+    }
+    return null;
+  };
+
+  const renderExpertOption = () => {
+    if (type === "service") {
+      return (
+        <Option
+          title="Expert"
+          name="level"
+          selected={level}
+          options={Object.fromEntries(
+            Object.keys(pricingMap[duration] || {}).map((lvl) => [lvl, lvl])
+          )}
+          onChange={handleLevelChange}
+          labelMapper={(key) => levelLabeling[key] || key}
+        />
+      )
+    }
+    return null;
+  };
+
+  const renderLocationOption = () => {
+    if (type === "service") {
+      return isLocationBased && (
+        <Option
+          title="Lokasi"
+          name="location"
+          selected={locationValue}
+          options={Object.fromEntries(
+            Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
+          )}
+          onChange={handleLocationChange}
+        />
+      )
+    }
+    return null;
+  };
+
+  const renderDescription = () => {
+    if (type !== "class") {
+      return (
+        <>
           {descriptions.map((description, index) => (
             <Fragment key={description.sharedDescriptionId}>
               <Description data={description} secondData={detailData} />
             </Fragment>
           ))}
+        </>
+      )
+    } else {
+      return (
+        <div dangerouslySetInnerHTML={{ __html: detailData.description }} />
+      )
+    }
+  };
 
-          <div>
-            <b>Perhatian :</b>
-            <ol className="detailPageNoticeOrderedList">
-              {notices.map((notice, index) => (
-                <Fragment key={notice.sharedDescriptionId}>
-                  <li>
-                    {
-                      <span
-                        dangerouslySetInnerHTML={{ __html: notice.description }}
-                      />
-                    }
-                  </li>
-                </Fragment>
-              ))}
-            </ol>
-          </div>
-
-          <div className="shareWrapper" onClick={handleShareClick}>
-            <FiShare />
-            <button>Share</button>
-          </div>
-        </div>
-      </div>
-
-      {Number(commentCount.total) !== 0 && (
+  const renderComment = () => {
+    if (commentCount.total !== undefined && Number(commentCount.total) !== 0) {
+      return (
         <>
           <div className="starRatingTitleWrapper">
             <Typography variant="h5">Ulasan pelanggan</Typography>
@@ -436,7 +482,95 @@ const DetailPage = () => {
             onPageChange={setCurrentPage}
           />
         </>
-      )}
+      )
+    }
+  };
+
+  return (
+    <div style={{ margin: "0 70px" }}>
+      <div className="detailPageWrapper">
+
+        {renderImage()}
+
+        <div className="detailPageContent">
+          <Typography variant="body1">prends</Typography>
+          <Typography variant="h3" className="detailPageTitle">
+            {detailData.name}
+          </Typography>
+
+          {renderRating()}
+
+          {renderPrice()}
+
+          {renderDurasiOption()}
+
+          {renderExpertOption()}
+
+          {renderLocationOption()}
+
+          <div className="quantityWrapper">
+            <Typography
+              variant="body2"
+              className="detailPageLegend"
+              sx={{ marginBottom: "8px" }}
+            >
+              Jumlah
+            </Typography>
+            <div className="quantityInputWrapper">
+              <button
+                onClick={handleDecreaseQuantity}
+                aria-label="Decrease quantity"
+              >
+                <FiMinus />
+              </button>
+              <input
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={handleQuantityChange}
+                readOnly
+              />
+              <button
+                onClick={handleIncreaseQuantity}
+                aria-label="Increase quantity"
+              >
+                <FiPlus />
+              </button>
+            </div>
+          </div>
+
+          <div className="transactionButtonWrapper">
+            <button className="basketBtn">Tambahkan ke keranjang</button>
+            <button className="buyBtn">Beli sekarang</button>
+          </div>
+
+          {renderDescription()}
+
+          <div>
+            <b>Perhatian :</b>
+            <ol className="detailPageNoticeOrderedList">
+              {notices.map((notice, index) => (
+                <Fragment key={notice.sharedDescriptionId}>
+                  <li>
+                    {
+                      <span
+                        dangerouslySetInnerHTML={{ __html: notice.description }}
+                      />
+                    }
+                  </li>
+                </Fragment>
+              ))}
+            </ol>
+          </div>
+
+          <div className="shareWrapper" onClick={handleShareClick}>
+            <FiShare />
+            <button>Share</button>
+          </div>
+        </div>
+      </div>
+
+      {renderComment()}
 
       <div className="recommendationWrapper">
         <Typography variant="h4">You may also like</Typography>

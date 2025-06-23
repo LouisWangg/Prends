@@ -5,7 +5,7 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 
-const getCombinedRecommendations = async (req, res) => {
+const getIndividualCounselingRecommendations = async (req, res) => {
     try {
         const { excludeId, type } = req.query;
 
@@ -93,10 +93,10 @@ const getCombinedRecommendations = async (req, res) => {
         res.json(combined);
     } catch (error) {
         console.error(error.message);
-        res.status(500).send("Server error on getCombinedRecommendations");
+        res.status(500).send("Server error on getIndividualCounselingRecommendations");
     }
 };
 
 module.exports = {
-    getCombinedRecommendations
+    getIndividualCounselingRecommendations
 };

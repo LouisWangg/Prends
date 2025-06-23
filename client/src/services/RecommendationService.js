@@ -3,9 +3,9 @@ import axios from "axios";
 const url = "http://localhost:5000/recommendations/";
 
 // Get combined Recommendation datas for Individual Konseling Detail Page
-export const fetchCombinedRecommendations = async (excludeId, type) => {
+export const fetchIndividualCounselingRecommendations = async (excludeId, type) => {
   try {
-    const response = await axios.get(`${url}/getCombinedRecommendations`, {
+    const response = await axios.get(`${url}/getIndividualCounselingRecommendations`, {
         params: {excludeId, type}
     });
     return response.data;

@@ -33,6 +33,26 @@ const getHomePageClasses = async (req, res) => {
   }
 };
 
+// Get Class detail data by Id
+const getClassDetailById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await ClassModel.findByPk(id);
+
+    if (!data) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    const convertedData = data.get({ plain: true });
+    convertedData.image = convertedData.image ? convertedData.image.toString("base64") : null;
+
+    res.json(convertedData);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error on getClassDetailById");
+  }
+};
+
 // Upload image by id
 const uploadImage = async (req, res) => {
   try {
@@ -42,7 +62,7 @@ const uploadImage = async (req, res) => {
     // Upload an image for a specific class
     await ClassModel.update(
       { image: req.file.buffer },
-      { where: { classId: id }}
+      { where: { classId: id } }
     );
 
     res.send("Class image uploaded successfully");
@@ -54,5 +74,6 @@ const uploadImage = async (req, res) => {
 
 module.exports = {
   getHomePageClasses,
+  getClassDetailById,
   uploadImage,
 };

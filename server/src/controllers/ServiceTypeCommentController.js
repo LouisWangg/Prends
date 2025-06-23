@@ -33,7 +33,7 @@ const getServiceCommentsById = async (req, res) => {
     const datas = await ServiceTypeCommentModel.findAll({
       attributes: [
         "serviceTypeCommentId", "userId", "title", "description", "ratingOne", "ratingTwo",
-        "ratingThree", "ratingFour", "ratingFive", 
+        "ratingThree", "ratingFour", "ratingFive", "createdAt", 
         [Sequelize.literal(`TO_CHAR("ServiceTypeComment"."createdAt", 'DD/MM/YYYY')`), 'createdAtFormatted']
       ],
       include: [

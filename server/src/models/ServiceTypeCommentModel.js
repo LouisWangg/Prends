@@ -17,7 +17,7 @@ const ServiceTypeComment = sequelize.define('ServiceTypeComment', {
     },
     title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     description: {
         type: DataTypes.TEXT,

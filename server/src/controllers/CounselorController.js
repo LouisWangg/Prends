@@ -65,6 +65,40 @@ const getHomePageCounselors = async (req, res) => {
   }
 };
 
+// Get Counselor detail data by Id
+const getCounselorDetailById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await CounselorModel.findByPk(id, {
+      include: [
+        {
+          model: CounselorImageModel,
+          attributes: ["image"],
+        },
+      ],
+    });
+
+    if (!data) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    const convertedData = data.get({ plain: true });
+
+    if (convertedData.CounselorImageModel && convertedData.CounselorImageModel.length > 0) {
+      convertedData.CounselorImageModel = convertedData.CounselorImageModel.map((img) => ({
+        ...img,
+        image: img.image ? img.image.toString("base64") : null,
+      }));
+    }
+
+    res.json(convertedData);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error on getCounselorDetailById");
+  }
+};
+
 module.exports = {
-  getHomePageCounselors
+  getHomePageCounselors,
+  getCounselorDetailById
 };

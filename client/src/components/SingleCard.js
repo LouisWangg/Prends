@@ -8,32 +8,21 @@ import "./ArticleCard.css";
 const SingleCard = ({ type, data }) => {
   const navigate = useNavigate();
 
-  let imageData, singleCardContent;
+  let id, imageData, singleCardContent;
   const singleCard = data;
 
   if (type.includes("Service")) {
+    id = singleCard.serviceTypeId;
     imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
   } else if (type.includes("Class")) {
+    id = singleCard.classId;
     imageData = singleCard?.image || null;
   } else if (type.includes("Counselor")) {
+    id = singleCard.counselorId;
     imageData = singleCard?.CounselorImages?.[0]?.image || null;
   } else if (type.includes("Article")) {
     imageData = singleCard?.ArticleImage?.image || null;
   }
-
-  const handleChangePage = () => {
-    let id;
-
-    if (type.includes("Service")) {
-      id = singleCard.serviceTypeId;
-    } else if (type.includes("Class")) {
-      id = singleCard.classId;
-    } else if (type.includes("Counselor")) {
-      id = singleCard.counselorId;
-    }
-
-    navigate(`/detail-page/${type.toLowerCase()}/${id}`);
-  };
 
   if (
     type.includes("Service") ||
@@ -72,25 +61,6 @@ const SingleCard = ({ type, data }) => {
         </CardContent>
       </Card>
     );
-    // } else if (type.includes("Level")) {
-    //     singleCardContent = (
-    //         <Card className="singleCard">
-    //             <CardMedia
-    //                 component="img"
-    //                 src={singleCard.image}
-    //                 alt={singleCard.title}
-    //                 className="singleCardImage"
-    //             />
-    //             <CardContent sx={{ textAlign: "center" }}>
-    //                 <Typography variant="subtitle1" sx={{ marginBottom: "5px" }}>
-    //                     {singleCard.title}
-    //                 </Typography>
-    //                 <Typography variant="caption" className="singleCardPrice">
-    //                     {singleCard.date}
-    //                 </Typography>
-    //             </CardContent>
-    //         </Card>
-    //     );
   } else if (type.includes("HomeArticle")) {
     singleCardContent = (
       <Card className="articleCard">
@@ -132,7 +102,16 @@ const SingleCard = ({ type, data }) => {
     );
   }
 
-  return <div onClick={handleChangePage}>{singleCardContent}</div>;
+  return <a
+    href={`/detail-page/${type.toLowerCase()}/${id}`}
+    onClick={(e) => {
+      e.preventDefault();
+      navigate(`/detail-page/${type.toLowerCase()}/${id}`);
+    }}
+    style={{ textDecoration: "none", color: "inherit" }}
+  >
+    {singleCardContent}
+  </a>;
 };
 
 export default SingleCard;

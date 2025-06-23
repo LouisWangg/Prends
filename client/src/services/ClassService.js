@@ -12,3 +12,14 @@ export const fetchHomePageClasses = async () => {
     return null;
   }
 };
+
+// Get Class detail data by ID
+export const fetchClassDetailById = async (id) => {
+  try {
+    const response = await axios.get(`${url}/getClassDetailById/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch Class detail data by id: ${id}`, error);
+    return null;
+  }
+};

@@ -12,3 +12,15 @@ export const fetchHomePageCounselors = async () => {
     return null;
   }
 };
+
+// Get Counselor detail data by ID
+export const fetchCounselorDetailById = async (id) => {
+  try {
+    const response = await axios.get(`${url}/getCounselorDetailById/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch Counselor detail data by id: ${id}`, error);
+    return null;
+  }
+};
+
