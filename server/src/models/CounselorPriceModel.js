@@ -19,11 +19,11 @@ const CounselorPrice = sequelize.define("CounselorPrice", {
         type: DataTypes.STRING,
         allowNull: true
     },
-    counselorDiscountFlag: {
-        type: DataTypes.INTEGER,
+    counselingDiscountFlag: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    counselorDiscountPrice: {
+    counselingDiscountPrice: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

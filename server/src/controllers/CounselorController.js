@@ -84,8 +84,8 @@ const getCounselorDetailById = async (req, res) => {
 
     const convertedData = data.get({ plain: true });
 
-    if (convertedData.CounselorImageModel && convertedData.CounselorImageModel.length > 0) {
-      convertedData.CounselorImageModel = convertedData.CounselorImageModel.map((img) => ({
+    if (convertedData.CounselorImages && convertedData.CounselorImages.length > 0) {
+      convertedData.CounselorImages = convertedData.CounselorImages.map((img) => ({
         ...img,
         image: img.image ? img.image.toString("base64") : null,
       }));

@@ -192,6 +192,19 @@ const DetailPage = () => {
     getIndividualCounselingRecommendations
   ]);
 
+  useEffect(() => {
+    if (type === "counselor") {
+      getDetailData();
+      getDescriptionsAndNotices();
+      getIndividualCounselingRecommendations();
+    }
+  }, [
+    type,
+    getDetailData,
+    getDescriptionsAndNotices,
+    getIndividualCounselingRecommendations
+  ]);
+
   const isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
   if (type === "service") {
@@ -250,6 +263,19 @@ const DetailPage = () => {
             src={
               detailData?.image
                 ? `data:image/jpeg;base64,${detailData.image}`
+                : null
+            }
+            alt={detailData.name}
+          />
+        </div>
+      )
+    } else if (type === "counselor") {
+      return (
+        <div className="detailPageImage">
+          <img
+            src={
+              detailData?.CounselorImages?.[0]?.image
+                ? `data:image/jpeg;base64,${detailData.CounselorImages[0].image}`
                 : null
             }
             alt={detailData.name}
