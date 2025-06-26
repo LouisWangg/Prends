@@ -11,7 +11,7 @@ const Description = ({ data, secondData }) => {
         <Fragment>
             <div className="descriptionText">
                 <b>{data.title}</b>
-                <p dangerouslySetInnerHTML={{ __html: descriptionContent }} />
+                <div dangerouslySetInnerHTML={{ __html: descriptionContent }} />
             </div>
         </Fragment>
     );
