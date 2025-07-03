@@ -17,7 +17,7 @@ const CounselorComment = sequelize.define('CounselorComment', {
     },
     title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     description: {
         type: DataTypes.TEXT,

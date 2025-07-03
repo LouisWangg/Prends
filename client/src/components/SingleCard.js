@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
-import formatToRupiah from "../utils/FormatPrice";
+import { HiStar } from "react-icons/hi";
+
 import "./SingleCard.css";
 import "./ArticleCard.css";
+import formatToRupiah from "../utils/FormatPrice";
 
 const SingleCard = ({ type, data }) => {
   const navigate = useNavigate();
@@ -43,6 +45,18 @@ const SingleCard = ({ type, data }) => {
         <CardContent className="singleCardContent">
           <Typography variant="subtitle1">
             {singleCard.name}
+          </Typography>
+          <Typography variant="body2">
+            {type === 'Counselor' ? (
+              <div className="singleCardStarWrapper">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <HiStar key={i} className="cardStarSize" />
+                ))}
+                <span>({singleCard.commentCount})</span>
+              </div>
+            ) : (
+              <></>
+            )}
           </Typography>
           <Typography variant="caption" className="singleCardPrice">
             {singleCard.discountFlag ? (

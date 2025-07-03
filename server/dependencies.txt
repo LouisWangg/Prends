@@ -12,6 +12,7 @@ information, by storing them in a .env file instead of hardcoding them into your
 - multer = handle file uploads
 
 - git rm = remove node_modules folder from Github repository
+- git pull origin 'the name of repository' = pull from git
 - npm install = dependencies used for production too 
 - npm install --save-dev = dependencies used only for development
 

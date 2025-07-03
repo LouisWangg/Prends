@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useCallback } from "react";
+import React, { Fragment, useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
@@ -26,7 +26,9 @@ import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionServic
 import { fetchIndividualCounselingRecommendations } from "../services/RecommendationService";
 
 import { fetchClassDetailById } from "../services/ClassService";
+
 import { fetchCounselorDetailById } from "../services/CounselorService";
+import { fetchCounselorPricingById } from "../services/CounselorPriceService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -48,6 +50,7 @@ const DetailPage = () => {
   const [commentCount, setCommentCount] = useState([]);
 
   const commentsPerPage = 5;
+  const topCommentRef = useRef(null);
   const [currentPage, setCurrentPage] = useState((1));
 
   const [recomendations, setRecommendations] = useState([]);
@@ -89,6 +92,19 @@ const DetailPage = () => {
     setSortOption(newSort);
     setCurrentPage(1); // 🔥 reset to first page
     await getServiceCommentsById(newSort);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+
+    setTimeout(() => {
+      const element = topCommentRef.current;
+      const navbar = document.querySelector(".navbarWrapper.sticky"); // grab the sticky nav if it's active
+      const yOffset = navbar ? -navbar.offsetHeight : -80; // fallback if sticky isn't applied
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }, 0);
   };
 
   const getDescriptionsAndNotices = useCallback(async () => {
@@ -145,6 +161,26 @@ const DetailPage = () => {
         }
         return acc;
       }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+    } else if (type === "counselor") {
+      data = await fetchCounselorPricingById(id);
+      grouped = data.reduce((acc, item) => {
+        const {
+          duration,
+          counselingType,
+          price,
+          counselingDiscountFlag,
+          counselingDiscountPrice,
+        } = item;
+
+        if (!acc[duration]) acc[duration] = {};
+        acc[duration][counselingType] = {
+          price,
+          serviceDiscountFlag,
+          serviceDiscountPrice,
+        };
+
+        return acc;
+      }, {});
     }
 
     setPricingMap(grouped);
@@ -241,6 +277,17 @@ const DetailPage = () => {
     (currentPage - 1) * commentsPerPage,
     currentPage * commentsPerPage
   );
+
+  const getRecomendationKey = (item) => {
+    switch (item.itemType) {
+      case "counselor":
+        return `counselor-${item.counselorId}`;
+      case "service":
+        return `service-${item.serviceTypeId}`;
+      default:
+        return `${item.itemType}-${Math.random()}`; // safe fallback
+    }
+  };
 
   const renderImage = () => {
     if (type === "service") {
@@ -431,7 +478,9 @@ const DetailPage = () => {
                 <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
               </div>
             </div>
+
             <div className="starRatingLine" />
+
             <div className="starRatingRightWrapper">
               {[5, 4, 3, 2, 1].map((starCount, index) => {
                 const count = eachCount[starCount] || 0;
@@ -464,6 +513,7 @@ const DetailPage = () => {
           </div>
 
           <hr className="detailPageLine" />
+
           <div className="diamondWrapper">
             <a
               href="https://judge.me/reviews/stores/kleeverse.com"
@@ -486,6 +536,8 @@ const DetailPage = () => {
               <img src={judgeMeIcon} alt="Judge Me Verified Icon" />
             </div>
           </div>
+
+          <div ref={topCommentRef}></div>
           <hr className="detailPageLine" />
 
           <select
@@ -496,6 +548,7 @@ const DetailPage = () => {
             <option value="newest">Terbaru</option>
             <option value="oldest">Terlama</option>
           </select>
+
           <hr className="detailPageLine" />
 
           {paginatedComments.map((comment) => (
@@ -505,7 +558,7 @@ const DetailPage = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         </>
       )
@@ -603,7 +656,7 @@ const DetailPage = () => {
         <HomeSection title="" subTitle="" columns={4} style={{ margin: "0px" }}>
           {recomendations.map((recomendation) => (
             <SingleCard
-              key={`${recomendation.itemType}-${recomendation.counselorId || recomendation.serviceTypeId}`}
+              key={getRecomendationKey(recomendation)}
               type={recomendation.itemType}
               data={recomendation} style={{ margin: "0px" }}
             />

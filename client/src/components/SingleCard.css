@@ -47,6 +47,14 @@
   padding-right: 0 !important;
 }
 
+.cardStarSize {
+  margin-right: 6px;
+}
+
+.cardStarSize:last-of-type {
+  margin-right: 10px;
+}
+
 .singleCardPrice {
   font-size: 16px;
   font-weight: 500;
@@ -70,9 +78,8 @@
   right: 8px;
   background-color: black;
   color: white;
-  padding: 5px 18px 5px 18px;
+  padding: 4px 16px;
   font-size: 12px;
-  font-weight: bold;
   border-radius: 20px;
   z-index: 2;
 }
