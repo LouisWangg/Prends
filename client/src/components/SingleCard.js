@@ -47,7 +47,7 @@ const SingleCard = ({ type, data }) => {
             {singleCard.name}
           </Typography>
           <Typography variant="body2">
-            {type === 'Counselor' ? (
+            {type === 'Counselor' && singleCard.commentCount !== undefined ? (
               <div className="singleCardStarWrapper">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <HiStar key={i} className="cardStarSize" />

@@ -175,8 +175,8 @@ const DetailPage = () => {
         if (!acc[duration]) acc[duration] = {};
         acc[duration][counselingType] = {
           price,
-          serviceDiscountFlag,
-          serviceDiscountPrice,
+          counselingDiscountFlag,
+          counselingDiscountPrice,
         };
 
         return acc;
