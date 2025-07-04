@@ -43,7 +43,7 @@ const CommentSection = ({ data }) => {
             </div>
             <div className="contentWrapper">
                 <p><b>{data?.title}</b></p>
-                <p>{data.description}</p>
+                <p dangerouslySetInnerHTML={{ __html: data.description }} />
             </div>
             <hr className="detailPageLine" />
         </div>

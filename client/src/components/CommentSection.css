@@ -25,7 +25,19 @@
   margin-right: 50px;
 }
 
+.contentWrapper::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .contentWrapper p {
   margin-bottom: 6px;
   text-align: justify;
+}
+
+.contentWrapper p img {
+  float: left;
+  width: 100px;
+  height: auto;
 }

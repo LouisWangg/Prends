@@ -26,7 +26,7 @@ const getDescriptionsAndNotices = async (req, res) => {
     let descriptionIds = [];
     let noticeIds = [];
 
-    if (type.includes("service") && ((idNum) => 1 && idNum <= 4)) {
+    if (type.includes("service")) {
       if (idNum < 3) {
         descriptionIds.push(8, 9, 10, 11);
         noticeIds.push(1, 2, 3);
@@ -40,6 +40,14 @@ const getDescriptionsAndNotices = async (req, res) => {
     } else if (type.includes("class")) {
       noticeIds.push(1, 7);
     } else if (type.includes("counselor")) {
+      if (idNum < 4) {
+        descriptionIds.push(17, 20);
+      } else if (idNum > 3 && idNum < 7) {
+        descriptionIds.push(18, 20);
+      } else if (idNum > 6) {
+        descriptionIds.push(19, 20);
+      }
+      noticeIds.push(1, 2, 4);
     }
 
     const orderClause = (ids) => [
@@ -49,7 +57,7 @@ const getDescriptionsAndNotices = async (req, res) => {
     ];
 
     const fetchDescriptions = descriptionIds.length > 0
-      ?  SharedDescriptionModel.findAll({
+      ? SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
         order: orderClause(descriptionIds),
@@ -58,7 +66,7 @@ const getDescriptionsAndNotices = async (req, res) => {
     ;
 
     const fetchNotices = noticeIds.length > 0
-      ?  SharedDescriptionModel.findAll({
+      ? SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: noticeIds } },
         order: orderClause(noticeIds),

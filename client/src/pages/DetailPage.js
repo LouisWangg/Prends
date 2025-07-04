@@ -29,6 +29,8 @@ import { fetchClassDetailById } from "../services/ClassService";
 
 import { fetchCounselorDetailById } from "../services/CounselorService";
 import { fetchCounselorPricingById } from "../services/CounselorPriceService";
+import { fetchCounselorCommentsById } from "../services/CounselorCommentService";
+import { fetchCounselorRecommendations } from "../services/RecommendationService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -36,6 +38,7 @@ const DetailPage = () => {
   const [duration, setDuration] = useState(1);
   const [level, setLevel] = useState("junior");
   const [locationValue, setLocationValue] = useState("Tanah Abang - Jakarta");
+  const [counselingType, setCounselingType] = useState("Online Chat Individu");
 
   const [quantity, setQuantity] = useState(1);
 
@@ -53,7 +56,7 @@ const DetailPage = () => {
   const topCommentRef = useRef(null);
   const [currentPage, setCurrentPage] = useState((1));
 
-  const [recomendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -65,6 +68,10 @@ const DetailPage = () => {
 
   const handleLocationChange = (event) => {
     setLocationValue(event.target.value);
+  };
+
+  const handleCounselingTypeChange = (event) => {
+    setCounselingType(event.target.value);
   };
 
   const handleDecreaseQuantity = () => {
@@ -91,7 +98,7 @@ const DetailPage = () => {
     const newSort = e.target.value;
     setSortOption(newSort);
     setCurrentPage(1); // 🔥 reset to first page
-    await getServiceCommentsById(newSort);
+    await getCommentData(newSort);
   };
 
   const handlePageChange = (page) => {
@@ -130,7 +137,7 @@ const DetailPage = () => {
   const getPricingData = useCallback(async () => {
     let data, grouped;
 
-    if (type === "service") {
+    if (type.includes("service")) {
       data = await fetchServicePricingById(id);
       grouped = data.reduce((acc, item) => {
         const {
@@ -161,7 +168,7 @@ const DetailPage = () => {
         }
         return acc;
       }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
-    } else if (type === "counselor") {
+    } else if (type.includes("counselor")) {
       data = await fetchCounselorPricingById(id);
       grouped = data.reduce((acc, item) => {
         const {
@@ -186,64 +193,79 @@ const DetailPage = () => {
     setPricingMap(grouped);
   }, [type, id]);
 
-  const getServiceCommentsById = useCallback(async (sort = sortOption) => {
-    const datas = await fetchServiceCommentsById(id, sort);
+  const getCommentData = useCallback(async (sort = sortOption) => {
+    let datas;
+    if (type.includes("service")) {
+      datas = await fetchServiceCommentsById(id, sort);
+    } else if (type.includes("counselor")) {
+      datas = await fetchCounselorCommentsById(id, sort);
+    }
+
     setComments(datas.datas);
     setCommentCount(datas.counts);
-  }, [id, sortOption]);
+  }, [type, id, sortOption]);
 
-  const getIndividualCounselingRecommendations = useCallback(async () => {
-    const datas = await fetchIndividualCounselingRecommendations(id, "Individual");
+  const getRecommendationData = useCallback(async () => {
+    let datas;
+    if (type.includes("service") || type.includes("class")) {
+      datas = await fetchIndividualCounselingRecommendations(id, "Individual");
+    } else if (type.includes("counselor")) {
+      datas = await fetchCounselorRecommendations(id, detailData.level);
+    }
     setRecommendations(datas);
-  }, [id]);
+  }, [type, id, detailData.level]);
 
   //bedain useEffect pas type nya class
   useEffect(() => {
-    if (type === "service") {
+    if (type.includes("service")) {
       getDetailData();
-      getDescriptionsAndNotices();
       getPricingData();
-      getServiceCommentsById();
-      getIndividualCounselingRecommendations();
+      getDescriptionsAndNotices();
+      getCommentData();
+      getRecommendationData();
     }
   }, [
     type,
     getDetailData,
-    getDescriptionsAndNotices,
     getPricingData,
-    getServiceCommentsById,
-    getIndividualCounselingRecommendations
+    getDescriptionsAndNotices,
+    getCommentData,
+    getRecommendationData
   ]);
 
   useEffect(() => {
-    if (type === "class") {
+    if (type.includes("class")) {
       getDetailData();
       getDescriptionsAndNotices();
-      getIndividualCounselingRecommendations();
+      getRecommendationData();
     }
   }, [
     type,
     getDetailData,
     getDescriptionsAndNotices,
-    getIndividualCounselingRecommendations
+    getRecommendationData
   ]);
 
   useEffect(() => {
-    if (type === "counselor") {
+    if (type.includes("counselor")) {
       getDetailData();
+      getPricingData();
       getDescriptionsAndNotices();
-      getIndividualCounselingRecommendations();
+      getCommentData();
+      getRecommendationData();
     }
   }, [
     type,
     getDetailData,
+    getPricingData,
     getDescriptionsAndNotices,
-    getIndividualCounselingRecommendations
+    getCommentData,
+    getRecommendationData
   ]);
 
   const isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
-  if (type === "service") {
+  if (type.includes("service")) {
     const isLocationBased = typeof pricingMap[duration]?.[level]?.[Object.keys(pricingMap[duration]?.[level] || {})[0]] === "object";
 
     if (isLocationBased) {
@@ -255,6 +277,10 @@ const DetailPage = () => {
       undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
       discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
     }
+  } else if (type.includes("counselor")) {
+    discountFlag = pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
+    undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
+    discountedPrice = pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
   }
 
   const eachCount = {
@@ -278,19 +304,19 @@ const DetailPage = () => {
     currentPage * commentsPerPage
   );
 
-  const getRecomendationKey = (item) => {
+  const getRecommendationKey = (item) => {
     switch (item.itemType) {
-      case "counselor":
-        return `counselor-${item.counselorId}`;
       case "service":
         return `service-${item.serviceTypeId}`;
+      case "counselor":
+        return `counselor-${item.counselorId}`;
       default:
         return `${item.itemType}-${Math.random()}`; // safe fallback
     }
   };
 
   const renderImage = () => {
-    if (type === "service") {
+    if (type.includes("service")) {
       return (
         <div className="detailPageImage">
           <img
@@ -303,7 +329,7 @@ const DetailPage = () => {
           />
         </div>
       )
-    } else if (type === "class") {
+    } else if (type.includes("class")) {
       return (
         <div className="detailPageImage">
           <img
@@ -316,7 +342,7 @@ const DetailPage = () => {
           />
         </div>
       )
-    } else if (type === "counselor") {
+    } else if (type.includes("counselor")) {
       return (
         <div className="detailPageImage">
           <img
@@ -346,7 +372,7 @@ const DetailPage = () => {
   };
 
   const renderPrice = () => {
-    if (type === "service") {
+    if (type.includes("service") || type.includes("counselor")) {
       return (
         <Typography variant="h6">
           {discountFlag ? (
@@ -365,7 +391,7 @@ const DetailPage = () => {
           )}
         </Typography>
       );
-    } else if (type === "class") {
+    } else if (type.includes("class")) {
       return (
         <Typography variant="h6">
           {detailData.discountFlag ? (
@@ -388,7 +414,7 @@ const DetailPage = () => {
   };
 
   const renderDurasiOption = () => {
-    if (type === "service") {
+    if (type.includes("service") || type.includes("counselor")) {
       return (
         <Option
           title="Durasi Konseling"
@@ -406,7 +432,7 @@ const DetailPage = () => {
   };
 
   const renderExpertOption = () => {
-    if (type === "service") {
+    if (type.includes("service")) {
       return (
         <Option
           title="Expert"
@@ -424,7 +450,7 @@ const DetailPage = () => {
   };
 
   const renderLocationOption = () => {
-    if (type === "service") {
+    if (type.includes("service")) {
       return isLocationBased && (
         <Option
           title="Lokasi"
@@ -434,6 +460,23 @@ const DetailPage = () => {
             Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
           )}
           onChange={handleLocationChange}
+        />
+      )
+    }
+    return null;
+  };
+
+  const renderCounselingTypeOption = () => {
+    if (type.includes("counselor")) {
+      return (
+        <Option
+          title="Jenis Konseling"
+          name="counselingType"
+          selected={counselingType}
+          options={Object.fromEntries(
+            Object.keys(pricingMap[duration] || {}).map((type) => [type, type])
+          )}
+          onChange={handleCounselingTypeChange}
         />
       )
     }
@@ -587,6 +630,8 @@ const DetailPage = () => {
 
           {renderLocationOption()}
 
+          {renderCounselingTypeOption()}
+
           <div className="quantityWrapper">
             <Typography
               variant="body2"
@@ -654,11 +699,11 @@ const DetailPage = () => {
       <div className="recommendationWrapper">
         <Typography variant="h4">You may also like</Typography>
         <HomeSection title="" subTitle="" columns={4} style={{ margin: "0px" }}>
-          {recomendations.map((recomendation) => (
+          {recommendations.map((recommendation) => (
             <SingleCard
-              key={getRecomendationKey(recomendation)}
-              type={recomendation.itemType}
-              data={recomendation} style={{ margin: "0px" }}
+              key={getRecommendationKey(recommendation)}
+              type={recommendation.itemType}
+              data={recommendation} style={{ margin: "0px" }}
             />
           ))}
         </HomeSection>

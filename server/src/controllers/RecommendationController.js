@@ -73,14 +73,14 @@ const getIndividualCounselingRecommendations = async (req, res) => {
             limit: counselorLimit
         });
 
-        // Convert image buffer to base64
         const convertedCounselors = counselors.map((item) => {
             const plain = item.get({ plain: true });
 
             if (plain.CounselorImages && plain.CounselorImages.length > 0) {
+                // Assuming one image per serviceType, take the first image buffer
                 plain.CounselorImages = plain.CounselorImages.map((img) => ({
                     ...img,
-                    image: img.image ? img.image.toString("base64") : null
+                    image: img.image ? img.image.toString("base64") : null,
                 }));
             }
 
@@ -97,6 +97,99 @@ const getIndividualCounselingRecommendations = async (req, res) => {
     }
 };
 
+const getCounselorRecommendations = async (req, res) => {
+    try {
+        const { excludeId, level } = req.query;
+
+        const sameLevelCounselors = await CounselorModel.findAll({
+            attributes: [
+                "counselorId",
+                "name",
+                "price",
+                "discountFlag",
+                "discountPrice",
+                "itemType"
+            ],
+            where: {
+                ...(level && { level }),
+                ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
+            },
+            include: [
+                {
+                    model: CounselorImageModel,
+                    attributes: ["image"]
+                }
+            ],
+            order: [['counselorId', 'ASC']],
+            limit: 4
+        });
+
+        const convertedSameLevelCounselors = sameLevelCounselors.map((item) => {
+            const plain = item.get({ plain: true });
+
+            if (plain.CounselorImages && plain.CounselorImages.length > 0) {
+                plain.CounselorImages = plain.CounselorImages.map((img) => ({
+                    ...img,
+                    image: img.image ? img.image.toString("base64") : null,
+                }));
+            }
+
+            return plain;
+        });
+
+        // If enough same-level counselors, return
+        if (convertedSameLevelCounselors.length == 4) {
+            return res.json(convertedSameLevelCounselors);
+        }
+
+        // Fill the remaining with senior-level counselors
+        const remainingCounselors = 4 - convertedSameLevelCounselors.length;
+
+        const seniorCounselors = await CounselorModel.findAll({
+            attributes: [
+                "counselorId",
+                "name",
+                "price",
+                "discountFlag",
+                "discountPrice",
+                "itemType"
+            ],
+            where: {
+                level: "Senior",
+                ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
+            },
+            include: [
+                {
+                    model: CounselorImageModel,
+                    attributes: ["image"],
+                },
+            ],
+            order: Sequelize.literal("RANDOM()"),
+            limit: remainingCounselors,
+        });
+
+        const convertedSeniorCounselors = seniorCounselors.map((item) => {
+            const plain = item.get({ plain: true });
+
+            if (plain.CounselorImages && plain.CounselorImages.length > 0) {
+                plain.CounselorImages = plain.CounselorImages.map((img) => ({
+                    ...img,
+                    image: img.image ? img.image.toString("base64") : null,
+                }));
+            }
+
+            return plain;
+        });
+
+        const combined = [...convertedSameLevelCounselors, ...convertedSeniorCounselors];
+        res.json(combined);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error on getCounselorRecommendations");
+    }
+};
+
 module.exports = {
-    getIndividualCounselingRecommendations
+    getIndividualCounselingRecommendations,
+    getCounselorRecommendations
 };

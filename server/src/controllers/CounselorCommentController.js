@@ -1,24 +1,9 @@
 const { Op, Sequelize, fn, col } = require("sequelize");
-const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 const UserModel = require("../models/UserModel");
+const CounselorCommentModel = require("../models/CounselorCommentModel");
 
-// Get Comment datas for Home page
-const getHomePageComments = async (req, res) => {
-  try {
-    const datas = await ServiceTypeCommentModel.findAll({
-      attributes: ["serviceTypeCommentId", "title", "description"],
-      order: [['createdAt', 'DESC']],
-      limit: 3
-    });
-    res.json(datas);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server error on running getHomePageComments");
-  }
-};
-
-// Get Comment datas for Service Detail page
-const getServiceCommentsById = async (req, res) => {
+// Get Comment datas for Counselor Detail page
+const getCounselorCommentsById = async (req, res) => {
   try {
     const { id } = req.params;
     const { sort } = req.query;
@@ -30,11 +15,11 @@ const getServiceCommentsById = async (req, res) => {
       orderClause = [['createdAt', 'DESC']];
     }
 
-    const datas = await ServiceTypeCommentModel.findAll({
+    const datas = await CounselorCommentModel.findAll({
       attributes: [
-        "serviceTypeCommentId", "userId", "title", "description", "ratingOne", "ratingTwo",
+        "counselorCommentId", "userId", "title", "description", "ratingOne", "ratingTwo",
         "ratingThree", "ratingFour", "ratingFive", "createdAt", 
-        [Sequelize.literal(`TO_CHAR("ServiceTypeComment"."createdAt", 'DD/MM/YYYY')`), 'createdAtFormatted']
+        [Sequelize.literal(`TO_CHAR("CounselorComment"."createdAt", 'DD/MM/YYYY')`), 'createdAtFormatted']
       ],
       include: [
         {
@@ -44,10 +29,10 @@ const getServiceCommentsById = async (req, res) => {
           ],
         },
       ],
-      where: { serviceTypeId: id },
+      where: { counselorId: id },
       order: orderClause
     });
-    const counts = await ServiceTypeCommentModel.findOne({
+    const counts = await CounselorCommentModel.findOne({
       attributes: [
         [fn('COUNT', col('*')), 'total'],
         [fn('SUM', col('ratingOne')), 'ratingOne'],
@@ -57,7 +42,7 @@ const getServiceCommentsById = async (req, res) => {
         [fn('SUM', col('ratingFive')), 'ratingFive'],
       ],
       where: {
-        serviceTypeId: id
+        counselorId: id
       },
       raw: true
     });
@@ -65,11 +50,10 @@ const getServiceCommentsById = async (req, res) => {
     res.json({ datas, counts });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Server error on running getServiceCommentsById");
+    res.status(500).send("Server error on running getCounselorCommentsById");
   }
 };
 
 module.exports = {
-  getHomePageComments,
-  getServiceCommentsById
+  getCounselorCommentsById
 };
