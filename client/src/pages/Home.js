@@ -5,7 +5,6 @@ import SingleCard from "../components/SingleCard.js";
 import HomeSection from "../components/HomeSection.js";
 import CommentBox from "../components/CommentBox.js";
 import QnaSection from "../components/QnaSection.js";
-import { slides } from "../data/Carousel.js";
 // import { fetchUsers } from "../services/UserService";
 import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
@@ -17,6 +16,7 @@ import "./Home.css";
 
 const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
+  const [slides, setSlides] = useState([]);
   const [qnas, setQnas] = useState([]);
   // const [users, setUsers] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -29,6 +29,16 @@ const Home = () => {
   //   const datas = await fetchUsers();
   //   setUsers(datas);
   // };
+
+  const getCarouselData = async () => {
+  try {
+    const res = await fetch("/data/Carousel.json");
+    const data = await res.json();
+    setSlides(data);
+  } catch (err) {
+    console.error("Failed to fetch carousel data:", err);
+  }
+};
 
   const getHomePageClasses = async () => {
     const datas = await fetchHomePageClasses();
@@ -55,7 +65,7 @@ const Home = () => {
     setServiceTypeComments(datas);
   };
 
-  const getHomePageQnas = async () => {
+  const getQnaData = async () => {
     const datas = await fetchHomePageQnas();
     setQnas(datas);
   };
@@ -65,7 +75,8 @@ const Home = () => {
   // (because of the empty dependency array [])
   useEffect(() => {
     // getUsers();
-    getHomePageQnas();
+    getCarouselData();
+    getQnaData();
     getHomePageClasses();
     getHomePageArticles();
     getHomePageComments();

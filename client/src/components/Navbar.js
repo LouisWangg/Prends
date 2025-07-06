@@ -14,19 +14,19 @@ const Navbar = ({ isSticky }) => {
   const [isClassOpen, setIsClassOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("/");
 
-  const toggleServiceMenu = () => {
+  const handleServiceMenuToggle = () => {
     setIsServiceOpen(!isServiceOpen);
   };
 
-  const toggleExpertMenu = () => {
+  const handleExpertMenuToggle = () => {
     setIsExpertOpen(!isExpertOpen);
   };
 
-  const toggleClassMenu = () => {
+  const handleClassMenuToggle = () => {
     setIsClassOpen(!isClassOpen);
   };
 
-  const handleLinkClick = (path) => {
+  const handleActiveLink = (path) => {
     setActiveLink(path);
   };
 
@@ -42,200 +42,197 @@ const Navbar = ({ isSticky }) => {
   }, []);
 
   return (
-      <div className={`navbarWrapper ${isSticky ? "sticky" : ""}`}>
-        <img src={logo} alt="logo" width={100} height={70} />
-        <ul className="navbarListPage">
-          <li
-            className={`navbarLink ${activeLink === "/" ? "navbarLinkActive" : ""}`}
-            onClick={() => handleLinkClick("/")}
-          >
-            <Link to="/">Beranda</Link>
-          </li>
-          <li
-            className={`navbarLink ${activeLink === "/article" ? "navbarLinkActive" : ""}`}
-            onClick={() => handleLinkClick("/article")}
-          >
-            <Link to="/article">Artikel</Link>
-          </li>
-          <li
-            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
-            onClick={() => {
-              toggleServiceMenu();
-              handleLinkClick("/services");
-            }}
-          >
-            Layanan
-            {isServiceOpen ? (
-              <>
-                <RxChevronUp className="navbarLinkIcon" />
-                <ul className="dropdownMenu">
-                  <li>
-                    <Link
-                      to="/services/topic1"
-                      onClick={() => handleLinkClick("/services/topic1")}
-                    >
-                      Konseling Individu
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic2"
-                      onClick={() => handleLinkClick("/services/topic2")}
-                    >
-                      Konseling Pasangan
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic3"
-                      onClick={() => handleLinkClick("/services/topic3")}
-                    >
-                      Konseling Keluarga
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic4"
-                      onClick={() => handleLinkClick("/services/topic4")}
-                    >
-                      Assessment
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic5"
-                      onClick={() => handleLinkClick("/services/topic5")}
-                    >
-                      Therapy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic6"
-                      onClick={() => handleLinkClick("/services/topic6")}
-                    >
-                      Wawancara
-                    </Link>
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <RxChevronDown className="navbarLinkIcon" />
-            )}
-          </li>
-          <li
-            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
-            onClick={() => {
-              toggleExpertMenu();
-              handleLinkClick("/services");
-            }}
-          >
-            KLEEXPERT
-            {isExpertOpen ? (
-              <>
-                <RxChevronUp className="navbarLinkIcon" />
-                <ul className="dropdownMenu">
-                  <li>
-                    <Link
-                      to="/services/topic9"
-                      onClick={() => handleLinkClick("/services/topic9")}
-                    >
-                      Junior KLEEXPERT
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic10"
-                      onClick={() => handleLinkClick("/services/topic10")}
-                    >
-                      Middle KLEEXPERT
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic11"
-                      onClick={() => handleLinkClick("/services/topic11")}
-                    >
-                      Senior KLEEXPERT
-                    </Link>
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <RxChevronDown className="navbarLinkIcon" />
-            )}
-          </li>
-          <li
-            className={`dropdown navbarLink ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
-            onClick={() => {
-              toggleClassMenu();
-              handleLinkClick("/services");
-            }}
-          >
-            KLEEDEMY
-            {isClassOpen ? (
-              <>
-                <RxChevronUp className="navbarLinkIcon" />
-                <ul className="dropdownMenu">
-                  <li>
-                    <Link
-                      to="/services/topic7"
-                      onClick={() => handleLinkClick("/services/topic7")}
-                    >
-                      Kelas Mendatang
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/topic8"
-                      onClick={() => handleLinkClick("/services/topic8")}
-                    >
-                      Rekaman Kelas
-                    </Link>
-                  </li>
-                </ul>
-              </>
-            ) : (
-              <RxChevronDown className="navbarLinkIcon" />
-            )}
-          </li>
-          <li
-            className={`navbarLink ${activeLink === "/kleemart" ? "navbarLinkActive" : ""}`}
-            onClick={() => handleLinkClick("/kleemart")}
+    <div className={`navbarWrapper ${isSticky ? "sticky" : ""}`}>
+      <img src={logo} alt="logo" height={70} />
+      <ul className="navbarLists">
+        <li
+          className={`${activeLink === "/" ? "navbarLinkActive" : ""}`}
+          onClick={() => handleActiveLink("/")}
+        >
+          <Link to="/">Beranda</Link>
+        </li>
+        <li
+          className={`${activeLink === "/article" ? "navbarLinkActive" : ""}`}
+          onClick={() => handleActiveLink("/article")}
+        >
+          <Link to="/article">Artikel</Link>
+        </li>
+        <li
+          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          onClick={() => {
+            handleServiceMenuToggle();
+            handleActiveLink("/services");
+          }}
+        >
+          Layanan
+          {isServiceOpen ? (
+            <>
+              <RxChevronUp className="navbarLinkIcon" />
+              <ul className="dropdownMenu">
+                <li>
+                  <Link
+                    to="/services/topic1"
+                    onClick={() => handleActiveLink("/services/topic1")}
+                  >
+                    Konseling Individu
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic2"
+                    onClick={() => handleActiveLink("/services/topic2")}
+                  >
+                    Konseling Pasangan
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic3"
+                    onClick={() => handleActiveLink("/services/topic3")}
+                  >
+                    Konseling Keluarga
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic4"
+                    onClick={() => handleActiveLink("/services/topic4")}
+                  >
+                    Assessment
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic5"
+                    onClick={() => handleActiveLink("/services/topic5")}
+                  >
+                    Therapy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic6"
+                    onClick={() => handleActiveLink("/services/topic6")}
+                  >
+                    Wawancara
+                  </Link>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <RxChevronDown className="navbarLinkIcon" />
+          )}
+        </li>
+        <li
+          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          onClick={() => {
+            handleExpertMenuToggle();
+            handleActiveLink("/services");
+          }}
+        >
+          Konseling
+          {isExpertOpen ? (
+            <>
+              <RxChevronUp className="navbarLinkIcon" />
+              <ul className="dropdownMenu">
+                <li>
+                  <Link
+                    to="/services/topic9"
+                    onClick={() => handleActiveLink("/services/topic9")}
+                  >
+                    Junior Expert
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic10"
+                    onClick={() => handleActiveLink("/services/topic10")}
+                  >
+                    Middle Expert
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic11"
+                    onClick={() => handleActiveLink("/services/topic11")}
+                  >
+                    Senior Expert
+                  </Link>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <RxChevronDown className="navbarLinkIcon" />
+          )}
+        </li>
+        <li
+          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          onClick={() => {
+            handleClassMenuToggle();
+            handleActiveLink("/services");
+          }}
+        >
+          Kelas
+          {isClassOpen ? (
+            <>
+              <RxChevronUp className="navbarLinkIcon" />
+              <ul className="dropdownMenu">
+                <li>
+                  <Link
+                    to="/services/topic7"
+                    onClick={() => handleActiveLink("/services/topic7")}
+                  >
+                    Kelas Mendatang
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services/topic8"
+                    onClick={() => handleActiveLink("/services/topic8")}
+                  >
+                    Rekaman Kelas
+                  </Link>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <RxChevronDown className="navbarLinkIcon" />
+          )}
+        </li>
+        {/* <li
+            className={`${activeLink === "/kleemart" ? "navbarLinkActive" : ""}`}
+            onClick={() => handleActiveLink("/kleemart")}
           >
             <Link to="/kleemart">KLEEMART</Link>
-          </li>
-          <li
-            className={`navbarLink ${activeLink === "/aboutUs" ? "navbarLinkActive" : ""}`}
-            onClick={() => handleLinkClick("/aboutUs")}
+          </li> */}
+        <li
+          className={`${activeLink === "/aboutUs" ? "navbarLinkActive" : ""}`}
+          onClick={() => handleActiveLink("/aboutUs")}
+        >
+          <Link to="/aboutUs">Tentang Kami</Link>
+        </li>
+        <li>
+          <a
+            href="https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <Link to="/aboutUs">Tentang Kami</Link>
-          </li>
-          <li
-            onClick={(event) => {
-              event.preventDefault();
-              window.open(
-                "https://api.whatsapp.com/send/?phone=6285172020718&text&type=phone_number&app_absent=0",
-                "_blank",
-                "noopener, noreferrer"
-              );
-            }}
-          >
-            <span className="navbarLink">Bantuan</span>
-          </li>
-        </ul>
-        <div className="navbarButtons">
-          <button className="navbarButton">
-            <SlMagnifier className="navbarIcon" />
-          </button>
-          <Link className="navbarButton" to="/login">
-            <CiUser className="navbarUserIcon" />
-          </Link>
-          <Link className="navbarButton" to="/login">
-            <BsBag className="navbarIcon" />
-          </Link>
-        </div>
+            Bantuan
+          </a>
+        </li>
+      </ul>
+      <div className="navbarButtons">
+        <button className="navbarButton">
+          <SlMagnifier className="navbarIcon" />
+        </button>
+        <Link className="navbarButton" to="/login">
+          <CiUser className="navbarUserIcon" />
+        </Link>
+        <Link className="navbarButton" to="/login">
+          <BsBag className="navbarIcon" />
+        </Link>
       </div>
+    </div>
   );
 };
 

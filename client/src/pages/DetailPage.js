@@ -609,7 +609,7 @@ const DetailPage = () => {
   };
 
   return (
-    <div style={{ margin: "0 70px" }}>
+    <div className="pageWrapper">
       <div className="detailPageWrapper">
 
         {renderImage()}
