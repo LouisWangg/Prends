@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SlMagnifier } from "react-icons/sl";
 import { CiUser } from "react-icons/ci";
 import { BsBag } from "react-icons/bs";
@@ -9,10 +9,14 @@ import "./Navbar.css";
 import logo from "../assets/Logo.png";
 
 const Navbar = ({ isSticky }) => {
+  const location = useLocation();
+  const activePath = location.pathname;
+  const isActive = (path, exact = false) =>
+    exact ? activePath === path : activePath.startsWith(path);
+
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [isExpertOpen, setIsExpertOpen] = useState(false);
   const [isClassOpen, setIsClassOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("/");
 
   const handleServiceMenuToggle = () => {
     setIsServiceOpen(!isServiceOpen);
@@ -24,10 +28,6 @@ const Navbar = ({ isSticky }) => {
 
   const handleClassMenuToggle = () => {
     setIsClassOpen(!isClassOpen);
-  };
-
-  const handleActiveLink = (path) => {
-    setActiveLink(path);
   };
 
   // Close dropdown when clicking outside
@@ -46,22 +46,22 @@ const Navbar = ({ isSticky }) => {
       <img src={logo} alt="logo" height={70} />
       <ul className="navbarLists">
         <li
-          className={`${activeLink === "/" ? "navbarLinkActive" : ""}`}
-          onClick={() => handleActiveLink("/")}
+          className={`${isActive("/", true) ? "navbarLinkActive" : ""}`}
         >
           <Link to="/">Beranda</Link>
         </li>
         <li
-          className={`${activeLink === "/article" ? "navbarLinkActive" : ""}`}
-          onClick={() => handleActiveLink("/article")}
+          className={`${isActive("/article") ? "navbarLinkActive" : ""}`}
         >
           <Link to="/article">Artikel</Link>
         </li>
         <li
-          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          className={`dropdown 
+            ${isActive("/service") ? "navbarLinkActive" : ""}
+            ${isServiceOpen ? "dropdownOpen" : ""}
+          `}
           onClick={() => {
             handleServiceMenuToggle();
-            handleActiveLink("/services");
           }}
         >
           Layanan
@@ -71,48 +71,42 @@ const Navbar = ({ isSticky }) => {
               <ul className="dropdownMenu">
                 <li>
                   <Link
-                    to="/services/topic1"
-                    onClick={() => handleActiveLink("/services/topic1")}
+                    to="/service/topic1"
                   >
                     Konseling Individu
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic2"
-                    onClick={() => handleActiveLink("/services/topic2")}
+                    to="/service/topic2"
                   >
                     Konseling Pasangan
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic3"
-                    onClick={() => handleActiveLink("/services/topic3")}
+                    to="/service/topic3"
                   >
                     Konseling Keluarga
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic4"
-                    onClick={() => handleActiveLink("/services/topic4")}
+                    to="/service/topic4"
                   >
                     Assessment
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic5"
-                    onClick={() => handleActiveLink("/services/topic5")}
+                    to="/service/topic5"
                   >
                     Therapy
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic6"
-                    onClick={() => handleActiveLink("/services/topic6")}
+                    to="/service/topic6"
                   >
                     Wawancara
                   </Link>
@@ -124,10 +118,9 @@ const Navbar = ({ isSticky }) => {
           )}
         </li>
         <li
-          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          className={`dropdown ${isActive("/counselor") ? "navbarLinkActive" : ""}`}
           onClick={() => {
             handleExpertMenuToggle();
-            handleActiveLink("/services");
           }}
         >
           Konseling
@@ -137,24 +130,21 @@ const Navbar = ({ isSticky }) => {
               <ul className="dropdownMenu">
                 <li>
                   <Link
-                    to="/services/topic9"
-                    onClick={() => handleActiveLink("/services/topic9")}
+                    to="/counselor/topic9"
                   >
                     Junior Expert
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic10"
-                    onClick={() => handleActiveLink("/services/topic10")}
+                    to="/counselor/topic10"
                   >
                     Middle Expert
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic11"
-                    onClick={() => handleActiveLink("/services/topic11")}
+                    to="/counselor/topic11"
                   >
                     Senior Expert
                   </Link>
@@ -166,10 +156,9 @@ const Navbar = ({ isSticky }) => {
           )}
         </li>
         <li
-          className={`dropdown ${activeLink === "/services" ? "navbarLinkActive" : ""}`}
+          className={`dropdown ${isActive("/class") ? "navbarLinkActive" : ""}`}
           onClick={() => {
             handleClassMenuToggle();
-            handleActiveLink("/services");
           }}
         >
           Kelas
@@ -179,16 +168,14 @@ const Navbar = ({ isSticky }) => {
               <ul className="dropdownMenu">
                 <li>
                   <Link
-                    to="/services/topic7"
-                    onClick={() => handleActiveLink("/services/topic7")}
+                    to="/class/topic7"
                   >
                     Kelas Mendatang
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/services/topic8"
-                    onClick={() => handleActiveLink("/services/topic8")}
+                    to="/class/topic8"
                   >
                     Rekaman Kelas
                   </Link>
@@ -200,14 +187,12 @@ const Navbar = ({ isSticky }) => {
           )}
         </li>
         {/* <li
-            className={`${activeLink === "/kleemart" ? "navbarLinkActive" : ""}`}
-            onClick={() => handleActiveLink("/kleemart")}
+            className={`${isActive("/store") ? "navbarLinkActive" : ""}`}
           >
             <Link to="/kleemart">KLEEMART</Link>
           </li> */}
         <li
-          className={`${activeLink === "/aboutUs" ? "navbarLinkActive" : ""}`}
-          onClick={() => handleActiveLink("/aboutUs")}
+          className={`${isActive("/aboutUs") ? "navbarLinkActive" : ""}`}
         >
           <Link to="/aboutUs">Tentang Kami</Link>
         </li>

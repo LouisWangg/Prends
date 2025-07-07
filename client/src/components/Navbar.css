@@ -37,6 +37,7 @@
 .navbarLists li:hover {
   color: black;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .navbarLinkActive {
@@ -44,7 +45,7 @@
   text-decoration: underline;
 }
 
-.navbarLinkActive:hover {
+.navbarLists .navbarLinkActive:hover {
   text-decoration: underline;
   text-decoration-thickness: 2px;
 }
@@ -64,16 +65,16 @@
 
 .dropdownMenu {
   position: absolute;
+  width: auto;
   top: 100%;
   left: 0;
   background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
   list-style: none;
-  margin: 0;
-  padding: 10px 0;
+  margin: 10px 0 0 0;
+  padding: 5px 0;
   display: block;
   z-index: 1000;
-  width: auto;
   white-space: nowrap;
 }
 
@@ -81,14 +82,14 @@
   padding: 8px 20px;
 }
 
+.dropdownMenu li:hover a {
+  color: black;
+  text-decoration: underline;
+}
+
 .dropdownMenu li a {
   color: grey;
   text-decoration: none;
-}
-
-.dropdownMenu li a:hover {
-  color: black;
-  text-decoration: underline;
 }
 
 .navbarButtons {
