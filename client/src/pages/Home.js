@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Line from "../components/Line";
 import Carousel from "../components/Carousel.js";
 import SingleCard from "../components/SingleCard.js";
 import HomeSection from "../components/HomeSection.js";
 import CommentBox from "../components/CommentBox.js";
 import QnaSection from "../components/QnaSection.js";
+
 // import { fetchUsers } from "../services/UserService";
 import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
@@ -15,6 +18,8 @@ import { fetchHomePageComments } from "../services/ServiceTypeCommentService.js"
 import "./Home.css";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   // useState to create variable and 'set' is used to assign the variable's value
   const [slides, setSlides] = useState([]);
   const [qnas, setQnas] = useState([]);
@@ -143,7 +148,7 @@ const Home = () => {
           />
         ))}
         <div className="viewAllWrapper">
-          <button className="viewAllBtn">Lihat semua</button>
+          <button className="viewAllBtn" onClick={() => navigate("/list-page/counselor")}>Lihat semua</button>
         </div>
       </HomeSection>
 

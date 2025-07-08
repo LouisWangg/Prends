@@ -12,7 +12,7 @@ const Navbar = ({ isSticky }) => {
   const location = useLocation();
   const activePath = location.pathname;
   const isActive = (path, exact = false) =>
-    exact ? activePath === path : activePath.startsWith(path);
+    exact ? activePath === path : activePath.includes(path);
 
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [isExpertOpen, setIsExpertOpen] = useState(false);
@@ -32,10 +32,13 @@ const Navbar = ({ isSticky }) => {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const closeAllDropdowns = () => {
-      setIsServiceOpen(false);
-      setIsExpertOpen(false);
-      setIsClassOpen(false);
+    const closeAllDropdowns = (e) => {
+      // Only close if click is outside any dropdown
+      if (!e.target.closest(".dropdown")) {
+        setIsServiceOpen(false);
+        setIsExpertOpen(false);
+        setIsClassOpen(false);
+      }
     };
     document.addEventListener("mousedown", closeAllDropdowns);
     return () => document.removeEventListener("mousedown", closeAllDropdowns);
@@ -45,14 +48,10 @@ const Navbar = ({ isSticky }) => {
     <div className={`navbarWrapper ${isSticky ? "sticky" : ""}`}>
       <img src={logo} alt="logo" height={70} />
       <ul className="navbarLists">
-        <li
-          className={`${isActive("/", true) ? "navbarLinkActive" : ""}`}
-        >
+        <li className={`${isActive("/", true) ? "navbarLinkActive" : ""}`}>
           <Link to="/">Beranda</Link>
         </li>
-        <li
-          className={`${isActive("/article") ? "navbarLinkActive" : ""}`}
-        >
+        <li className={`${isActive("/article") ? "navbarLinkActive" : ""}`}>
           <Link to="/article">Artikel</Link>
         </li>
         <li
@@ -60,65 +59,58 @@ const Navbar = ({ isSticky }) => {
             ${isActive("/service") ? "navbarLinkActive" : ""}
             ${isServiceOpen ? "dropdownOpen" : ""}
           `}
-          onClick={() => {
-            handleServiceMenuToggle();
-          }}
         >
-          Layanan
-          {isServiceOpen ? (
-            <>
+          <span onClick={handleServiceMenuToggle}>
+            Layanan
+            {isServiceOpen ? (
               <RxChevronUp className="navbarLinkIcon" />
-              <ul className="dropdownMenu">
-                <li>
-                  <Link
-                    to="/service/topic1"
-                  >
-                    Konseling Individu
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/service/topic2"
-                  >
-                    Konseling Pasangan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/service/topic3"
-                  >
-                    Konseling Keluarga
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/service/topic4"
-                  >
-                    Assessment
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/service/topic5"
-                  >
-                    Therapy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/service/topic6"
-                  >
-                    Wawancara
-                  </Link>
-                </li>
-              </ul>
-            </>
-          ) : (
-            <RxChevronDown className="navbarLinkIcon" />
+            ) : (
+              <RxChevronDown className="navbarLinkIcon" />
+            )}
+          </span>
+          {isServiceOpen && (
+            <ul className="dropdownMenu">
+              <li>
+                <Link
+                  to="/detail-page/service/1"
+                  onClick={() => setIsServiceOpen(false)}
+                >
+                  Konseling Individu
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/detail-page/service/2"
+                  onClick={() => setIsServiceOpen(false)}
+                >
+                  Konseling Pasangan
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/detail-page/service/4"
+                  onClick={() => setIsServiceOpen(false)}
+                >
+                  Konseling Keluarga
+                </Link>
+              </li>
+              <li>
+                <Link to="/detail-page/service/topic4" onClick={() => setIsServiceOpen(false)}>Assessment</Link>
+              </li>
+              <li>
+                <Link to="/detail-page/service/topic5" onClick={() => setIsServiceOpen(false)}>Therapy</Link>
+              </li>
+              <li>
+                <Link to="/detail-page/service/topic6" onClick={() => setIsServiceOpen(false)}>Wawancara</Link>
+              </li>
+            </ul>
           )}
         </li>
         <li
-          className={`dropdown ${isActive("/counselor") ? "navbarLinkActive" : ""}`}
+          className={`dropdown 
+            ${isActive("/counselor") ? "navbarLinkActive" : ""}
+            ${isExpertOpen ? "dropdownOpen" : ""}
+          `}
           onClick={() => {
             handleExpertMenuToggle();
           }}
@@ -129,25 +121,13 @@ const Navbar = ({ isSticky }) => {
               <RxChevronUp className="navbarLinkIcon" />
               <ul className="dropdownMenu">
                 <li>
-                  <Link
-                    to="/counselor/topic9"
-                  >
-                    Junior Expert
-                  </Link>
+                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Junior Expert</Link>
                 </li>
                 <li>
-                  <Link
-                    to="/counselor/topic10"
-                  >
-                    Middle Expert
-                  </Link>
+                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Middle Expert</Link>
                 </li>
                 <li>
-                  <Link
-                    to="/counselor/topic11"
-                  >
-                    Senior Expert
-                  </Link>
+                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Senior Expert</Link>
                 </li>
               </ul>
             </>
@@ -156,7 +136,10 @@ const Navbar = ({ isSticky }) => {
           )}
         </li>
         <li
-          className={`dropdown ${isActive("/class") ? "navbarLinkActive" : ""}`}
+          className={`dropdown 
+            ${isActive("/class") ? "navbarLinkActive" : ""}
+            ${isClassOpen ? "dropdownOpen" : ""}
+          `}
           onClick={() => {
             handleClassMenuToggle();
           }}
@@ -167,18 +150,10 @@ const Navbar = ({ isSticky }) => {
               <RxChevronUp className="navbarLinkIcon" />
               <ul className="dropdownMenu">
                 <li>
-                  <Link
-                    to="/class/topic7"
-                  >
-                    Kelas Mendatang
-                  </Link>
+                  <Link to="/detail-page/class/topic4" onClick={() => setIsClassOpen(false)}>Kelas Mendatang</Link>
                 </li>
                 <li>
-                  <Link
-                    to="/class/topic8"
-                  >
-                    Rekaman Kelas
-                  </Link>
+                  <Link to="/detail-page/class/topic4" onClick={() => setIsClassOpen(false)}>Rekaman Kelas</Link>
                 </li>
               </ul>
             </>
@@ -191,9 +166,7 @@ const Navbar = ({ isSticky }) => {
           >
             <Link to="/kleemart">KLEEMART</Link>
           </li> */}
-        <li
-          className={`${isActive("/aboutUs") ? "navbarLinkActive" : ""}`}
-        >
+        <li className={`${isActive("/aboutUs") ? "navbarLinkActive" : ""}`}>
           <Link to="/aboutUs">Tentang Kami</Link>
         </li>
         <li>

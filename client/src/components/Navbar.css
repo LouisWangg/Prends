@@ -63,6 +63,15 @@
   text-decoration: underline;
 }
 
+.dropdownOpen {
+  text-decoration: underline;
+  text-decoration-color: black;
+}
+
+.dropdown.dropdownOpen:hover {
+  text-decoration-thickness: 2px;
+}
+
 .dropdownMenu {
   position: absolute;
   width: auto;
