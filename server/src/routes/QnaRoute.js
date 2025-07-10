@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const qnaController = require("../controllers/QnaController");
 
-router.get("/getHomePageQnas", qnaController.getHomePageQnas);
+const QnaController = require("../controllers/QnaController");
+
+router.get("/getHomePageQnas", QnaController.getHomePageQnas);
 
 module.exports = router;

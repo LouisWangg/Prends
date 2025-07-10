@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
 
-const sharedDescriptionModel = require("../models/SharedDescriptionModel");
+const SharedDescriptionModel = require("../models/SharedDescriptionModel");
 
 const tenthTitle = ["online chat", "online call", "offline", "home visit"];
 const eleventDescriptionMap = {
@@ -55,7 +55,7 @@ const getDescriptionsAndNotices = async ({ type, id } = {}) => {
     ];
 
     const fetchDescriptions = descriptionIds.length > 0
-      ? sharedDescriptionModel.findAll({
+      ? SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
         order: orderClause(descriptionIds),
@@ -64,7 +64,7 @@ const getDescriptionsAndNotices = async ({ type, id } = {}) => {
     ;
 
     const fetchNotices = noticeIds.length > 0
-      ? sharedDescriptionModel.findAll({
+      ? SharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: noticeIds } },
         order: orderClause(noticeIds),

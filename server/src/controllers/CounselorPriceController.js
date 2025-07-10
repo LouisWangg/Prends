@@ -1,4 +1,4 @@
-const counselorPricingService = require("../services/CounselorPricingService");
+const counselorPricingService = require("../services/CounselorPriceService");
 
 const getCounselorPricingById = async (req, res) => {
   try {

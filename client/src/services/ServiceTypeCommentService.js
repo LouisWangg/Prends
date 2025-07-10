@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/serviceTypeComments/";
+const url = "http://localhost:5000/serviceTypeComments";
 
 // Get Comment datas for Home page
 export const fetchHomePageComments = async () => {
@@ -8,7 +8,7 @@ export const fetchHomePageComments = async () => {
     const response = await axios.get(`${url}/getHomePageComments`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch fetchHomePageComments datas: `, error);
+    console.error(`Failed to fetch fetchHomePageComments datas: `, error?.message || error);
     return null;
   }
 };
@@ -21,7 +21,7 @@ export const fetchServiceCommentsById = async (id, sort) => {
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch fetchServiceCommentsById datas by id: ${id}`, error);
+    console.error(`Failed to fetch fetchServiceCommentsById datas by id: ${id}`, error?.message || error);
     return null;
   }
 };

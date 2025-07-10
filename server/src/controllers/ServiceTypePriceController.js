@@ -1,9 +1,9 @@
-const serviceTypePriceService = require("../services/ServiceTypePriceService");
+const ServiceTypePriceService = require("../services/ServiceTypePriceService");
 
 const getServicePricingById = async (req, res) => {
   try {
     const { id } = req.params;
-    const datas = await serviceTypePriceService.getServicePricingById({ id });
+    const datas = await ServiceTypePriceService.getServicePricingById({ id });
 
     if (!datas || datas.length === 0) {
       return res.status(404).json({ message: "Data not found" });

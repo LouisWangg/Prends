@@ -1,11 +1,11 @@
-const counselorCommentService = require("../services/CounselorCommentService");
+const CounselorCommentService = require("../services/CounselorCommentService");
 
 const getCounselorCommentsById = async (req, res) => {
   try {
     const { id } = req.params;
     const { sort } = req.query;
 
-    const response = await counselorCommentService.getCounselorCommentsById({ id, sort });
+    const response = await CounselorCommentService.getCounselorCommentsById({ id, sort });
 
     res.json(response);
   } catch (error) {

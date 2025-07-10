@@ -1,8 +1,8 @@
-const classService = require("../services/ClassService");
+const ClassService = require("../services/ClassService");
 
 const getHomePageClasses = async (req, res) => {
   try {
-    const response = await classService.getHomePageClasses();
+    const response = await ClassService.getHomePageClasses();
     res.json(response);
   } catch (error) {
     console.error(error.message);
@@ -13,7 +13,7 @@ const getHomePageClasses = async (req, res) => {
 const getClassDetailById = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await classService.getClassDetailById(id);
+    const data = await ClassService.getClassDetailById({ id });
 
     if (!data) {
       return res.status(404).json({ message: "Data not found" });
@@ -33,7 +33,7 @@ const uploadImage = async (req, res) => {
 
     if (!file) return res.status(400).send("No image file uploaded.");
 
-    await classService.uploadImage({ id, file });
+    await ClassService.uploadImage({ id, file });
     
     res.send("Class image uploaded successfully");
   } catch (error) {

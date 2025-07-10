@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/serviceTypes/";
+const url = "http://localhost:5000/serviceTypes";
 
 // Get Konseling Individu datas
 export const fetchIndividualCounselings = async () => {
@@ -8,7 +8,7 @@ export const fetchIndividualCounselings = async () => {
     const response = await axios.get(`${url}/getIndividualCounselings`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Individual Counseling datas: `, error);
+    console.error(`Failed to fetch Individual Counseling datas: `, error?.message || error);
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const fetchServiceDetailById = async (id) => {
     const response = await axios.get(`${url}/getServiceDetailById/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Service detail data by id: ${id}`, error);
+    console.error(`Failed to fetch Service detail data by id: ${id}`, error?.message || error);
     return null;
   }
 };

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/recommendations/";
+const url = "http://localhost:5000/recommendations";
 
 // Get combined Recommendation datas for Individual Konseling Detail Page
 export const fetchIndividualCounselingRecommendations = async (excludeId, type) => {
@@ -10,7 +10,7 @@ export const fetchIndividualCounselingRecommendations = async (excludeId, type) 
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Combined Recommendation datas for Individual Counseling: `, error);
+    console.error(`Failed to fetch Combined Recommendation datas for Individual Counseling: `, error?.message || error);
     return null;
   }
 };
@@ -23,7 +23,7 @@ export const fetchCounselorRecommendations = async (excludeId, level) => {
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Combined Recommendation datas for Counselor: `, error);
+    console.error(`Failed to fetch Combined Recommendation datas for Counselor: `, error?.message || error);
     return null;
   }
 };

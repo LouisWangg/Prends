@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/classes/";
+const url = "http://localhost:5000/classes";
 
 // Get Class datas for Home page
 export const fetchHomePageClasses = async () => {
@@ -8,7 +8,7 @@ export const fetchHomePageClasses = async () => {
     const response = await axios.get(`${url}/getHomePageClasses`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Class datas: `, error);
+    console.error(`Failed to fetch Class datas: `, error?.message || error);
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const fetchClassDetailById = async (id) => {
     const response = await axios.get(`${url}/getClassDetailById/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Class detail data by id: ${id}`, error);
+    console.error(`Failed to fetch Class detail data by id: ${id}`, error?.message || error);
     return null;
   }
 };

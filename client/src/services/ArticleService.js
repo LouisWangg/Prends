@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/articles/";
+const url = "http://localhost:5000/articles";
 
 // Get 3 newest Article datas for Home page
 export const fetchHomePageArticles = async () => {
@@ -8,7 +8,7 @@ export const fetchHomePageArticles = async () => {
     const response = await axios.get(`${url}/getHomePageArticles`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Article datas: `, error);
+    console.error(`Failed to fetch Article datas: `, error?.message || error);
     return null;
   }
 };
@@ -19,7 +19,7 @@ export const fetchArticles = async () => {
     const response = await axios.get(`${url}/getArticles`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Article datas: `, error);
+    console.error(`Failed to fetch Article datas: `, error?.message || error);
     return null;
   }
 };

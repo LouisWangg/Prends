@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/sharedDescriptions/";
+const url = "http://localhost:5000/sharedDescriptions";
 
 // Get Description datas by Ids for Detail page
 export const fetchDescriptionsByIds = async (ids) => {
@@ -10,7 +10,7 @@ export const fetchDescriptionsByIds = async (ids) => {
     });
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Shared Description datas: `, error);
+    console.error(`Failed to fetch Shared Description datas: `, error?.message || error);
     return null;
   }
 };
@@ -21,7 +21,7 @@ export const fetchDescriptionsAndNotices = async (type, id) => {
     const response = await axios.get(`${url}/getDescriptionsAndNotices/${type}/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Failed to fetch Shared Description datas: `, error);
+    console.error(`Failed to fetch Shared Description datas: `, error?.message || error);
     return null;
   }
 };

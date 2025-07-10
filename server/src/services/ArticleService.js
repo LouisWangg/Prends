@@ -1,14 +1,14 @@
 const { Op } = require("sequelize");
 
 const sequelize = require("../config/database");
-const articleModel = require("../models/ArticleModel");
-const articleImageModel = require("../models/ArticleImageModel");
+const ArticleModel = require("../models/ArticleModel");
+const ArticleImageModel = require("../models/ArticleImageModel");
 
 // Get 3 newest Article datas for Home page
 const getHomePageArticles = async () => {
-    const articles = await articleModel.findAll({
+    const articles = await ArticleModel.findAll({
         attributes: ["articleId", "title", "subTitle"],
-        include: [{ model: articleImageModel, attributes: ["image"] }],
+        include: [{ model: ArticleImageModel, attributes: ["image"] }],
         order: [["createdAt", "DESC"]],
         limit: 3
     });
@@ -18,10 +18,10 @@ const getHomePageArticles = async () => {
 
 // Get Articles for Article page
 const getArticles = async () => {
-    const articles = await articleModel.findAll({
+    const articles = await ArticleModel.findAll({
         attributes: ["articleId", "title",
             [sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), 'createdAt'], "subTitle"],
-        include: [{ model: articleImageModel, attributes: ["image"] }],
+        include: [{ model: ArticleImageModel, attributes: ["image"] }],
         order: [["createdAt", "DESC"]],
     });
 

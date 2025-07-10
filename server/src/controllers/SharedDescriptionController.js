@@ -1,9 +1,9 @@
-const sharedService = require("../services/SharedService");
+const SharedDescriptionService = require("../services/SharedDescriptionService");
 
 const getDescriptionsAndNotices = async (req, res) => {
   try {
     const { type, id } = req.params;
-    const result = await sharedService.getDescriptionsAndNotices({ type, id });
+    const result = await SharedDescriptionService.getDescriptionsAndNotices({ type, id });
     res.json(result);
   } catch (error) {
     console.error(error.message);
@@ -12,5 +12,5 @@ const getDescriptionsAndNotices = async (req, res) => {
 };
 
 module.exports = {
-  getDescriptionsAndNotices,
+  getDescriptionsAndNotices
 };

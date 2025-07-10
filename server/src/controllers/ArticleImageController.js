@@ -1,4 +1,4 @@
-const articleImageService = require("../services/ArticleImageService");
+const ArticleImageService = require("../services/ArticleImageService");
 
 // Upload image by id
 const uploadImage = async (req, res) => {
@@ -8,7 +8,7 @@ const uploadImage = async (req, res) => {
 
     if (!file) return res.status(400).send("No image file uploaded.");
 
-    await articleImageService.uploadImage({ id, file });
+    await ArticleImageService.uploadImage({ id, file });
 
     res.send("Article image uploaded successfully");
 

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const sharedDescriptionController = require("../controllers/SharedDescriptionController");
 
-router.get("/getDescriptionsAndNotices/:type/:id", sharedDescriptionController.getDescriptionsAndNotices);
+const SharedDescriptionController = require("../controllers/SharedDescriptionController");
+
+router.get("/getDescriptionsAndNotices/:type/:id", SharedDescriptionController.getDescriptionsAndNotices);
 
 module.exports = router;

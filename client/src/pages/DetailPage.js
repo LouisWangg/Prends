@@ -1,4 +1,10 @@
-import React, { Fragment, useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
@@ -54,7 +60,7 @@ const DetailPage = () => {
 
   const commentsPerPage = 5;
   const topCommentRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState((1));
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [recommendations, setRecommendations] = useState([]);
 
@@ -108,7 +114,8 @@ const DetailPage = () => {
       const element = topCommentRef.current;
       const navbar = document.querySelector(".navbarWrapper.sticky"); // grab the sticky nav if it's active
       const yOffset = navbar ? -navbar.offsetHeight : -80; // fallback if sticky isn't applied
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
       window.scrollTo({ top: y, behavior: "smooth" });
     }, 0);
@@ -193,17 +200,20 @@ const DetailPage = () => {
     setPricingMap(grouped);
   }, [type, id]);
 
-  const getCommentData = useCallback(async (sort = sortOption) => {
-    let datas;
-    if (type.includes("service")) {
-      datas = await fetchServiceCommentsById(id, sort);
-    } else if (type.includes("counselor")) {
-      datas = await fetchCounselorCommentsById(id, sort);
-    }
+  const getCommentData = useCallback(
+    async (sort = sortOption) => {
+      let datas;
+      if (type.includes("service")) {
+        datas = await fetchServiceCommentsById(id, sort);
+      } else if (type.includes("counselor")) {
+        datas = await fetchCounselorCommentsById(id, sort);
+      }
 
-    setComments(datas.datas);
-    setCommentCount(datas.counts);
-  }, [type, id, sortOption]);
+      setComments(datas.datas);
+      setCommentCount(datas.counts);
+    },
+    [type, id, sortOption]
+  );
 
   const getRecommendationData = useCallback(async () => {
     let datas;
@@ -217,7 +227,26 @@ const DetailPage = () => {
 
   //bedain useEffect pas type nya class
   useEffect(() => {
-    if (type.includes("service")) {
+    setDuration(1);
+    setLevel("junior");
+    setLocationValue("Tanah Abang - Jakarta");
+    setCounselingType("Online Chat Individu");
+    setQuantity(1);
+    setDescriptions([]);
+    setNotices([]);
+    setDetailData({});
+    setPricingMap({});
+    setSortOption("newest");
+    setComments([]);
+    setCommentCount([]);
+    setCurrentPage(1);
+    setRecommendations([]);
+    //scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id, type]);
+
+  useEffect(() => {
+    if (type.includes("service") || type.includes("counselor")) {
       getDetailData();
       getPricingData();
       getDescriptionsAndNotices();
@@ -226,11 +255,12 @@ const DetailPage = () => {
     }
   }, [
     type,
+    id,
     getDetailData,
     getPricingData,
     getDescriptionsAndNotices,
     getCommentData,
-    getRecommendationData
+    getRecommendationData,
   ]);
 
   useEffect(() => {
@@ -241,46 +271,38 @@ const DetailPage = () => {
     }
   }, [
     type,
+    id,
     getDetailData,
     getDescriptionsAndNotices,
-    getRecommendationData
-  ]);
-
-  useEffect(() => {
-    if (type.includes("counselor")) {
-      getDetailData();
-      getPricingData();
-      getDescriptionsAndNotices();
-      getCommentData();
-      getRecommendationData();
-    }
-  }, [
-    type,
-    getDetailData,
-    getPricingData,
-    getDescriptionsAndNotices,
-    getCommentData,
-    getRecommendationData
+    getRecommendationData,
   ]);
 
   const isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
   if (type.includes("service")) {
-    const isLocationBased = typeof pricingMap[duration]?.[level]?.[Object.keys(pricingMap[duration]?.[level] || {})[0]] === "object";
+    const isLocationBased =
+      typeof pricingMap[duration]?.[level]?.[
+        Object.keys(pricingMap[duration]?.[level] || {})[0]
+      ] === "object";
 
     if (isLocationBased) {
-      discountFlag = pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
-      undiscountedPrice = pricingMap?.[duration]?.[level]?.[locationValue]?.price;
-      discountedPrice = pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
+      discountFlag =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
+      undiscountedPrice =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.price;
+      discountedPrice =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
     } else {
       discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
       undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
       discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
     }
   } else if (type.includes("counselor")) {
-    discountFlag = pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
+    discountFlag =
+      pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
     undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
-    discountedPrice = pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
+    discountedPrice =
+      pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
   }
 
   const eachCount = {
@@ -296,7 +318,8 @@ const DetailPage = () => {
     0
   );
 
-  const averageRating = commentCount.total === 0 ? 0 : (totalScore / commentCount.total).toFixed(2);
+  const averageRating =
+    commentCount.total === 0 ? 0 : (totalScore / commentCount.total).toFixed(2);
 
   const totalPages = Math.ceil(comments.length / commentsPerPage);
   const paginatedComments = comments.slice(
@@ -328,7 +351,7 @@ const DetailPage = () => {
             alt={detailData.name}
           />
         </div>
-      )
+      );
     } else if (type.includes("class")) {
       return (
         <div className="detailPageImage">
@@ -341,7 +364,7 @@ const DetailPage = () => {
             alt={detailData.name}
           />
         </div>
-      )
+      );
     } else if (type.includes("counselor")) {
       return (
         <div className="detailPageImage">
@@ -354,7 +377,7 @@ const DetailPage = () => {
             alt={detailData.name}
           />
         </div>
-      )
+      );
     }
   };
 
@@ -367,7 +390,7 @@ const DetailPage = () => {
           ))}
           <span>{commentCount.total} ulasan</span>
         </div>
-      )
+      );
     }
   };
 
@@ -426,7 +449,7 @@ const DetailPage = () => {
           onChange={handleDurationChange}
           labelMapper={(key) => `${key} jam`}
         />
-      )
+      );
     }
     return null;
   };
@@ -444,24 +467,26 @@ const DetailPage = () => {
           onChange={handleLevelChange}
           labelMapper={(key) => levelLabeling[key] || key}
         />
-      )
+      );
     }
     return null;
   };
 
   const renderLocationOption = () => {
     if (type.includes("service")) {
-      return isLocationBased && (
-        <Option
-          title="Lokasi"
-          name="location"
-          selected={locationValue}
-          options={Object.fromEntries(
-            Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
-          )}
-          onChange={handleLocationChange}
-        />
-      )
+      return (
+        isLocationBased && (
+          <Option
+            title="Lokasi"
+            name="location"
+            selected={locationValue}
+            options={Object.fromEntries(
+              Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
+            )}
+            onChange={handleLocationChange}
+          />
+        )
+      );
     }
     return null;
   };
@@ -478,7 +503,7 @@ const DetailPage = () => {
           )}
           onChange={handleCounselingTypeChange}
         />
-      )
+      );
     }
     return null;
   };
@@ -493,11 +518,11 @@ const DetailPage = () => {
             </Fragment>
           ))}
         </>
-      )
+      );
     } else {
       return (
         <div dangerouslySetInnerHTML={{ __html: detailData.description }} />
-      )
+      );
     }
   };
 
@@ -604,14 +629,13 @@ const DetailPage = () => {
             onPageChange={handlePageChange}
           />
         </>
-      )
+      );
     }
   };
 
   return (
     <div className="pageWrapper">
       <div className="detailPageWrapper">
-
         {renderImage()}
 
         <div className="detailPageContent">
@@ -703,7 +727,8 @@ const DetailPage = () => {
             <SingleCard
               key={getRecommendationKey(recommendation)}
               type={recommendation.itemType}
-              data={recommendation} style={{ margin: "0px" }}
+              data={recommendation}
+              style={{ margin: "0px" }}
             />
           ))}
         </HomeSection>

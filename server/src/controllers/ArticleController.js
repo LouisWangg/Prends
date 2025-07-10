@@ -1,8 +1,8 @@
-const articleService = require("../services/ArticleService");
+const ArticleService = require("../services/ArticleService");
 
 const getHomePageArticles = async (req, res) => {
   try {
-    const result = await articleService.getHomePageArticles();
+    const result = await ArticleService.getHomePageArticles();
     res.json(result);
   } catch (error) {
     console.error(error.message);
@@ -12,7 +12,7 @@ const getHomePageArticles = async (req, res) => {
 
 const getArticles = async (req, res) => {
   try {
-    const result = await articleService.getArticles();
+    const result = await ArticleService.getArticles();
     res.json(result);
   } catch (error) {
     console.error(error.message);

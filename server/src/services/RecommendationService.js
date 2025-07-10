@@ -1,18 +1,16 @@
 const { Op, Sequelize } = require("sequelize");
 
-const counselorModel = require("../models/CounselorModel");
-const counselorImageModel = require("../models/CounselorImageModel");
-const serviceTypeModel = require("../models/ServiceTypeModel");
-const serviceTypeImageModel = require("../models/ServiceTypeImageModel");
+const CounselorModel = require("../models/CounselorModel");
+const CounselorImageModel = require("../models/CounselorImageModel");
+const ServiceTypeModel = require("../models/ServiceTypeModel");
+const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 
 const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) => {
-    const { excludeId, type } = req.query;
-
     const useThreeServices = Math.random() < 0.5;
     const serviceLimit = useThreeServices ? 3 : 2;
     const counselorLimit = useThreeServices ? 1 : 2;
 
-    const serviceTypes = await serviceTypeModel.findAll({
+    const serviceTypes = await ServiceTypeModel.findAll({
         attributes: [
             "serviceTypeId",
             "name",
@@ -26,7 +24,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
             ...(type && { type }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: serviceTypeImageModel, attributes: ["image"] }],
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
         order: [['serviceTypeId', 'ASC']], // ensure sorted order
         limit: serviceLimit,
     });
@@ -45,7 +43,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
         return plain;
     });
 
-    const counselors = await counselorModel.findAll({
+    const counselors = await CounselorModel.findAll({
         attributes: [
             "counselorId",
             "name",
@@ -57,7 +55,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
         where: {
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: counselorImageModel, attributes: ["image"] }],
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
         order: [Sequelize.literal('RANDOM()')],
         limit: counselorLimit
     });
@@ -81,7 +79,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
 };
 
 const getCounselorRecommendations = async ({ excludeId, level }) => {
-    const sameLevelCounselors = await counselorModel.findAll({
+    const sameLevelCounselors = await CounselorModel.findAll({
         attributes: [
             "counselorId",
             "name",
@@ -94,7 +92,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
             ...(level && { level }),
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: counselorImageModel, attributes: ["image"] }],
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
         order: [['counselorId', 'ASC']],
         limit: 4
     });
@@ -118,7 +116,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
     // Fill the remaining with senior-level counselors
     const remainingCounselors = 4 - convertedSameLevelCounselors.length;
 
-    const seniorCounselors = await counselorModel.findAll({
+    const seniorCounselors = await CounselorModel.findAll({
         attributes: [
             "counselorId",
             "name",
@@ -131,7 +129,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
             level: "Senior",
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: counselorImageModel, attributes: ["image"] }],
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
         order: Sequelize.literal("RANDOM()"),
         limit: remainingCounselors
     });

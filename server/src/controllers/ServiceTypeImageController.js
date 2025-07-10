@@ -1,4 +1,4 @@
-const serviceTypeImageService = require("../services/ServiceTypeImageService");
+const ServiceTypeImageService = require("../services/ServiceTypeImageService");
 
 const uploadImage = async (req, res) => {
   try {
@@ -7,7 +7,7 @@ const uploadImage = async (req, res) => {
 
     if (!file) return res.status(400).send("No image file uploaded.");
 
-    await serviceTypeImageService.uploadImage({ id, file });
+    await ServiceTypeImageService.uploadImage({ id, file });
     res.send("Service type image uploaded successfully");
   } catch (error) {
     console.error(error.message);
@@ -16,5 +16,5 @@ const uploadImage = async (req, res) => {
 };
 
 module.exports = {
-  uploadImage,
+  uploadImage
 };

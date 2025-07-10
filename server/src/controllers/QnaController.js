@@ -1,9 +1,9 @@
-const qnaService = require("../services/QnaService");
+const QnaService = require("../services/QnaService");
 
 // Get Qna datas for Home page
 const getHomePageQnas = async (req, res) => {
   try {
-    const qnas = await qnaService.getHomePageQnas();
+    const qnas = await QnaService.getHomePageQnas();
     res.json(qnas);
   } catch (error) {
     console.error(error.message);

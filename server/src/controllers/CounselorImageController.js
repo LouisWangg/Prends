@@ -1,4 +1,4 @@
-const counselorService = require("../services/CounselorService");
+const CounselorService = require("../services/CounselorService");
 
 const uploadImage = async (req, res) => {
   try {
@@ -7,7 +7,7 @@ const uploadImage = async (req, res) => {
 
     if (!file) return res.status(400).send("No image file uploaded.");
 
-    await counselorService.uploadImage({ id, file });
+    await CounselorService.uploadImage({ id, file });
 
     res.send("Counselor image uploaded successfully");
   } catch (error) {
@@ -17,5 +17,5 @@ const uploadImage = async (req, res) => {
 };
 
 module.exports = {
-  uploadImage,
+  uploadImage
 };

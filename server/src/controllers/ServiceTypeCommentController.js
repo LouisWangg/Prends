@@ -1,8 +1,8 @@
-const serviceTypeCommentService = require("../services/ServiceTypeCommentService");
+const ServiceTypeCommentService = require("../services/ServiceTypeCommentService");
 
 const getHomePageComments = async (req, res) => {
   try {
-    const result = await serviceTypeCommentService.getHomePageComments();
+    const result = await ServiceTypeCommentService.getHomePageComments();
     res.json(result);
   } catch (error) {
     console.error(error.message);
@@ -15,7 +15,7 @@ const getServiceCommentsById = async (req, res) => {
     const { id } = req.params;
     const { sort } = req.query;
 
-    const result = await serviceTypeCommentService.getServiceCommentsById({ id, sort });
+    const result = await ServiceTypeCommentService.getServiceCommentsById({ id, sort });
     res.json(result);
   } catch (error) {
     console.error(error.message);

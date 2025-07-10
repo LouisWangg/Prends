@@ -1,7 +1,7 @@
 const { Op, Sequelize, fn, col } = require("sequelize");
 
-const userModel = require("../models/UserModel");
-const counselorCommentModel = require("../models/CounselorCommentModel");
+const UserModel = require("../models/UserModel");
+const CounselorCommentModel = require("../models/CounselorCommentModel");
 
 // Get Comment datas for Counselor Detail page
 const getCounselorCommentsById = async ({ id, sort } = {}) => {
@@ -13,7 +13,7 @@ const getCounselorCommentsById = async ({ id, sort } = {}) => {
       orderClause = [['createdAt', 'DESC']];
     }
 
-    const datas = await counselorCommentModel.findAll({
+    const datas = await CounselorCommentModel.findAll({
       attributes: [
         "counselorCommentId", "userId", "title", "description", "ratingOne", "ratingTwo",
         "ratingThree", "ratingFour", "ratingFive", "createdAt", 
@@ -21,7 +21,7 @@ const getCounselorCommentsById = async ({ id, sort } = {}) => {
       ],
       include: [
         {
-          model: userModel,
+          model: UserModel,
           attributes: [[Sequelize.literal(`"User"."firstName" || ' ' || "User"."lastName"`), 'fullName']],
         },
       ],
@@ -29,7 +29,7 @@ const getCounselorCommentsById = async ({ id, sort } = {}) => {
       order: orderClause
     });
 
-    const counts = await counselorCommentModel.findOne({
+    const counts = await CounselorCommentModel.findOne({
       attributes: [
         [fn('COUNT', col('*')), 'total'],
         [fn('SUM', col('ratingOne')), 'ratingOne'],

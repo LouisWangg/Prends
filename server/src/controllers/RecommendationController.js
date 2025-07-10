@@ -1,9 +1,9 @@
-const recommendationService = require("../services/RecommendationService");
+const RecommendationService = require("../services/RecommendationService");
 
 const getIndividualCounselingRecommendations = async (req, res) => {
   try {
     const { excludeId, type } = req.query;
-    const result = await recommendationService.getIndividualCounselingRecommendations(excludeId, type);
+    const result = await RecommendationService.getIndividualCounselingRecommendations({ excludeId, type });
     res.json(result);
   } catch (error) {
     console.error(error.message);
@@ -14,7 +14,7 @@ const getIndividualCounselingRecommendations = async (req, res) => {
 const getCounselorRecommendations = async (req, res) => {
   try {
     const { excludeId, level } = req.query;
-    const result = await recommendationService.getCounselorRecommendations(excludeId, level);
+    const result = await RecommendationService.getCounselorRecommendations({ excludeId, level });
     res.json(result);
   } catch (error) {
     console.error(error.message);

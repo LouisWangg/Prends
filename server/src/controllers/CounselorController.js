@@ -1,9 +1,9 @@
-const counselorService = require("../services/CounselorService");
+const CounselorService = require("../services/CounselorService");
 
 const getCounselors = async (req, res) => {
   try {
     const { sortBy, limit } = req.query;
-    const data = await counselorService.getCounselors({ sortBy, limit });
+    const data = await CounselorService.getCounselors({ sortBy, limit });
     res.json(data);
   } catch (error) {
     console.error(error.message);
@@ -14,7 +14,7 @@ const getCounselors = async (req, res) => {
 const getCounselorDetailById = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await counselorService.getCounselorDetailById(id);
+    const data = await CounselorService.getCounselorDetailById({ id });
 
     if (!data) return res.status(404).json({ message: "Data not found on getCounselorDetailById" });
 

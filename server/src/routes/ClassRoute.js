@@ -4,10 +4,10 @@ const multer = require("multer");
 const router = express.Router();
 const upload = multer(); // in-memory storage
 
-const classController = require("../controllers/ClassController");
+const ClassController = require("../controllers/ClassController");
 
-router.get("/getHomePageClasses", classController.getHomePageClasses);
-router.get("/getClassDetailById/:id", classController.getClassDetailById);
-router.put("/uploadImage/:id", upload.single("image"), classController.uploadImage); 
+router.get("/getHomePageClasses", ClassController.getHomePageClasses);
+router.get("/getClassDetailById/:id", ClassController.getClassDetailById);
+router.put("/uploadImage/:id", upload.single("image"), ClassController.uploadImage); 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const sequelize = require("../config/database");
 
-const counselorModel = require("../models/CounselorModel");
-const counselorImageModel = require("../models/CounselorImageModel");
+const CounselorModel = require("../models/CounselorModel");
+const CounselorImageModel = require("../models/CounselorImageModel");
 
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
@@ -78,10 +78,10 @@ const getCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => 
 };
 
 // Get Counselor detail data by Id
-const getCounselorDetailById = async (id) => {
+const getCounselorDetailById = async ({ id } = {}) => {
     try {
-        const data = await counselorModel.findByPk(id, {
-            include: [{ model: counselorImageModel, attributes: ["image"] }],
+        const data = await CounselorModel.findByPk(id, {
+            include: [{ model: CounselorImageModel, attributes: ["image"] }],
         });
 
         if (!data) return null;
