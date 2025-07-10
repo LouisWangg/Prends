@@ -1,26 +1,21 @@
-const { Op } = require("sequelize");
-const CounselorPriceModel = require("../models/CounselorPriceModel");
+const counselorPricingService = require("../services/CounselorPricingService");
 
-// Get Counselor pricing data by Id
 const getCounselorPricingById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const datas = await CounselorPriceModel.findAll({
-            where: { counselorId: id },
-            order: [["counselorPriceId", "ASC"]]
-        });
+  try {
+    const { id } = req.params;
+    const data = await counselorPricingService.getCounselorPricingById({ id });
 
-        if (!datas) {
-            return res.status(404).json({ message: "Data not found" });
-        }
-
-        res.json(datas);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Server error on getCounselorPricingById");
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: "Data not found" });
     }
+
+    res.json(data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error on getCounselorPricingById");
+  }
 };
 
 module.exports = {
-    getCounselorPricingById
+  getCounselorPricingById
 };

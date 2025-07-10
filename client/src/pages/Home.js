@@ -12,7 +12,7 @@ import QnaSection from "../components/QnaSection.js";
 import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
-import { fetchHomePageCounselors } from "../services/CounselorService.js";
+import { fetchCounselors } from "../services/CounselorService.js";
 import { fetchIndividualCounselings } from "../services/ServiceTypeService.js";
 import { fetchHomePageComments } from "../services/ServiceTypeCommentService.js";
 import "./Home.css";
@@ -56,7 +56,7 @@ const Home = () => {
   };
 
   const getHomePageCounselors = async () => {
-    const datas = await fetchHomePageCounselors();
+    const datas = await fetchCounselors({ limit: 4 });
     setCounselors(datas);
   };
 

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const CounselorController = require("../controllers/CounselorController");
+const counselorController = require("../controllers/CounselorController");
 
-router.get("/getHomePageCounselors", CounselorController.getHomePageCounselors);
-router.get("/getCounselorDetailById/:id", CounselorController.getCounselorDetailById);
+router.get("/getCounselors", counselorController.getCounselors);
+router.get("/getCounselorDetailById/:id", counselorController.getCounselorDetailById);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const CounselorPriceController = require("../controllers/CounselorPriceController");
+const counselorPriceController = require("../controllers/CounselorPriceController");
 
-router.get("/getCounselorPricingById/:id", CounselorPriceController.getCounselorPricingById);
+router.get("/getCounselorPricingById/:id", counselorPriceController.getCounselorPricingById);
 
 module.exports = router;

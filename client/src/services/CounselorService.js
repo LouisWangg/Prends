@@ -3,9 +3,11 @@ import axios from "axios";
 const url = "http://localhost:5000/counselors/";
 
 // Get Counselor datas for Home page
-export const fetchHomePageCounselors = async () => {
+export const fetchCounselors = async ({ sortBy, limit }) => {
   try {
-    const response = await axios.get(`${url}/getHomePageCounselors`);
+    const response = await axios.get(`${url}/getCounselors`, {
+      params: { sortBy, limit }
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Counselor datas: `, error);

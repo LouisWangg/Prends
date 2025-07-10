@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const RecommendationController = require("../controllers/RecommendationController");
+const recommendationController = require("../controllers/RecommendationController");
 
-router.get("/getIndividualCounselingRecommendations", RecommendationController.getIndividualCounselingRecommendations);
-router.get("/getCounselorRecommendations", RecommendationController.getCounselorRecommendations);
+router.get("/getIndividualCounselingRecommendations", recommendationController.getIndividualCounselingRecommendations);
+router.get("/getCounselorRecommendations", recommendationController.getCounselorRecommendations);
 
 module.exports = router;

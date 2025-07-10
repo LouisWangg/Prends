@@ -1,23 +1,21 @@
-const CounselorImageModel = require("../models/CounselorImageModel");
+const counselorService = require("../services/CounselorService");
 
-// Upload image by id
 const uploadImage = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!req.file) return res.status(400).send("No image file uploaded.");
+    const { file } = req;
 
-    await CounselorImageModel.create({
-      counselorId: id,
-      image: req.file.buffer,
-    });
+    if (!file) return res.status(400).send("No image file uploaded.");
+
+    await counselorService.uploadImage({ id, file });
 
     res.send("Counselor image uploaded successfully");
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Server error");
+    res.status(500).send("Server error on uploadImage");
   }
 };
 
 module.exports = {
-  uploadImage
+  uploadImage,
 };

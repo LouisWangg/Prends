@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const ArticleController = require("../controllers/ArticleController");
 
-router.get("/getHomePageArticles", ArticleController.getHomePageArticles);
-router.get("/getArticles", ArticleController.getArticles);
+const articleController = require("../controllers/ArticleController");
+
+router.get("/getHomePageArticles", articleController.getHomePageArticles);
+router.get("/getArticles", articleController.getArticles);
 
 module.exports = router;

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const CounselorCommentController = require("../controllers/CounselorCommentController");
 
-router.get("/getCounselorCommentsById/:id", CounselorCommentController.getCounselorCommentsById);
+const counselorCommentController = require("../controllers/CounselorCommentController");
+
+router.get("/getCounselorCommentsById/:id", counselorCommentController.getCounselorCommentsById);
 
 module.exports = router;

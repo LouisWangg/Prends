@@ -1,26 +1,21 @@
-const { Op } = require("sequelize");
-const ServiceTypePriceModel = require("../models/ServiceTypePriceModel");
+const serviceTypePriceService = require("../services/ServiceTypePriceService");
 
-// Get Service pricing data by Id
 const getServicePricingById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const datas = await ServiceTypePriceModel.findAll({
-            where: { serviceTypeId: id },
-            order: [["serviceTypePriceId", "ASC"]]
-        });
+  try {
+    const { id } = req.params;
+    const datas = await serviceTypePriceService.getServicePricingById({ id });
 
-        if (!datas) {
-            return res.status(404).json({ message: "Data not found" });
-        }
-
-        res.json(datas);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Server error on getServicePricingById");
+    if (!datas || datas.length === 0) {
+      return res.status(404).json({ message: "Data not found" });
     }
+
+    res.json(datas);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error on getServicePricingById");
+  }
 };
 
 module.exports = {
-    getServicePricingById
+  getServicePricingById
 };
