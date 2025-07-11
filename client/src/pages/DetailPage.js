@@ -1,4 +1,10 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
@@ -108,94 +114,14 @@ const DetailPage = () => {
       const element = topCommentRef.current;
       const navbar = document.querySelector(".navbarWrapper.sticky"); // grab the sticky nav if it's active
       const yOffset = navbar ? -navbar.offsetHeight : -80; // fallback if sticky isn't applied
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }, 0);
   };
 
-  const getDetailData = async () => {
-    let data;
-    if (type.includes("service")) {
-      data = await fetchServiceDetailById(id);
-    } else if (type.includes("class")) {
-      data = await fetchClassDetailById(id);
-    } else if (type.includes("counselor")) {
-      data = await fetchCounselorDetailById(id);
-    } else if (type.includes("article")) {
-      // data = await fetchArticleById(id);
-    }
-    setDetailData(data);
-  };
-
-  
-    const getDescriptionsAndNotices = async () => {
-      const itemType = type.includes("counselor") ? detailData?.level : undefined;
-
-      const datas = await fetchDescriptionsAndNotices(type, id, itemType);
-      setDescriptions(datas.descriptions);
-      setNotices(datas.notices);
-    };
-
-  const getPricingData = async () => {
-    let data, grouped;
-
-    if (type.includes("service")) {
-      data = await fetchServicePricingById(id);
-      grouped = data.reduce((acc, item) => {
-        const {
-          duration,
-          level,
-          location,
-          price,
-          serviceDiscountFlag,
-          serviceDiscountPrice,
-        } = item;
-
-        const levelKey = level.toLowerCase();
-        if (!acc[duration]) acc[duration] = {};
-
-        if (location === null) {
-          acc[duration][levelKey] = {
-            price,
-            serviceDiscountFlag,
-            serviceDiscountPrice,
-          };
-        } else {
-          if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
-          acc[duration][levelKey][trimmingDash(location)] = {
-            price,
-            serviceDiscountFlag,
-            serviceDiscountPrice,
-          };
-        }
-        return acc;
-      }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
-    } else if (type.includes("counselor")) {
-      data = await fetchCounselorPricingById(id);
-      grouped = data.reduce((acc, item) => {
-        const {
-          duration,
-          counselingType,
-          price,
-          counselingDiscountFlag,
-          counselingDiscountPrice,
-        } = item;
-
-        if (!acc[duration]) acc[duration] = {};
-        acc[duration][counselingType] = {
-          price,
-          counselingDiscountFlag,
-          counselingDiscountPrice,
-        };
-
-        return acc;
-      }, {});
-    }
-
-    setPricingMap(grouped);
-  };
-
-  const getCommentData = async (sort = sortOption) => {
+  const getCommentData = useCallback(
+    async (sort = sortOption) => {
       let datas;
       if (type.includes("service")) {
         datas = await fetchServiceCommentsById({ id, sort });
@@ -205,20 +131,10 @@ const DetailPage = () => {
 
       setComments(datas.datas);
       setCommentCount(datas.counts);
-    };
+    },
+    [type, id, sortOption]
+  );
 
-    const getRecommendationData = async () => {
-      let datas;
-
-      if (type.includes("service") || type.includes("class")) {
-        datas = await fetchIndividualCounselingRecommendations(id, "Individual");
-      } else if (type.includes("counselor")) {
-        datas = await fetchCounselorRecommendations(id, detailData.level);
-      }
-      setRecommendations(datas);
-    };
-
-  //bedain useEffect pas type nya class
   useEffect(() => {
     setDuration(1);
     setLevel("junior");
@@ -239,27 +155,123 @@ const DetailPage = () => {
   }, [id, type]);
 
   useEffect(() => {
-    const load = async () => {
-      await getDetailData(); // load detailData first
-      await getDescriptionsAndNotices(); // then use detailData to decide
+    const getDetailData = async () => {
+      let data;
 
+      if (type.includes("service")) {
+        data = await fetchServiceDetailById(id);
+      } else if (type.includes("class")) {
+        data = await fetchClassDetailById(id);
+      } else if (type.includes("counselor")) {
+        data = await fetchCounselorDetailById(id);
+      } else if (type.includes("article")) {
+        // data = await fetchArticleById(id);
+      }
+      setDetailData(data);
+    };
+
+    getDetailData();
+  }, [type, id]);
+
+  useEffect(() => {
+    if (type.includes("counselor") && !detailData?.level) return;
+
+    const load = async () => {
+      const getDescriptionsAndNotices = async () => {
+        const itemType = type.includes("counselor") ? detailData?.level : undefined;
+
+        const datas = await fetchDescriptionsAndNotices(type, id, itemType);
+        setDescriptions(datas.descriptions);
+        setNotices(datas.notices);
+      };
+
+      const getPricingData = async () => {
+        let data, grouped;
+
+        if (type.includes("service")) {
+          data = await fetchServicePricingById(id);
+          grouped = data.reduce((acc, item) => {
+            const {
+              duration,
+              level,
+              location,
+              price,
+              serviceDiscountFlag,
+              serviceDiscountPrice,
+            } = item;
+
+            const levelKey = level.toLowerCase();
+            if (!acc[duration]) acc[duration] = {};
+
+            if (location === null) {
+              acc[duration][levelKey] = {
+                price,
+                serviceDiscountFlag,
+                serviceDiscountPrice,
+              };
+            } else {
+              if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
+              acc[duration][levelKey][trimmingDash(location)] = {
+                price,
+                serviceDiscountFlag,
+                serviceDiscountPrice,
+              };
+            }
+            return acc;
+          }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+        } else if (type.includes("counselor")) {
+          data = await fetchCounselorPricingById(id);
+          grouped = data.reduce((acc, item) => {
+            const {
+              duration,
+              counselingType,
+              price,
+              counselingDiscountFlag,
+              counselingDiscountPrice,
+            } = item;
+
+            if (!acc[duration]) acc[duration] = {};
+            acc[duration][counselingType] = {
+              price,
+              counselingDiscountFlag,
+              counselingDiscountPrice,
+            };
+
+            return acc;
+          }, {});
+        }
+
+        setPricingMap(grouped);
+      };
+
+      const getRecommendationData = async () => {
+        let datas;
+
+        if (type.includes("service") || type.includes("class")) {
+          datas = await fetchIndividualCounselingRecommendations(id, "Individual");
+        } else if (type.includes("counselor")) {
+          datas = await fetchCounselorRecommendations(id, detailData.level);
+        }
+        setRecommendations(datas);
+      };
+
+      await getDescriptionsAndNotices(); // needs detailData.level
       if (type.includes("service") || type.includes("counselor")) {
         getPricingData();
         getCommentData();
       }
-
       getRecommendationData();
     };
 
     load();
-  }, [type, id]);
+  }, [type, id, detailData, getCommentData]);
 
   const isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
   if (type.includes("service")) {
     const isLocationBased =
       typeof pricingMap[duration]?.[level]?.[
-      Object.keys(pricingMap[duration]?.[level] || {})[0]
+        Object.keys(pricingMap[duration]?.[level] || {})[0]
       ] === "object";
 
     if (isLocationBased) {

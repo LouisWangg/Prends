@@ -47,7 +47,7 @@ const SingleCard = ({ type, data }) => {
             {singleCard.name}
           </Typography>
           <Typography variant="body2">
-            {type === 'Counselor' && parseInt(singleCard.commentCount) > 0 ? (
+            {type === "Counselor" && parseInt(singleCard.commentCount) > 0 ? (
               <div className="singleCardStarWrapper">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <HiStar key={i} className="cardStarSize" />
@@ -69,7 +69,9 @@ const SingleCard = ({ type, data }) => {
                 </span>
               </>
             ) : (
-              <span className="newPrice">Dari {formatToRupiah(singleCard.price)}</span>
+              <span className="newPrice">
+                Dari {formatToRupiah(singleCard.price)}
+              </span>
             )}
           </Typography>
         </CardContent>
@@ -116,16 +118,18 @@ const SingleCard = ({ type, data }) => {
     );
   }
 
-  return <a
-    href={`/detail-page/${type.toLowerCase()}/${id}`}
-    onClick={(e) => {
-      e.preventDefault();
-      navigate(`/detail-page/${type.toLowerCase()}/${id}`);
-    }}
-    style={{ textDecoration: "none", color: "inherit" }}
-  >
-    {singleCardContent}
-  </a>;
+  return (
+    <a
+      href={`/detail-page/${type.toLowerCase()}/${id}`}
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(`/detail-page/${type.toLowerCase()}/${id}`);
+      }}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
+      {singleCardContent}
+    </a>
+  );
 };
 
 export default SingleCard;

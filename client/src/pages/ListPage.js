@@ -11,6 +11,7 @@ import { fetchCounselors } from "../services/CounselorService.js";
 
 const ListPage = () => {
   const { type, itemType } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [counselors, setCounselors] = useState([]);
   const [sortOption, setSortOption] = useState("commentCount");
@@ -23,9 +24,11 @@ const ListPage = () => {
 
   const getCounselors = useCallback(
     async (sort = sortOption) => {
+      setIsLoading(true);
       const datas = await fetchCounselors({ sortBy: sort });
       setCounselors(datas);
-    }, [sortOption]
+      setIsLoading(false);
+    },[sortOption]
   );
 
   let pageTitle, pageDescription;
@@ -57,18 +60,17 @@ const ListPage = () => {
         <Typography variant="body1" className="listPageDescription">
           {pageDescription}
         </Typography>
-      )
+      );
     }
   };
 
-  return (
-    <div className="pageWrapper">
-      <Typography variant="h3" className="listPageTitle">
-        {pageTitle}
-      </Typography>
+  const renderFilter = () => {
+    let quantity;
+    if (type.includes("counselor")) {
+      quantity = counselors.length;
+    }
 
-      {renderDescription()}
-
+    return (
       <div className="filterWrapper">
         <span>Urutkan berdasarkan : </span>
         <select onChange={handleSortChange}>
@@ -82,17 +84,42 @@ const ListPage = () => {
             Berdasarkan harga (tinggi ke rendah)
           </option>
         </select>
-        <span>11 produk</span>
+        <span>{quantity} produk</span>
       </div>
-      <HomeSection title="" subTitle="" columns={4} noWrapper style={{ margin: 0 }}>
-        {counselors.map((counselor) => (
-          <SingleCard
-            key={counselor.classId}
-            type={counselor.itemType}
-            data={counselor}
-          />
-        ))}
-      </HomeSection>
+    );
+  };
+
+  return (
+    <div className="pageWrapper">
+      <Typography variant="h3" className="listPageTitle">
+        {pageTitle}
+      </Typography>
+
+      {renderDescription()}
+
+      {renderFilter()}
+
+      {isLoading ? (
+        <div className="loader">Memuat data...</div>
+      ) : (
+        <div className="fadeIn">
+          <HomeSection
+            title=""
+            subTitle=""
+            columns={4}
+            noWrapper
+            style={{ margin: 0 }}
+          >
+            {counselors.map((counselor) => (
+              <SingleCard
+                key={counselor.classId}
+                type={counselor.itemType}
+                data={counselor}
+              />
+            ))}
+          </HomeSection>
+        </div>
+      )}
     </div>
   );
 };
