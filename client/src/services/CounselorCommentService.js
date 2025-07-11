@@ -3,7 +3,7 @@ import axios from "axios";
 const url = "http://localhost:5000/counselorComments";
 
 // Get Comment datas for Counselor Detail page
-export const fetchCounselorCommentsById = async (id, sort) => {
+export const fetchCounselorCommentsById = async ({ id, sort = "newest" } = {}) => {
   try {
     const response = await axios.get(`${url}/getCounselorCommentsById/${id}`, {
       params: { sort }

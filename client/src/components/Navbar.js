@@ -121,13 +121,13 @@ const Navbar = ({ isSticky }) => {
               <RxChevronUp className="navbarLinkIcon" />
               <ul className="dropdownMenu">
                 <li>
-                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Junior Expert</Link>
+                  <Link to="/list-page/counselor/junior-expert" onClick={() => setIsExpertOpen(false)}>Junior Expert</Link>
                 </li>
                 <li>
-                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Middle Expert</Link>
+                  <Link to="/list-page/counselor/middle-expert" onClick={() => setIsExpertOpen(false)}>Middle Expert</Link>
                 </li>
                 <li>
-                  <Link to="/detail-page/counselor/topic4" onClick={() => setIsExpertOpen(false)}>Senior Expert</Link>
+                  <Link to="/list-page/counselor/senior-expert" onClick={() => setIsExpertOpen(false)}>Senior Expert</Link>
                 </li>
               </ul>
             </>

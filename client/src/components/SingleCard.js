@@ -43,11 +43,11 @@ const SingleCard = ({ type, data }) => {
           {singleCard.discountFlag && <div className="obralBadge">Obral</div>}
         </div>
         <CardContent className="singleCardContent">
-          <Typography variant="subtitle1">
+          <Typography variant="subtitle1" sx={{ fontSize: "16px" }}>
             {singleCard.name}
           </Typography>
           <Typography variant="body2">
-            {type === 'Counselor' && singleCard.commentCount !== undefined ? (
+            {type === 'Counselor' && parseInt(singleCard.commentCount) > 0 ? (
               <div className="singleCardStarWrapper">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <HiStar key={i} className="cardStarSize" />
@@ -58,7 +58,7 @@ const SingleCard = ({ type, data }) => {
               <></>
             )}
           </Typography>
-          <Typography variant="caption" className="singleCardPrice">
+          <Typography sx={{ fontSize: 0 }}>
             {singleCard.discountFlag ? (
               <>
                 <span className="oldPrice">

@@ -10,37 +10,68 @@ import HomeSection from "../components/HomeSection";
 import { fetchCounselors } from "../services/CounselorService.js";
 
 const ListPage = () => {
-  const { type } = useParams();
-  const [counselors, setCounselors] = useState([]);
+  const { type, itemType } = useParams();
 
-  const getCounselors = useCallback(async () => {
-    const datas = await fetchCounselors();
-    setCounselors(datas);
-  }, []);
+  const [counselors, setCounselors] = useState([]);
+  const [sortOption, setSortOption] = useState("commentCount");
+
+  const handleSortChange = async (e) => {
+    const newSort = e.target.value;
+    setSortOption(newSort);
+    getCounselors(newSort);
+  };
+
+  const getCounselors = useCallback(
+    async (sort = sortOption) => {
+      const datas = await fetchCounselors({ sortBy: sort });
+      setCounselors(datas);
+    }, [sortOption]
+  );
 
   let pageTitle, pageDescription;
   if (type.includes("service")) {
   } else if (type.includes("class")) {
   } else if (type.includes("counselor")) {
-    pageTitle = "Expert";
-    pageDescription = "";
+    if (itemType === undefined) {
+      pageTitle = "Expert";
+      pageDescription = "";
+    } else if (itemType.toLowerCase().includes("junior")) {
+      pageTitle = "Junior Expert";
+      pageDescription = "";
+    } else if (itemType.toLowerCase().includes("middle")) {
+      pageTitle = "Middle Expert";
+      pageDescription = "";
+    } else if (itemType.toLowerCase().includes("expert")) {
+      pageTitle = "Senior Expert";
+      pageDescription = "";
+    }
   }
 
   useEffect(() => {
     getCounselors();
   }, [getCounselors]);
 
+  const renderDescription = () => {
+    if (pageDescription !== null && pageDescription !== "") {
+      return (
+        <Typography variant="body1" className="listPageDescription">
+          {pageDescription}
+        </Typography>
+      )
+    }
+  };
+
   return (
     <div className="pageWrapper">
-      <Typography variant="h3" sx={{ marginTop: "40px" }}>
+      <Typography variant="h3" className="listPageTitle">
         {pageTitle}
       </Typography>
-      <Typography variant="body1" style={{ margin: "10px 0 20px 0" }}>
-        {pageDescription}
-      </Typography>
+
+      {renderDescription()}
+
       <div className="filterWrapper">
         <span>Urutkan berdasarkan : </span>
-        <select>
+        <select onChange={handleSortChange}>
           <option value="commentCount">Unggulan</option>
           <option value="name_asc">Berdasarkan abjad (A-Z)</option>
           <option value="name_desc">Berdasarkan abjad (Z-A)</option>
@@ -51,9 +82,9 @@ const ListPage = () => {
             Berdasarkan harga (tinggi ke rendah)
           </option>
         </select>
-        <span>bla bla dari 11 produk</span>
+        <span>11 produk</span>
       </div>
-      <HomeSection title="" subTitle="" columns={4}>
+      <HomeSection title="" subTitle="" columns={4} noWrapper style={{ margin: 0 }}>
         {counselors.map((counselor) => (
           <SingleCard
             key={counselor.classId}

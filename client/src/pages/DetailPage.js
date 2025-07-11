@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
@@ -114,20 +108,12 @@ const DetailPage = () => {
       const element = topCommentRef.current;
       const navbar = document.querySelector(".navbarWrapper.sticky"); // grab the sticky nav if it's active
       const yOffset = navbar ? -navbar.offsetHeight : -80; // fallback if sticky isn't applied
-      const y =
-        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
     }, 0);
   };
 
-  const getDescriptionsAndNotices = useCallback(async () => {
-    const datas = await fetchDescriptionsAndNotices(type, id);
-    setDescriptions(datas.descriptions);
-    setNotices(datas.notices);
-  }, [type, id]);
-
-  const getDetailData = useCallback(async () => {
+  const getDetailData = async () => {
     let data;
     if (type.includes("service")) {
       data = await fetchServiceDetailById(id);
@@ -139,9 +125,18 @@ const DetailPage = () => {
       // data = await fetchArticleById(id);
     }
     setDetailData(data);
-  }, [type, id]);
+  };
 
-  const getPricingData = useCallback(async () => {
+  
+    const getDescriptionsAndNotices = async () => {
+      const itemType = type.includes("counselor") ? detailData?.level : undefined;
+
+      const datas = await fetchDescriptionsAndNotices(type, id, itemType);
+      setDescriptions(datas.descriptions);
+      setNotices(datas.notices);
+    };
+
+  const getPricingData = async () => {
     let data, grouped;
 
     if (type.includes("service")) {
@@ -198,32 +193,30 @@ const DetailPage = () => {
     }
 
     setPricingMap(grouped);
-  }, [type, id]);
+  };
 
-  const getCommentData = useCallback(
-    async (sort = sortOption) => {
+  const getCommentData = async (sort = sortOption) => {
       let datas;
       if (type.includes("service")) {
-        datas = await fetchServiceCommentsById(id, sort);
+        datas = await fetchServiceCommentsById({ id, sort });
       } else if (type.includes("counselor")) {
-        datas = await fetchCounselorCommentsById(id, sort);
+        datas = await fetchCounselorCommentsById({ id, sort });
       }
 
       setComments(datas.datas);
       setCommentCount(datas.counts);
-    },
-    [type, id, sortOption]
-  );
+    };
 
-  const getRecommendationData = useCallback(async () => {
-    let datas;
-    if (type.includes("service") || type.includes("class")) {
-      datas = await fetchIndividualCounselingRecommendations(id, "Individual");
-    } else if (type.includes("counselor")) {
-      datas = await fetchCounselorRecommendations(id, detailData.level);
-    }
-    setRecommendations(datas);
-  }, [type, id, detailData.level]);
+    const getRecommendationData = async () => {
+      let datas;
+
+      if (type.includes("service") || type.includes("class")) {
+        datas = await fetchIndividualCounselingRecommendations(id, "Individual");
+      } else if (type.includes("counselor")) {
+        datas = await fetchCounselorRecommendations(id, detailData.level);
+      }
+      setRecommendations(datas);
+    };
 
   //bedain useEffect pas type nya class
   useEffect(() => {
@@ -246,43 +239,27 @@ const DetailPage = () => {
   }, [id, type]);
 
   useEffect(() => {
-    if (type.includes("service") || type.includes("counselor")) {
-      getDetailData();
-      getPricingData();
-      getDescriptionsAndNotices();
-      getCommentData();
-      getRecommendationData();
-    }
-  }, [
-    type,
-    id,
-    getDetailData,
-    getPricingData,
-    getDescriptionsAndNotices,
-    getCommentData,
-    getRecommendationData,
-  ]);
+    const load = async () => {
+      await getDetailData(); // load detailData first
+      await getDescriptionsAndNotices(); // then use detailData to decide
 
-  useEffect(() => {
-    if (type.includes("class")) {
-      getDetailData();
-      getDescriptionsAndNotices();
+      if (type.includes("service") || type.includes("counselor")) {
+        getPricingData();
+        getCommentData();
+      }
+
       getRecommendationData();
-    }
-  }, [
-    type,
-    id,
-    getDetailData,
-    getDescriptionsAndNotices,
-    getRecommendationData,
-  ]);
+    };
+
+    load();
+  }, [type, id]);
 
   const isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
   if (type.includes("service")) {
     const isLocationBased =
       typeof pricingMap[duration]?.[level]?.[
-        Object.keys(pricingMap[duration]?.[level] || {})[0]
+      Object.keys(pricingMap[duration]?.[level] || {})[0]
       ] === "object";
 
     if (isLocationBased) {

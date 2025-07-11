@@ -2,8 +2,8 @@ import axios from "axios";
 
 const url = "http://localhost:5000/counselors";
 
-// Get Counselor datas for Home page
-export const fetchCounselors = async (sortBy = "commentCount", limit = null) => {
+// Get Counselor datas for Home & List page
+export const fetchCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => {
   try {
     const response = await axios.get(`${url}/getCounselors`, {
       params: { sortBy, limit }
@@ -25,4 +25,3 @@ export const fetchCounselorDetailById = async (id) => {
     return null;
   }
 };
-

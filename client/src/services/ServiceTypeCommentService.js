@@ -14,7 +14,7 @@ export const fetchHomePageComments = async () => {
 };
 
 // Get Comment datas for each Service
-export const fetchServiceCommentsById = async (id, sort) => {
+export const fetchServiceCommentsById = async ({ id, sort = "newest" } = {}) => {
   try {
     const response = await axios.get(`${url}/getServiceCommentsById/${id}`, {
       params: { sort }

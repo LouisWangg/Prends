@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
 
-const SharedDescriptionModel = require("../models/SharedDescriptionModel");
+const sharedDescriptionModel = require("../models/SharedDescriptionModel");
 
 const tenthTitle = ["online chat", "online call", "offline", "home visit"];
 const eleventDescriptionMap = {
@@ -19,8 +19,13 @@ const replaceCharactersByIndex = (text, masterValues, indexArray) => {
 };
 
 // Get Description and Notice datas for Detail page
-const getDescriptionsAndNotices = async ({ type, id } = {}) => {
+const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
     const idNum = parseInt(id);
+    const itemTypeValue = itemType?.toLowerCase();
+
+    console.log("ty = " + type);
+    console.log("it ty = " + itemTypeValue);
+
     let descriptionIds = [];
     let noticeIds = [];
 
@@ -38,11 +43,11 @@ const getDescriptionsAndNotices = async ({ type, id } = {}) => {
     } else if (type.includes("class")) {
       noticeIds.push(1, 7);
     } else if (type.includes("counselor")) {
-      if (idNum < 4) {
+      if (itemTypeValue?.includes("junior")) {
         descriptionIds.push(17, 20);
-      } else if (idNum > 3 && idNum < 7) {
+      } else if (itemTypeValue?.includes("middle")) {
         descriptionIds.push(18, 20);
-      } else if (idNum > 6) {
+      } else if (itemTypeValue?.includes("senior")) {
         descriptionIds.push(19, 20);
       }
       noticeIds.push(1, 2, 4);
@@ -55,7 +60,7 @@ const getDescriptionsAndNotices = async ({ type, id } = {}) => {
     ];
 
     const fetchDescriptions = descriptionIds.length > 0
-      ? SharedDescriptionModel.findAll({
+      ? sharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
         order: orderClause(descriptionIds),
@@ -64,7 +69,7 @@ const getDescriptionsAndNotices = async ({ type, id } = {}) => {
     ;
 
     const fetchNotices = noticeIds.length > 0
-      ? SharedDescriptionModel.findAll({
+      ? sharedDescriptionModel.findAll({
         attributes: ["sharedDescriptionId", "title", "description"],
         where: { sharedDescriptionId: { [Op.in]: noticeIds } },
         order: orderClause(noticeIds),

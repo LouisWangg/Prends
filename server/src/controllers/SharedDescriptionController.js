@@ -2,8 +2,8 @@ const SharedDescriptionService = require("../services/SharedDescriptionService")
 
 const getDescriptionsAndNotices = async (req, res) => {
   try {
-    const { type, id } = req.params;
-    const result = await SharedDescriptionService.getDescriptionsAndNotices({ type, id });
+    const { type, id, itemType } = req.query;
+    const result = await SharedDescriptionService.getDescriptionsAndNotices({ type, id, itemType });
     res.json(result);
   } catch (error) {
     console.error(error.message);

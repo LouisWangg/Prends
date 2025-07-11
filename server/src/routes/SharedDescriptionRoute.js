@@ -3,6 +3,6 @@ const router = express.Router();
 
 const SharedDescriptionController = require("../controllers/SharedDescriptionController");
 
-router.get("/getDescriptionsAndNotices/:type/:id", SharedDescriptionController.getDescriptionsAndNotices);
+router.get("/getDescriptionsAndNotices", SharedDescriptionController.getDescriptionsAndNotices);
 
 module.exports = router;
