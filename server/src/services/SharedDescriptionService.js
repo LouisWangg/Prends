@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const sequelize = require("../config/database");
 
-const sharedDescriptionModel = require("../models/SharedDescriptionModel");
+const SharedDescriptionModel = require("../models/SharedDescriptionModel");
 
 const tenthTitle = ["online chat", "online call", "offline", "home visit"];
 const eleventDescriptionMap = {
@@ -20,91 +20,119 @@ const replaceCharactersByIndex = (text, masterValues, indexArray) => {
 
 // Get Description and Notice datas for Detail page
 const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
-    const idNum = parseInt(id);
-    const itemTypeValue = itemType?.toLowerCase();
+  const idNum = parseInt(id);
+  const itemTypeValue = itemType?.toLowerCase();
 
-    console.log("ty = " + type);
-    console.log("it ty = " + itemTypeValue);
+  let descriptionIds = [];
+  let noticeIds = [];
 
-    let descriptionIds = [];
-    let noticeIds = [];
+  if (type.includes("service")) {
+    if (idNum < 3) {
+      descriptionIds.push(8, 9, 10, 11);
+      noticeIds.push(1, 2, 3);
+    } else if (idNum == 3) {
+      descriptionIds.push(8, 9, 10);
+      noticeIds.push(1, 2, 3);
+    } else if (idNum == 4) {
+      descriptionIds.push(8, 9, 10);
+      noticeIds.push(1, 2, 3, 6);
+    }
+  } else if (type.includes("class")) {
+    noticeIds.push(1, 7);
+  } else if (type.includes("counselor")) {
+    if (itemTypeValue?.includes("junior")) {
+      descriptionIds.push(17, 20);
+    } else if (itemTypeValue?.includes("middle")) {
+      descriptionIds.push(18, 20);
+    } else if (itemTypeValue?.includes("senior")) {
+      descriptionIds.push(19, 20);
+    }
+    noticeIds.push(1, 2, 4);
+  }
 
-    if (type.includes("service")) {
-      if (idNum < 3) {
-        descriptionIds.push(8, 9, 10, 11);
-        noticeIds.push(1, 2, 3);
-      } else if (idNum == 3) {
-        descriptionIds.push(8, 9, 10);
-        noticeIds.push(1, 2, 3);
-      } else if (idNum == 4) {
-        descriptionIds.push(8, 9, 10);
-        noticeIds.push(1, 2, 3, 6);
-      }
-    } else if (type.includes("class")) {
-      noticeIds.push(1, 7);
-    } else if (type.includes("counselor")) {
-      if (itemTypeValue?.includes("junior")) {
-        descriptionIds.push(17, 20);
-      } else if (itemTypeValue?.includes("middle")) {
-        descriptionIds.push(18, 20);
-      } else if (itemTypeValue?.includes("senior")) {
-        descriptionIds.push(19, 20);
-      }
-      noticeIds.push(1, 2, 4);
+  const orderClause = (ids) => [
+    sequelize.literal(
+      `CASE "sharedDescriptionId" ${ids.map((id, i) => `WHEN ${id} THEN ${i}`).join(" ")} ELSE ${ids.length} END`
+    ),
+  ];
+
+  const fetchDescriptions = descriptionIds.length > 0
+    ? SharedDescriptionModel.findAll({
+      attributes: ["sharedDescriptionId", "title", "description"],
+      where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
+      order: orderClause(descriptionIds),
+    })
+    : Promise.resolve([]);
+  ;
+
+  const fetchNotices = noticeIds.length > 0
+    ? SharedDescriptionModel.findAll({
+      attributes: ["sharedDescriptionId", "title", "description"],
+      where: { sharedDescriptionId: { [Op.in]: noticeIds } },
+      order: orderClause(noticeIds),
+    })
+    : Promise.resolve([]);
+  ;
+
+  // Query both in parallel
+  const [descriptions, notices] = await Promise.all([fetchDescriptions, fetchNotices]);
+
+  const processedDescriptions = descriptions.map((desc) => {
+    const { sharedDescriptionId, title, description } = desc.toJSON();
+
+    if (sharedDescriptionId === 10) {
+      const value = tenthTitle[idNum - 1];
+      return {
+        ...desc.toJSON(),
+        title: replaceCharactersByIndex(title, [value], [0]),
+      };
     }
 
-    const orderClause = (ids) => [
-      sequelize.literal(
-        `CASE "sharedDescriptionId" ${ids.map((id, i) => `WHEN ${id} THEN ${i}`).join(" ")} ELSE ${ids.length} END`
-      ),
-    ];
+    if (sharedDescriptionId === 11 && eleventDescriptionMap[idNum]) {
+      const values = eleventDescriptionMap[idNum];
+      return {
+        ...desc.toJSON(),
+        title: replaceCharactersByIndex(title, [values[0]], [0]),
+        description: replaceCharactersByIndex(description, values, [0, 1]),
+      };
+    }
+    return desc;
+  });
 
-    const fetchDescriptions = descriptionIds.length > 0
-      ? sharedDescriptionModel.findAll({
-        attributes: ["sharedDescriptionId", "title", "description"],
-        where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
-        order: orderClause(descriptionIds),
-      })
-      : Promise.resolve([]);
-    ;
+  return { descriptions: processedDescriptions, notices };
+};
 
-    const fetchNotices = noticeIds.length > 0
-      ? sharedDescriptionModel.findAll({
-        attributes: ["sharedDescriptionId", "title", "description"],
-        where: { sharedDescriptionId: { [Op.in]: noticeIds } },
-        order: orderClause(noticeIds),
-      })
-      : Promise.resolve([]);
-    ;
+// Get Title and Subtitle datas for List page
+const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
+  const itemTypeValue = itemType?.toLowerCase();
 
-    // Query both in parallel
-    const [descriptions, notices] = await Promise.all([fetchDescriptions, fetchNotices]);
+  let searchPattern, extractPattern, result;
 
-    const processedDescriptions = descriptions.map((desc) => {
-      const { sharedDescriptionId, title, description } = desc.toJSON();
+  if (type.includes("counselor")) {
+    searchPattern = `%Apa itu ${itemTypeValue} expert%`;
+    extractPattern = `(${itemTypeValue.charAt(0).toUpperCase() + itemTypeValue.slice(1)} Expert)`;
 
-      if (sharedDescriptionId === 10) {
-        const value = tenthTitle[idNum - 1];
-        return {
-          ...desc.toJSON(),
-          title: replaceCharactersByIndex(title, [value], [0]),
-        };
+    result = await sequelize.query(
+      `
+    SELECT 
+      (REGEXP_MATCHES(title, :extractPattern))[1] AS title, description 
+    FROM "SharedDescriptions"
+    WHERE title ILIKE :searchPattern
+    `,
+      {
+        replacements: {
+          extractPattern,
+          searchPattern,
+        },
+        type: sequelize.QueryTypes.SELECT,
       }
+    );
+  }
 
-      if (sharedDescriptionId === 11 && eleventDescriptionMap[idNum]) {
-        const values = eleventDescriptionMap[idNum];
-        return {
-          ...desc.toJSON(),
-          title: replaceCharactersByIndex(title, [values[0]], [0]),
-          description: replaceCharactersByIndex(description, values, [0, 1]),
-        };
-      }
-      return desc;
-    });
-
-    return { descriptions: processedDescriptions, notices };
+  return result?.[0] ?? {};
 };
 
 module.exports = {
   getDescriptionsAndNotices,
+  getTitlesAndSubtitles,
 };

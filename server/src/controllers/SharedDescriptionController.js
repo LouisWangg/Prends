@@ -11,6 +11,18 @@ const getDescriptionsAndNotices = async (req, res) => {
   }
 };
 
+const getTitlesAndSubtitles = async (req, res) => {
+  try {
+    const { type, itemType } = req.query;
+    const result = await SharedDescriptionService.getTitlesAndSubtitles({ type, itemType });
+    res.json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Failed to run getTitlesAndSubtitles");
+  }
+};
+
 module.exports = {
-  getDescriptionsAndNotices
+  getDescriptionsAndNotices,
+  getTitlesAndSubtitles
 };

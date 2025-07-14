@@ -8,13 +8,17 @@ import SingleCard from "../components/SingleCard";
 import HomeSection from "../components/HomeSection";
 
 import { fetchCounselors } from "../services/CounselorService.js";
+import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js";
 
 const ListPage = () => {
   const { type, itemType } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
+  const [pageTexts, setPageTexts] = useState(null);
   const [counselors, setCounselors] = useState([]);
   const [sortOption, setSortOption] = useState("commentCount");
+
+  let itemTypeValue, pageTitle, pageSubtitle;
 
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
@@ -28,37 +32,45 @@ const ListPage = () => {
       const datas = await fetchCounselors({ sortBy: sort });
       setCounselors(datas);
       setIsLoading(false);
-    },[sortOption]
+    }, [sortOption]
   );
 
-  let pageTitle, pageDescription;
-  if (type.includes("service")) {
-  } else if (type.includes("class")) {
-  } else if (type.includes("counselor")) {
-    if (itemType === undefined) {
-      pageTitle = "Expert";
-      pageDescription = "";
-    } else if (itemType.toLowerCase().includes("junior")) {
-      pageTitle = "Junior Expert";
-      pageDescription = "";
-    } else if (itemType.toLowerCase().includes("middle")) {
-      pageTitle = "Middle Expert";
-      pageDescription = "";
-    } else if (itemType.toLowerCase().includes("expert")) {
-      pageTitle = "Senior Expert";
-      pageDescription = "";
-    }
-  }
-
   useEffect(() => {
+    const getTitlesAndSubtitles = async () => {
+      console.log("SATU = " + type);
+      console.log("DUA = " + itemTypeValue)
+      const datas = await fetchTitlesAndSubtitles(type, itemTypeValue);
+      setPageTexts(datas);
+
+      if (type.includes("service")) {
+      } else if (type.includes("class")) {
+      } else if (type.includes("counselor")) {
+        itemTypeValue = itemType?.split('-')[0];
+        pageTitle = pageTexts?.title ?? "Expert";
+        pageSubtitle = pageTexts?.description ?? "";
+        // if (itemType === undefined) {
+        //   pageTitle = "Expert";
+        //   pageSubtitle = "";
+        // } else {
+        //   pageTitle = pageTexts.title;
+        //   pageSubtitle = pageTexts.description;
+        //   console.log("TITLE = " + pageTitle);
+        //   console.log("SUB = " + pageSubtitle);
+        // }
+      }
+    };
+
     getCounselors();
-  }, [getCounselors]);
+    getTitlesAndSubtitles();
+  }, [type, itemTypeValue, getCounselors]);
+
+
 
   const renderDescription = () => {
-    if (pageDescription !== null && pageDescription !== "") {
+    if (pageSubtitle !== null && pageSubtitle !== "") {
       return (
         <Typography variant="body1" className="listPageDescription">
-          {pageDescription}
+          {pageSubtitle}
         </Typography>
       );
     }
