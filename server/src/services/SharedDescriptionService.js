@@ -3,10 +3,27 @@ const sequelize = require("../config/database");
 
 const SharedDescriptionModel = require("../models/SharedDescriptionModel");
 
+const eightTitle = ["online", "offline", "home visit"];
 const tenthTitle = ["online chat", "online call", "offline", "home visit"];
 const eleventDescriptionMap = {
   1: ["chat", "Chat"],
   2: ["call", "Meet"],
+};
+
+const DescriptionIdMap = {
+  serviceDescriptions: {
+    individualOnline: [8, 9, 10, 11],
+    individualOffline: [8, 9, 10],
+  },
+  serviceNotices: [1, 2, 3],
+  homeVisitNotices: [1, 2, 3, 6],
+  class: [1, 7],
+  counselorNotices: [1, 2, 4],
+  counselorDescriptions: {
+    junior: [17, 20],
+    middle: [18, 20],
+    senior: [19, 20],
+  },
 };
 
 const replaceCharactersByIndex = (text, masterValues, indexArray) => {
@@ -37,27 +54,26 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
   let noticeIds = [];
 
   if (type.includes("service")) {
-    if (idNum < 3) {
-      descriptionIds.push(8, 9, 10, 11);
-      noticeIds.push(1, 2, 3);
-    } else if (idNum == 3) {
-      descriptionIds.push(8, 9, 10);
-      noticeIds.push(1, 2, 3);
-    } else if (idNum == 4) {
-      descriptionIds.push(8, 9, 10);
-      noticeIds.push(1, 2, 3, 6);
-    }
+    if (idNum < 3)
+      descriptionIds = DescriptionIdMap.serviceDescriptions.individualOnline;
+    else if (idNum >= 3 || idNum <= 4)
+      descriptionIds = DescriptionIdMap.serviceDescriptions.individualOffline;
+
+    noticeIds =
+      idNum === 4
+        ? DescriptionIdMap.homeVisitNotices
+        : DescriptionIdMap.serviceNotices;
   } else if (type.includes("class")) {
-    noticeIds.push(1, 7);
+    noticeIds = DescriptionIdMap.class;
   } else if (type.includes("counselor")) {
-    if (itemTypeValue?.includes("junior")) {
-      descriptionIds.push(17, 20);
-    } else if (itemTypeValue?.includes("middle")) {
-      descriptionIds.push(18, 20);
-    } else if (itemTypeValue?.includes("senior")) {
-      descriptionIds.push(19, 20);
-    }
-    noticeIds.push(1, 2, 4);
+    if (itemTypeValue.includes("junior"))
+      descriptionIds = DescriptionIdMap.counselorDescriptions.junior;
+    else if (itemTypeValue.includes("middle"))
+      descriptionIds = DescriptionIdMap.counselorDescriptions.middle;
+    else if (itemTypeValue.includes("senior"))
+      descriptionIds = DescriptionIdMap.counselorDescriptions.senior;
+
+    noticeIds = DescriptionIdMap.counselorNotices;
   }
 
   const orderClause = (ids) => [
@@ -66,29 +82,42 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
     ),
   ];
 
-  const fetchDescriptions = descriptionIds.length > 0
-    ? SharedDescriptionModel.findAll({
-      attributes: ["sharedDescriptionId", "title", "description"],
-      where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
-      order: orderClause(descriptionIds),
-    })
-    : Promise.resolve([]);
-  ;
+  const fetchDescriptions =
+    descriptionIds.length > 0
+      ? SharedDescriptionModel.findAll({
+          attributes: ["sharedDescriptionId", "title", "description"],
+          where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
+          order: orderClause(descriptionIds),
+        })
+      : Promise.resolve([]);
 
-  const fetchNotices = noticeIds.length > 0
-    ? SharedDescriptionModel.findAll({
-      attributes: ["sharedDescriptionId", "title", "description"],
-      where: { sharedDescriptionId: { [Op.in]: noticeIds } },
-      order: orderClause(noticeIds),
-    })
-    : Promise.resolve([]);
-  ;
-
+  const fetchNotices =
+    noticeIds.length > 0
+      ? SharedDescriptionModel.findAll({
+          attributes: ["sharedDescriptionId", "title", "description"],
+          where: { sharedDescriptionId: { [Op.in]: noticeIds } },
+          order: orderClause(noticeIds),
+        })
+      : Promise.resolve([]);
   // Query both in parallel
-  const [descriptions, notices] = await Promise.all([fetchDescriptions, fetchNotices]);
+  const [descriptions, notices] = await Promise.all([
+    fetchDescriptions,
+    fetchNotices,
+  ]);
 
   const processedDescriptions = descriptions.map((desc) => {
     const { sharedDescriptionId, title, description } = desc.toJSON();
+
+    if (sharedDescriptionId === 8) {
+      const idToIndex = { 1: 0, 2: 0, 3: 1, 4: 2 };
+      const index = idToIndex[idNum] ?? 0;
+      const value = eightTitle[index];
+
+      return {
+        ...desc.toJSON(),
+        title: replaceCharactersByIndex(title, [value], [0]),
+      };
+    }
 
     if (sharedDescriptionId === 10) {
       const value = tenthTitle[idNum - 1];

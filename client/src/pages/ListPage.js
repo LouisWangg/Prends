@@ -95,14 +95,14 @@ const ListPage = () => {
 
       {renderFilter()}
 
-      {quantity === 0 ? (
+      {isLoading ? (
+        <div className="loader">Memuat data...</div>
+      ) : quantity === 0 ? (
         <div className="noDataWrapper">
           <Typography variant="h4">
             Tidak ada produk yang ditemukan <br /> Gunakan lebih sedikit filter atau hapus semua
           </Typography>
         </div>
-      ) : isLoading ? (
-        <div className="loader">Memuat data...</div>
       ) : (
         <div className="fadeIn">
           <HomeSection
