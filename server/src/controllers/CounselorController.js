@@ -2,8 +2,8 @@ const CounselorService = require("../services/CounselorService");
 
 const getCounselors = async (req, res) => {
   try {
-    const { sortBy, limit } = req.query;
-    const data = await CounselorService.getCounselors({ sortBy, limit });
+    const { itemType, sortBy, limit } = req.query;
+    const data = await CounselorService.getCounselors({ itemType, sortBy, limit });
     res.json(data);
   } catch (error) {
     console.error(error.message);

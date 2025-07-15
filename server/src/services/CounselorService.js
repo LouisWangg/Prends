@@ -7,9 +7,24 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
 
 // Get Counselor datas for Home & List page
-const getCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => {
+const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit = null } = {}) => {
     let orderClause = "";
-    const limitClause = limit ? `LIMIT ${parseInt(limit)}` : "";
+    let whereClause = "";
+    let limitClause = "";
+    let imageMap;
+
+    const replacements = {};
+    const itemTypeValue = itemType ? itemType.charAt(0).toUpperCase() + itemType?.slice(1) : null;
+
+    if (itemType) {
+        whereClause = `WHERE c."level" = :level`;
+        replacements.level = itemTypeValue;
+    }
+
+    if (limit) {
+        limitClause = `LIMIT :limit`;
+        replacements.limit = parseInt(limit);
+    }
 
     switch (sortBy) {
         case "price_asc":
@@ -28,7 +43,7 @@ const getCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => 
             orderClause = `ORDER BY "commentCount" DESC`;
     }
 
-    const [counselors] = await sequelize.query(`
+    const counselors = await sequelize.query(`
       SELECT 
         c."counselorId",
         c."name",
@@ -39,6 +54,7 @@ const getCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => 
         COUNT(cf."counselorCommentId") AS "commentCount"
       FROM "Counselors" c
       LEFT JOIN "CounselorComments" cf ON cf."counselorId" = c."counselorId"
+      ${whereClause}
       GROUP BY 
         c."counselorId",
         c."name",
@@ -48,28 +64,34 @@ const getCounselors = async ({ sortBy = "commentCount", limit = null } = {}) => 
         c."itemType"
       ${orderClause}
       ${limitClause}
-    `);
+    `, {
+        replacements,
+        type: sequelize.QueryTypes.SELECT
+    });
 
     // Fetch images separately
     const counselorIds = counselors.map(c => c.counselorId);
-    const counselorImages = await sequelize.query(`
+
+    if (counselorIds.length > 0) {
+        const counselorImages = await sequelize.query(`
       SELECT "counselorId", "image"
       FROM "CounselorImages"
       WHERE "counselorId" IN (:ids)
     `, {
-        replacements: { ids: counselorIds },
-        type: sequelize.QueryTypes.SELECT
-    });
-
-    // Attach images to each counselor and convert to base64
-    const imageMap = counselorImages.reduce((acc, img) => {
-        if (!acc[img.counselorId]) acc[img.counselorId] = [];
-        acc[img.counselorId].push({
-            ...img,
-            image: img.image ? img.image.toString("base64") : null
+            replacements: { ids: counselorIds },
+            type: sequelize.QueryTypes.SELECT
         });
-        return acc;
-    }, {});
+
+        // Attach images to each counselor and convert to base64
+        imageMap = counselorImages.reduce((acc, img) => {
+            if (!acc[img.counselorId]) acc[img.counselorId] = [];
+            acc[img.counselorId].push({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null
+            });
+            return acc;
+        }, {});
+    }
 
     return counselors.map(c => ({
         ...c,

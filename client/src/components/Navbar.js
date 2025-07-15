@@ -20,14 +20,20 @@ const Navbar = ({ isSticky }) => {
 
   const handleServiceMenuToggle = () => {
     setIsServiceOpen(!isServiceOpen);
+    setIsExpertOpen(false);
+    setIsClassOpen(false);
   };
 
   const handleExpertMenuToggle = () => {
     setIsExpertOpen(!isExpertOpen);
+    setIsServiceOpen(false);
+    setIsClassOpen(false);
   };
 
   const handleClassMenuToggle = () => {
     setIsClassOpen(!isClassOpen);
+    setIsServiceOpen(false);
+    setIsExpertOpen(false);
   };
 
   // Close dropdown when clicking outside
@@ -72,7 +78,7 @@ const Navbar = ({ isSticky }) => {
             <ul className="dropdownMenu">
               <li>
                 <Link
-                  to="/detail-page/service/1"
+                  to="/list-page/service/konseling-individual"
                   onClick={() => setIsServiceOpen(false)}
                 >
                   Konseling Individu
@@ -80,7 +86,7 @@ const Navbar = ({ isSticky }) => {
               </li>
               <li>
                 <Link
-                  to="/detail-page/service/2"
+                  to="/list-page/service/konseling-pasangan"
                   onClick={() => setIsServiceOpen(false)}
                 >
                   Konseling Pasangan
@@ -88,20 +94,20 @@ const Navbar = ({ isSticky }) => {
               </li>
               <li>
                 <Link
-                  to="/detail-page/service/4"
+                  to="/list-page/service/konseling-keluarga"
                   onClick={() => setIsServiceOpen(false)}
                 >
                   Konseling Keluarga
                 </Link>
               </li>
               <li>
-                <Link to="/detail-page/service/topic4" onClick={() => setIsServiceOpen(false)}>Assessment</Link>
+                <Link to="/list-page/service/assessment" onClick={() => setIsServiceOpen(false)}>Assessment</Link>
               </li>
               <li>
-                <Link to="/detail-page/service/topic5" onClick={() => setIsServiceOpen(false)}>Therapy</Link>
+                <Link to="/list-page/service/theraphy" onClick={() => setIsServiceOpen(false)}>Theraphy</Link>
               </li>
               <li>
-                <Link to="/detail-page/service/topic6" onClick={() => setIsServiceOpen(false)}>Wawancara</Link>
+                <Link to="/list-page/service/wawancara" onClick={() => setIsServiceOpen(false)}>Wawancara</Link>
               </li>
             </ul>
           )}
@@ -150,10 +156,10 @@ const Navbar = ({ isSticky }) => {
               <RxChevronUp className="navbarLinkIcon" />
               <ul className="dropdownMenu">
                 <li>
-                  <Link to="/detail-page/class/topic4" onClick={() => setIsClassOpen(false)}>Kelas Mendatang</Link>
+                  <Link to="/list-page/class/kelas-mendatang" onClick={() => setIsClassOpen(false)}>Kelas Mendatang</Link>
                 </li>
                 <li>
-                  <Link to="/detail-page/class/topic4" onClick={() => setIsClassOpen(false)}>Rekaman Kelas</Link>
+                  <Link to="/list-page/class/rekaman-kelas" onClick={() => setIsClassOpen(false)}>Rekaman Kelas</Link>
                 </li>
               </ul>
             </>

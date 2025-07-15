@@ -18,6 +18,16 @@ const replaceCharactersByIndex = (text, masterValues, indexArray) => {
   });
 };
 
+const formatTitleFromItemType = (itemType) => {
+  if (!itemType) return "";
+  return itemType.includes("-")
+    ? itemType
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : itemType.charAt(0).toUpperCase() + itemType.slice(1);
+};
+
 // Get Description and Notice datas for Detail page
 const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
   const idNum = parseInt(id);
@@ -104,32 +114,40 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
 
 // Get Title and Subtitle datas for List page
 const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
-  const itemTypeValue = itemType?.toLowerCase();
+  let data, title, description, result;
 
-  let searchPattern, extractPattern, result;
+  if (type.includes("service") || type.includes("class")) {
+    title = formatTitleFromItemType(itemType);
 
-  if (type.includes("counselor")) {
-    searchPattern = `%Apa itu ${itemTypeValue} expert%`;
-    extractPattern = `(${itemTypeValue.charAt(0).toUpperCase() + itemTypeValue.slice(1)} Expert)`;
-
-    result = await sequelize.query(
-      `
-    SELECT 
-      (REGEXP_MATCHES(title, :extractPattern))[1] AS title, description 
-    FROM "SharedDescriptions"
-    WHERE title ILIKE :searchPattern
-    `,
-      {
-        replacements: {
-          extractPattern,
-          searchPattern,
+    result = await SharedDescriptionModel.findOne({
+      where: {
+        title: {
+          [Op.iLike]: title, // case-insensitive match
         },
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+      },
+    });
+  } else if (type.includes("counselor")) {
+    const pattern = `%itu ${itemType} expert%`;
+
+    result = await SharedDescriptionModel.findOne({
+      where: {
+        title: {
+          [Op.iLike]: pattern, // case-insensitive match
+        },
+      },
+    });
+
+    title = `${formatTitleFromItemType(itemType)} Expert`;
   }
 
-  return result?.[0] ?? {};
+  if (!result) return {};
+  data = result.toJSON();
+  description = data.description;
+
+  return {
+    title,
+    description,
+  };
 };
 
 module.exports = {

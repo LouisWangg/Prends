@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { Typography } from "@mui/material";
@@ -18,7 +18,12 @@ const ListPage = () => {
   const [counselors, setCounselors] = useState([]);
   const [sortOption, setSortOption] = useState("commentCount");
 
-  let itemTypeValue, pageTitle, pageSubtitle;
+  let quantity = 0;
+  const itemTypeValue = useMemo(() => {
+    return type.includes("counselor")
+      ? itemType?.split("-")[0] ?? ""
+      : itemType;
+  }, [type, itemType]);
 
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
@@ -29,55 +34,34 @@ const ListPage = () => {
   const getCounselors = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchCounselors({ sortBy: sort });
+      const datas = await fetchCounselors({ itemType: itemTypeValue, sortBy: sort });
       setCounselors(datas);
       setIsLoading(false);
-    }, [sortOption]
+    }, [itemTypeValue, sortOption]
   );
 
   useEffect(() => {
     const getTitlesAndSubtitles = async () => {
-      console.log("SATU = " + type);
-      console.log("DUA = " + itemTypeValue)
       const datas = await fetchTitlesAndSubtitles(type, itemTypeValue);
       setPageTexts(datas);
-
-      if (type.includes("service")) {
-      } else if (type.includes("class")) {
-      } else if (type.includes("counselor")) {
-        itemTypeValue = itemType?.split('-')[0];
-        pageTitle = pageTexts?.title ?? "Expert";
-        pageSubtitle = pageTexts?.description ?? "";
-        // if (itemType === undefined) {
-        //   pageTitle = "Expert";
-        //   pageSubtitle = "";
-        // } else {
-        //   pageTitle = pageTexts.title;
-        //   pageSubtitle = pageTexts.description;
-        //   console.log("TITLE = " + pageTitle);
-        //   console.log("SUB = " + pageSubtitle);
-        // }
-      }
     };
 
     getCounselors();
     getTitlesAndSubtitles();
   }, [type, itemTypeValue, getCounselors]);
 
-
+  const pageTitle = pageTexts?.title ?? (type.includes("counselor") ? "Expert" : "");
+  const pageSubtitle = pageTexts?.description ?? "";
 
   const renderDescription = () => {
-    if (pageSubtitle !== null && pageSubtitle !== "") {
+    if (pageSubtitle?.trim()) {
       return (
-        <Typography variant="body1" className="listPageDescription">
-          {pageSubtitle}
-        </Typography>
+        <Typography variant="body1" className="listPageDescription" dangerouslySetInnerHTML={{ __html: pageSubtitle }} />
       );
     }
   };
 
   const renderFilter = () => {
-    let quantity;
     if (type.includes("counselor")) {
       quantity = counselors.length;
     }
@@ -111,7 +95,13 @@ const ListPage = () => {
 
       {renderFilter()}
 
-      {isLoading ? (
+      {quantity === 0 ? (
+        <div className="noDataWrapper">
+          <Typography variant="h4">
+            Tidak ada produk yang ditemukan <br /> Gunakan lebih sedikit filter atau hapus semua
+          </Typography>
+        </div>
+      ) : isLoading ? (
         <div className="loader">Memuat data...</div>
       ) : (
         <div className="fadeIn">

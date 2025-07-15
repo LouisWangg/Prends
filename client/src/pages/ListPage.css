@@ -3,7 +3,9 @@
 }
 
 .listPageDescription {
-  margin-bottom: 40px !important;
+  margin: 0 350px 40px 0 !important;
+  white-space: normal;  
+  overflow-wrap: break-word;
 }
 
 .filterWrapper {
@@ -25,6 +27,13 @@
 .filterWrapper select:focus {
   outline: 1px solid #888;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.noDataWrapper {
+  margin: 150px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .fadeIn {
