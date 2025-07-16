@@ -3,6 +3,7 @@ const sequelize = require("../config/database");
 
 const SharedDescriptionModel = require("../models/SharedDescriptionModel");
 
+const thirdDescription = ["Konseling", "sesi"];
 const eightTitle = ["online", "offline", "home visit"];
 const tenthTitle = ["online chat", "online call", "offline", "home visit"];
 const eleventDescriptionMap = {
@@ -10,13 +11,23 @@ const eleventDescriptionMap = {
   2: ["call", "Meet"],
 };
 
-const DescriptionIdMap = {
+const descriptionIdMap = {
   serviceDescriptions: {
     individualOnline: [8, 9, 10, 11],
     individualOffline: [8, 9, 10],
+    couple: [13, 14],
+    family: [30, 31],
+    assessment: [15],
+    theraphy: [32],
+    interview: [34, 35],
   },
-  serviceNotices: [1, 2, 3],
-  homeVisitNotices: [1, 2, 3, 6],
+  serviceNotices: {
+    individualAndInterview: [1, 2, 3],
+    individualHomeVisit: [1, 2, 3, 6],
+    coupleAndFamily: [1, 2, 4],
+    assessment: [1, 2, 5],
+    theraphy: [33, 1, 2, 3],
+  },
   class: [1, 7],
   counselorNotices: [1, 2, 4],
   counselorDescriptions: {
@@ -25,6 +36,72 @@ const DescriptionIdMap = {
     senior: [19, 20],
   },
 };
+
+const serviceMapping = [
+  {
+    key: "individu",
+    match: (v) => v.includes("individu"),
+    description: (idNum) =>
+      idNum < 3
+        ? descriptionIdMap.serviceDescriptions.individualOnline
+        : descriptionIdMap.serviceDescriptions.individualOffline,
+    notice: (idNum) => 
+      idNum === 4 
+        ? descriptionIdMap.serviceNotices.individualHomeVisit
+        : descriptionIdMap.serviceNotices.individualAndInterview,
+  },
+  {
+    key: "pasangan",
+    match: (v) => v.includes("pasangan"),
+    description: () => descriptionIdMap.serviceDescriptions.couple,
+    notice: () => descriptionIdMap.serviceNotices.coupleAndFamily,
+  },
+  {
+    key: "keluarga",
+    match: (v) => v.includes("keluarga"),
+    description: () => descriptionIdMap.serviceDescriptions.family,
+    notice: () => descriptionIdMap.serviceNotices.coupleAndFamily,
+  },
+  {
+    key: "assessment",
+    match: (v) => v.includes("assessment"),
+    description: () => descriptionIdMap.serviceDescriptions.assessment,
+    notice: () => descriptionIdMap.serviceNotices.assessment,
+  },
+  {
+    key: "theraphy",
+    match: (v) => v.includes("theraphy"),
+    description: () => descriptionIdMap.serviceDescriptions.theraphy,
+    notice: () => descriptionIdMap.serviceNotices.theraphy,
+  },
+  {
+    key: "wawancara",
+    match: (v) => v.includes("wawancara"),
+    description: () => descriptionIdMap.serviceDescriptions.interview,
+    notice: () => descriptionIdMap.serviceNotices.individualAndInterview,
+  },
+];
+
+const counselorMapping = [
+  {
+    key: "junior",
+    match: (v) => v.includes("junior"),
+    description: () => descriptionIdMap.counselorDescriptions.junior,
+    notice: () => descriptionIdMap.counselorNotices,
+  }, 
+  {
+    key: "middle",
+    match: (v) => v.includes("middle"),
+    description: () => descriptionIdMap.counselorDescriptions.middle,
+    notice: () => descriptionIdMap.counselorNotices,
+  }, 
+  {
+    key: "senior",
+    match: (v) => v.includes("senior"),
+    description: () => descriptionIdMap.counselorDescriptions.senior,
+    notice: () => descriptionIdMap.counselorNotices,
+  },
+];
 
 const replaceCharactersByIndex = (text, masterValues, indexArray) => {
   let i = 0;
@@ -39,9 +116,9 @@ const formatTitleFromItemType = (itemType) => {
   if (!itemType) return "";
   return itemType.includes("-")
     ? itemType
-        .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     : itemType.charAt(0).toUpperCase() + itemType.slice(1);
 };
 
@@ -49,31 +126,27 @@ const formatTitleFromItemType = (itemType) => {
 const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
   const idNum = parseInt(id);
   const itemTypeValue = itemType?.toLowerCase();
+  if (!itemTypeValue) return { descriptions: [], notices: [] };
 
   let descriptionIds = [];
   let noticeIds = [];
 
   if (type.includes("service")) {
-    if (idNum < 3)
-      descriptionIds = DescriptionIdMap.serviceDescriptions.individualOnline;
-    else if (idNum >= 3 || idNum <= 4)
-      descriptionIds = DescriptionIdMap.serviceDescriptions.individualOffline;
+    const dataFound = serviceMapping.find((data) => data.match(itemTypeValue));
 
-    noticeIds =
-      idNum === 4
-        ? DescriptionIdMap.homeVisitNotices
-        : DescriptionIdMap.serviceNotices;
+    if (dataFound) {
+      descriptionIds = dataFound.description(idNum);
+      noticeIds = dataFound.notice(idNum);
+    }
   } else if (type.includes("class")) {
-    noticeIds = DescriptionIdMap.class;
+    noticeIds = descriptionIdMap.class;
   } else if (type.includes("counselor")) {
-    if (itemTypeValue.includes("junior"))
-      descriptionIds = DescriptionIdMap.counselorDescriptions.junior;
-    else if (itemTypeValue.includes("middle"))
-      descriptionIds = DescriptionIdMap.counselorDescriptions.middle;
-    else if (itemTypeValue.includes("senior"))
-      descriptionIds = DescriptionIdMap.counselorDescriptions.senior;
-
-    noticeIds = DescriptionIdMap.counselorNotices;
+    const dataFound = counselorMapping.find((data) => data.match(itemTypeValue));
+    
+    if (dataFound) {
+      descriptionIds = dataFound.description();
+      noticeIds = dataFound.notice();
+    }
   }
 
   const orderClause = (ids) => [
@@ -85,19 +158,19 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
   const fetchDescriptions =
     descriptionIds.length > 0
       ? SharedDescriptionModel.findAll({
-          attributes: ["sharedDescriptionId", "title", "description"],
-          where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
-          order: orderClause(descriptionIds),
-        })
+        attributes: ["sharedDescriptionId", "title", "description"],
+        where: { sharedDescriptionId: { [Op.in]: descriptionIds } },
+        order: orderClause(descriptionIds),
+      })
       : Promise.resolve([]);
 
   const fetchNotices =
     noticeIds.length > 0
       ? SharedDescriptionModel.findAll({
-          attributes: ["sharedDescriptionId", "title", "description"],
-          where: { sharedDescriptionId: { [Op.in]: noticeIds } },
-          order: orderClause(noticeIds),
-        })
+        attributes: ["sharedDescriptionId", "title", "description"],
+        where: { sharedDescriptionId: { [Op.in]: noticeIds } },
+        order: orderClause(noticeIds),
+      })
       : Promise.resolve([]);
   // Query both in parallel
   const [descriptions, notices] = await Promise.all([
@@ -138,7 +211,22 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
     return desc;
   });
 
-  return { descriptions: processedDescriptions, notices };
+  const processedNotices = notices.map((not) => {
+    const { sharedDescriptionId, description } = not.toJSON();
+
+    if (sharedDescriptionId === 3) {
+      const index = itemTypeValue?.includes("individu") ? 0 : 1;
+      const value = thirdDescription[index];
+
+      return {
+        ...not.toJSON(),
+        description: replaceCharactersByIndex(description, [value], [0]),
+      };
+    }
+    return not;
+  });
+
+  return { descriptions: processedDescriptions, notices: processedNotices };
 };
 
 // Get Title and Subtitle datas for List page

@@ -1,9 +1,54 @@
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
+const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 
-// Get Konseling Individu datas
+// Get Service datas for Single Card
+// const getIndividualCounselings = async () => {
+//   const datas = await ServiceTypeModel.findAll({
+//     attributes: [
+//       "serviceTypeId",
+//       "name",
+//       "price",
+//       "discountFlag",
+//       "discountPrice",
+//       "itemType",
+//       "type",
+//     ],
+//     where: {
+//       type: {
+//         [Op.iLike]: "%individu%",
+//       },
+//     },
+//     include: [
+//       {
+//         model: ServiceTypeImageModel,
+//         attributes: ["image"], // specify the columns you want from the images table
+//       },
+//     ],
+//   });
+
+//   if (!datas) return null;
+
+//   // Map results to convert image buffer to base64 string
+//   const convertedDatas = datas.map((item) => {
+//     const plain = item.get({ plain: true });
+
+//     if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+//       // Assuming one image per serviceType, take the first image buffer
+//       plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+//         ...img,
+//         image: img.image ? img.image.toString("base64") : null,
+//       }));
+//     }
+
+//     return plain;
+//   });
+
+//   return convertedDatas;
+// };
+
 const getIndividualCounselings = async () => {
   const datas = await ServiceTypeModel.findAll({
     attributes: [
@@ -14,6 +59,7 @@ const getIndividualCounselings = async () => {
       "discountPrice",
       "itemType",
       "type",
+      [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"],
     ],
     where: {
       type: {
@@ -23,19 +69,26 @@ const getIndividualCounselings = async () => {
     include: [
       {
         model: ServiceTypeImageModel,
-        attributes: ["image"], // specify the columns you want from the images table
+        attributes: ["image"],
       },
+      {
+        model: ServiceTypeCommentModel,
+        attributes: [],
+      },
+    ],
+    group: [
+      "ServiceType.serviceTypeId",
+      "ServiceTypeImages.serviceTypeImageId",
     ],
   });
 
   if (!datas) return null;
 
-  // Map results to convert image buffer to base64 string
+  // Convert image buffer and count to plain objects
   const convertedDatas = datas.map((item) => {
     const plain = item.get({ plain: true });
 
     if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-      // Assuming one image per serviceType, take the first image buffer
       plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
         ...img,
         image: img.image ? img.image.toString("base64") : null,

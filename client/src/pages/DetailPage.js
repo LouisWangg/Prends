@@ -178,7 +178,11 @@ const DetailPage = () => {
 
     const load = async () => {
       const getDescriptionsAndNotices = async () => {
-        const itemType = type.includes("counselor") ? detailData?.level : undefined;
+        const itemType = type.includes("service") 
+          ? detailData?.type
+          : type.includes("counselor")
+          ? detailData?.level
+          : undefined;
 
         const datas = await fetchDescriptionsAndNotices(type, id, itemType);
         setDescriptions(datas.descriptions);
@@ -501,7 +505,7 @@ const DetailPage = () => {
     if (type !== "class") {
       return (
         <>
-          {descriptions.map((description, index) => (
+          {descriptions?.map((description, index) => (
             <Fragment key={description.sharedDescriptionId}>
               <Description data={description} secondData={detailData} />
             </Fragment>
@@ -686,7 +690,7 @@ const DetailPage = () => {
           <div>
             <b>Perhatian :</b>
             <ol className="detailPageNoticeOrderedList">
-              {notices.map((notice, index) => (
+              {notices?.map((notice, index) => (
                 <Fragment key={notice.sharedDescriptionId}>
                   <li>
                     {

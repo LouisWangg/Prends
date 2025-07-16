@@ -33,6 +33,10 @@ const ServiceTypePrice = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    audienceQuantity: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     price: {
       type: DataTypes.INTEGER,
       allowNull: false,
