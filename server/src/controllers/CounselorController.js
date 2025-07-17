@@ -3,8 +3,13 @@ const CounselorService = require("../services/CounselorService");
 const getCounselors = async (req, res) => {
   try {
     const { itemType, sortBy, limit } = req.query;
-    const data = await CounselorService.getCounselors({ itemType, sortBy, limit });
-    res.json(data);
+    const datas = await CounselorService.getCounselors({ itemType, sortBy, limit });
+
+    if (!datas) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    res.json(datas);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error on getCounselors");

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const ServiceTypeController = require("../controllers/ServiceTypeController");
 
-router.get("/getIndividualCounselings", ServiceTypeController.getIndividualCounselings);
+router.get("/getServiceTypes", ServiceTypeController.getServiceTypes);
 router.get("/getServiceDetailById/:id", ServiceTypeController.getServiceDetailById);
 
 module.exports = router;

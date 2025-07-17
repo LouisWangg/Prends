@@ -8,12 +8,11 @@ import HomeSection from "../components/HomeSection.js";
 import CommentBox from "../components/CommentBox.js";
 import QnaSection from "../components/QnaSection.js";
 
-// import { fetchUsers } from "../services/UserService";
 import { fetchHomePageQnas } from "../services/QnaService";
 import { fetchHomePageClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
 import { fetchCounselors } from "../services/CounselorService.js";
-import { fetchIndividualCounselings } from "../services/ServiceTypeService.js";
+import { fetchServiceTypes } from "../services/ServiceTypeService.js";
 import { fetchHomePageComments } from "../services/ServiceTypeCommentService.js";
 import "./Home.css";
 
@@ -23,17 +22,11 @@ const Home = () => {
   // useState to create variable and 'set' is used to assign the variable's value
   const [slides, setSlides] = useState([]);
   const [qnas, setQnas] = useState([]);
-  // const [users, setUsers] = useState([]);
   const [classes, setClasses] = useState([]);
   const [articles, setArticles] = useState([]);
   const [counselors, setCounselors] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
   const [serviceTypeComments, setServiceTypeComments] = useState([]);
-
-  // const getUsers = async () => {
-  //   const datas = await fetchUsers();
-  //   setUsers(datas);
-  // };
 
   const getCarouselData = async () => {
   try {
@@ -60,8 +53,8 @@ const Home = () => {
     setCounselors(datas);
   };
 
-  const getIndividualCounselings = async () => {
-    const datas = await fetchIndividualCounselings();
+  const getHomePageServiceTypes = async () => {
+    const datas = await fetchServiceTypes({ itemType: "individual" });
     setServiceTypes(datas);
   };
 
@@ -79,14 +72,13 @@ const Home = () => {
   // It’s designed to run after the initial render and is triggered only once in this case
   // (because of the empty dependency array [])
   useEffect(() => {
-    // getUsers();
     getCarouselData();
     getQnaData();
     getHomePageClasses();
     getHomePageArticles();
     getHomePageComments();
     getHomePageCounselors();
-    getIndividualCounselings();
+    getHomePageServiceTypes();
   }, []); // Empty dependency array ensures this runs only once
 
   return (

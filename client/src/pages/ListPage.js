@@ -8,6 +8,7 @@ import SingleCard from "../components/SingleCard";
 import HomeSection from "../components/HomeSection";
 
 import { fetchCounselors } from "../services/CounselorService.js";
+import { fetchServiceTypes } from "../services/ServiceTypeService.js";
 import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js";
 
 const ListPage = () => {
@@ -16,13 +17,24 @@ const ListPage = () => {
 
   const [pageTexts, setPageTexts] = useState(null);
   const [counselors, setCounselors] = useState([]);
+  const [serviceTypes, setServiceTypes] = useState([]);
   const [sortOption, setSortOption] = useState("commentCount");
 
   let quantity = 0;
   const itemTypeValue = useMemo(() => {
-    return type.includes("counselor")
-      ? itemType?.split("-")[0] ?? ""
-      : itemType;
+    if (type.includes("service")) {
+      return itemType.includes("-")
+        ? itemType?.trim().split("-")[1] ?? null
+        : itemType ?? null;
+    } else if (type.includes("counselor")) {
+      return itemType?.trim().split("-")[0] ?? null;
+    } else if (type.includes("class")) {
+      return itemType.includes("-")
+        ? itemType?.trim().split("-").join(" ") ?? null
+        : itemType ?? null;
+    }
+
+    return null;
   }, [type, itemType]);
 
   const handleSortChange = async (e) => {
@@ -40,15 +52,27 @@ const ListPage = () => {
     }, [itemTypeValue, sortOption]
   );
 
+  const getServiceTypes = useCallback(
+    async (sort = sortOption) => {
+      setIsLoading(true);
+      console.log("IT FE = " + itemTypeValue);
+      console.log("IT FE 2 = " + itemType);
+      const datas = await fetchServiceTypes({ itemType: itemTypeValue, sortBy: sort });
+      setServiceTypes(datas);
+      setIsLoading(false);
+    }, [itemTypeValue, sortOption]
+  );
+
   useEffect(() => {
     const getTitlesAndSubtitles = async () => {
       const datas = await fetchTitlesAndSubtitles(type, itemTypeValue);
       setPageTexts(datas);
     };
 
-    getCounselors();
+    if (type.includes("counselor")) getCounselors();
+    if (type.includes("service")) getServiceTypes();
     getTitlesAndSubtitles();
-  }, [type, itemTypeValue, getCounselors]);
+  }, [type, itemTypeValue, getCounselors, getServiceTypes]);
 
   const pageTitle = pageTexts?.title ?? (type.includes("counselor") ? "Expert" : "");
   const pageSubtitle = pageTexts?.description ?? "";
@@ -61,9 +85,31 @@ const ListPage = () => {
     }
   };
 
+  const renderSingleCard = () => {
+    if (type.includes("service")) {
+      return serviceTypes.map((serviceType) => (
+        <SingleCard
+          key={serviceType.serviceTypeId}
+          type={serviceType.itemType}
+          data={serviceType}
+        />
+      ));
+    } else if (type.includes("counselor")) {
+      return counselors.map((counselor) => (
+        <SingleCard
+          key={counselor.counselorId}
+          type={counselor.itemType}
+          data={counselor}
+        />
+      ));
+    }
+  };
+
   const renderFilter = () => {
     if (type.includes("counselor")) {
       quantity = counselors.length;
+    } else if (type.includes("service")) {
+      quantity = serviceTypes.length;
     }
 
     return (
@@ -112,13 +158,7 @@ const ListPage = () => {
             noWrapper
             style={{ margin: 0 }}
           >
-            {counselors.map((counselor) => (
-              <SingleCard
-                key={counselor.classId}
-                type={counselor.itemType}
-                data={counselor}
-              />
-            ))}
+            {renderSingleCard()}
           </HomeSection>
         </div>
       )}

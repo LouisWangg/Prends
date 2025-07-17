@@ -1,9 +1,10 @@
 const ServiceTypeService = require("../services/ServiceTypeService");
 
-// Get Konseling Individu datas
-const getIndividualCounselings = async (req, res) => {
+// Get Service Type datas according to type
+const getServiceTypes = async (req, res) => {
   try {
-    const datas = await ServiceTypeService.getIndividualCounselings();
+    const { itemType, sortBy } = req.query;
+    const datas = await ServiceTypeService.getServiceTypes({ itemType, sortBy });
 
     if (!datas) {
       return res.status(404).json({ message: "Data not found" });
@@ -12,7 +13,7 @@ const getIndividualCounselings = async (req, res) => {
     res.json(datas);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Server error on getIndividualCounselings");
+    res.status(500).send("Server error on getServiceTypes");
   }
 };
 
@@ -34,6 +35,6 @@ const getServiceDetailById = async (req, res) => {
 };
 
 module.exports = {
-  getIndividualCounselings,
+  getServiceTypes,
   getServiceDetailById
 };

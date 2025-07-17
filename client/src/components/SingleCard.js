@@ -11,25 +11,26 @@ const SingleCard = ({ type, data }) => {
   const navigate = useNavigate();
 
   let id, imageData, singleCardContent;
+  const lowerCaseType = type.toLowerCase();
   const singleCard = data;
 
-  if (type.includes("Service")) {
+  if (lowerCaseType.includes("service")) {
     id = singleCard.serviceTypeId;
     imageData = singleCard?.ServiceTypeImages?.[0]?.image || null;
-  } else if (type.includes("Class")) {
+  } else if (lowerCaseType.includes("class")) {
     id = singleCard.classId;
     imageData = singleCard?.image || null;
-  } else if (type.includes("Counselor")) {
+  } else if (lowerCaseType.includes("counselor")) {
     id = singleCard.counselorId;
     imageData = singleCard?.CounselorImages?.[0]?.image || null;
-  } else if (type.includes("Article")) {
+  } else if (lowerCaseType.includes("article")) {
     imageData = singleCard?.ArticleImage?.image || null;
   }
 
   if (
-    type.includes("Service") ||
-    type.includes("Class") ||
-    type.includes("Counselor")
+    lowerCaseType.includes("service") ||
+    lowerCaseType.includes("class") ||
+    lowerCaseType.includes("counselor")
   ) {
     singleCardContent = (
       <Card className="singleCard">
@@ -47,7 +48,7 @@ const SingleCard = ({ type, data }) => {
             {singleCard.name}
           </Typography>
           <Typography variant="body2">
-            {type === "Counselor" && parseInt(singleCard.commentCount) > 0 ? (
+            {lowerCaseType.includes("counselor") && parseInt(singleCard.commentCount) > 0 ? (
               <div className="singleCardStarWrapper">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <HiStar key={i} className="cardStarSize" />
@@ -77,7 +78,7 @@ const SingleCard = ({ type, data }) => {
         </CardContent>
       </Card>
     );
-  } else if (type.includes("HomeArticle")) {
+  } else if (lowerCaseType.includes("homearticle")) {
     singleCardContent = (
       <Card className="articleCard">
         <CardMedia
@@ -95,7 +96,7 @@ const SingleCard = ({ type, data }) => {
         </CardContent>
       </Card>
     );
-  } else if (type.includes("Article")) {
+  } else if (lowerCaseType.includes("article")) {
     singleCardContent = (
       <Card className="articleCard">
         <CardMedia
@@ -120,10 +121,10 @@ const SingleCard = ({ type, data }) => {
 
   return (
     <a
-      href={`/detail-page/${type.toLowerCase()}/${id}`}
+      href={`/detail-page/${lowerCaseType}/${id}`}
       onClick={(e) => {
         e.preventDefault();
-        navigate(`/detail-page/${type.toLowerCase()}/${id}`);
+        navigate(`/detail-page/${lowerCaseType}/${id}`);
       }}
       style={{ textDecoration: "none", color: "inherit" }}
     >

@@ -4,52 +4,32 @@ const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 
-// Get Service datas for Single Card
-// const getIndividualCounselings = async () => {
-//   const datas = await ServiceTypeModel.findAll({
-//     attributes: [
-//       "serviceTypeId",
-//       "name",
-//       "price",
-//       "discountFlag",
-//       "discountPrice",
-//       "itemType",
-//       "type",
-//     ],
-//     where: {
-//       type: {
-//         [Op.iLike]: "%individu%",
-//       },
-//     },
-//     include: [
-//       {
-//         model: ServiceTypeImageModel,
-//         attributes: ["image"], // specify the columns you want from the images table
-//       },
-//     ],
-//   });
+const getServiceTypes = async ({ itemType = null, sortBy = null }) => {
+  const itemTypeValue = itemType ? itemType : null;
 
-//   if (!datas) return null;
+  let orderClause;
+  switch (sortBy) {
+    case "commentCount":
+      orderClause = [["commentCount", "DESC"]];
+      break;
+    case "price_asc":
+      orderClause = [["price", "ASC"]];
+      break;
+    case "price_desc":
+      orderClause = [["price", "DESC"]];
+      break;
+    case "name_asc":
+      orderClause = [["name", "ASC"]];
+      break;
+    case "name_desc":
+      orderClause = [["name", "DESC"]];
+      break;
+    default:
+      orderClause = [["serviceTypeId", "ASC"]];
+  }
 
-//   // Map results to convert image buffer to base64 string
-//   const convertedDatas = datas.map((item) => {
-//     const plain = item.get({ plain: true });
+  console.log("IT BE = " + itemTypeValue)
 
-//     if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-//       // Assuming one image per serviceType, take the first image buffer
-//       plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-//         ...img,
-//         image: img.image ? img.image.toString("base64") : null,
-//       }));
-//     }
-
-//     return plain;
-//   });
-
-//   return convertedDatas;
-// };
-
-const getIndividualCounselings = async () => {
   const datas = await ServiceTypeModel.findAll({
     attributes: [
       "serviceTypeId",
@@ -61,11 +41,12 @@ const getIndividualCounselings = async () => {
       "type",
       [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"],
     ],
-    where: {
-      type: {
-        [Op.iLike]: "%individu%",
-      },
-    },
+    where: itemTypeValue
+      ? {
+        type: {
+          [Op.iLike]: `%${itemTypeValue}%`,
+        },
+      } : undefined,
     include: [
       {
         model: ServiceTypeImageModel,
@@ -80,6 +61,7 @@ const getIndividualCounselings = async () => {
       "ServiceType.serviceTypeId",
       "ServiceTypeImages.serviceTypeImageId",
     ],
+    order: orderClause
   });
 
   if (!datas) return null;
@@ -132,6 +114,6 @@ const getServiceDetailById = async ({ id } = {}) => {
 };
 
 module.exports = {
-  getIndividualCounselings,
+  getServiceTypes,
   getServiceDetailById
 };

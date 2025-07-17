@@ -110,6 +110,12 @@ const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit =
 
     let orderClause;
     switch (sortBy) {
+        case "commentCount":
+            orderClause = [[literal(`(
+                SELECT COUNT(*) FROM "CounselorComments"
+                WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId"
+            )`), "DESC"]];
+            break;
         case "price_asc":
             orderClause = [["price", "ASC"]];
             break;

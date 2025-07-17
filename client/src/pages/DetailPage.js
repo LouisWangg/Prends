@@ -174,15 +174,22 @@ const DetailPage = () => {
   }, [type, id]);
 
   useEffect(() => {
-    if (type.includes("counselor") && !detailData?.level) return;
+    if ((type.includes("counselor") && !detailData?.level)
+      || (type.includes("service") && !detailData?.type)) {
+      return;
+    }
 
     const load = async () => {
       const getDescriptionsAndNotices = async () => {
-        const itemType = type.includes("service") 
-          ? detailData?.type
-          : type.includes("counselor")
-          ? detailData?.level
-          : undefined;
+        let itemType;
+
+        if (type.includes("service")) {
+          itemType = detailData?.type;
+        } else if (type.includes("counselor")) {
+          itemType = detailData?.level;
+        } else {
+          itemType = undefined;
+        }
 
         const datas = await fetchDescriptionsAndNotices(type, id, itemType);
         setDescriptions(datas.descriptions);
@@ -275,7 +282,7 @@ const DetailPage = () => {
   if (type.includes("service")) {
     const isLocationBased =
       typeof pricingMap[duration]?.[level]?.[
-        Object.keys(pricingMap[duration]?.[level] || {})[0]
+      Object.keys(pricingMap[duration]?.[level] || {})[0]
       ] === "object";
 
     if (isLocationBased) {

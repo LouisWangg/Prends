@@ -3,9 +3,11 @@ import axios from "axios";
 const url = "http://localhost:5000/serviceTypes";
 
 // Get Konseling Individu datas
-export const fetchIndividualCounselings = async () => {
+export const fetchServiceTypes = async ({ itemType = null, sortBy = null } = {}) => {
   try {
-    const response = await axios.get(`${url}/getIndividualCounselings`);
+    const response = await axios.get(`${url}/getServiceTypes`, {
+      params: { itemType, sortBy },
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Individual Counseling datas: `, error?.message || error);
