@@ -18,6 +18,8 @@ import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
 import trimmingDash from "../utils/TrimDash";
 
+import usePricingGroup from "../hooks/usePricingGroup";
+
 import Option from "../components/Option";
 import Description from "../components/Description";
 import CommentSection from "../components/CommentSection";
@@ -38,58 +40,7 @@ import { fetchCounselorPricingById } from "../services/CounselorPriceService";
 import { fetchCounselorCommentsById } from "../services/CounselorCommentService";
 import { fetchCounselorRecommendations } from "../services/RecommendationService";
 
-const buildPricingInfo = ({ price, serviceDiscountFlag, serviceDiscountPrice }) => ({
-  price,
-  serviceDiscountFlag,
-  serviceDiscountPrice,
-});
-
-const groupIndividuPricing = (data) => {
-  data.reduce((acc, item) => {
-    const { duration, level, location } = item;
-
-    const levelKey = level.toLowerCase();
-    if (!acc[duration]) acc[duration] = {};
-
-    if (location === null) {
-      acc[duration][levelKey] = buildPricingInfo(item);
-    } else {
-      if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
-      acc[duration][levelKey][trimmingDash(location)] = buildPricingInfo(item);
-    }
-    return acc;
-  }, {});
-}; // combine it into object group of duration, where each of them includes level, price, flag, and discount price
-
-const groupDefaultPricing = (data) => {
-  data.reduce((acc, item) => {
-    const { duration, counselingType } = item;
-
-    if (!acc[duration]) acc[duration] = {};
-    acc[duration][counselingType] = buildPricingInfo(item);
-    return acc;
-  }, {});
-};
-
-const groupAssessmentPricing = (data) => {
-  data.reduce((acc, item) => {
-    const { audienceQuantity } = item;
-
-    if (!acc[audienceQuantity]) acc[audienceQuantity] = {};
-    acc[audienceQuantity] = buildPricingInfo(item);
-    return acc;
-  }, {});
-};
-
-const groupWawancaraPricing = (data) => {
-  data.reduce((acc, item) => {
-    const { duration, counselingType, targetAudience } = item;
-
-    if (!acc[duration][counselingType]) acc[duration][counselingType] = {};
-    acc[duration][counselingType][targetAudience] = buildPricingInfo(item);
-    return acc;
-  }, {});
-};
+const pricingMap = usePricingGroup(pricingData, detailData, type);
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -105,7 +56,7 @@ const DetailPage = () => {
   const [notices, setNotices] = useState([]);
 
   const [detailData, setDetailData] = useState({});
-  const [pricingMap, setPricingMap] = useState({});
+  const [pricingData, setPricingData] = useState({});
 
   const [sortOption, setSortOption] = useState("newest");
   const [comments, setComments] = useState([]);
@@ -258,7 +209,7 @@ const DetailPage = () => {
     setDescriptions([]);
     setNotices([]);
     setDetailData({});
-    setPricingMap({});
+    // setPricingMap({});
     setSortOption("newest");
     setComments([]);
     setCommentCount([]);
@@ -311,45 +262,13 @@ const DetailPage = () => {
       };
 
       const getPricingData = async () => {
-        let data, grouped;
-
         if (type.includes("service")) {
-          data = await fetchServicePricingById(id);
-          const serviceItemType = detailData?.type?.toLowerCase() || "";
-
-          if (serviceItemType.includes("individu")) {
-            grouped = groupIndividuPricing(data);
-          } else if (serviceItemType.includes("pasangan") || serviceItemType.includes("keluarga") ||
-            serviceItemType.includes("theraphy")) {
-            grouped = groupDefaultPricing(data);
-          } else if (serviceItemType.includes("assessment")) {
-            grouped = groupAssessmentPricing(data);
-          } else if (serviceItemType.includes("wawancara")) {
-            grouped = groupWawancaraPricing(data);
-          }
+          const data = await fetchServicePricingById(id);
+          setPricingData(data);
         } else if (type.includes("counselor")) {
-          data = await fetchCounselorPricingById(id);
-          grouped = data.reduce((acc, item) => {
-            const {
-              duration,
-              counselingType,
-              price,
-              counselingDiscountFlag,
-              counselingDiscountPrice,
-            } = item;
-
-            if (!acc[duration]) acc[duration] = {};
-            acc[duration][counselingType] = {
-              price,
-              counselingDiscountFlag,
-              counselingDiscountPrice,
-            };
-
-            return acc;
-          }, {});
+          const data = await fetchCounselorPricingById(id);
+          setPricingData(data);
         }
-
-        setPricingMap(grouped);
       };
 
       const getRecommendationData = async () => {
