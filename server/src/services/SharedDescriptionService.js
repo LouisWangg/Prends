@@ -234,12 +234,12 @@ const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
   let data, title, description, result;
 
   if (type.includes("service") || type.includes("class")) {
-    title = formatTitleFromItemType(itemType);
+    console.log("item = " + formatTitleFromItemType(itemType))
 
     result = await SharedDescriptionModel.findOne({
       where: {
         title: {
-          [Op.iLike]: title, // case-insensitive match
+          [Op.like]: `%${formatTitleFromItemType(itemType)}%`, // case-insensitive match
         },
       },
     });
@@ -259,7 +259,11 @@ const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
 
   if (!result) return {};
   data = result.toJSON();
+
+  if (type.includes("service") || type.includes("class")) title = data.title;
+  console.log("title = " + title)
   description = data.description;
+  console.log("desc = " + description)
 
   return {
     title,

@@ -38,6 +38,59 @@ import { fetchCounselorPricingById } from "../services/CounselorPriceService";
 import { fetchCounselorCommentsById } from "../services/CounselorCommentService";
 import { fetchCounselorRecommendations } from "../services/RecommendationService";
 
+const buildPricingInfo = ({ price, serviceDiscountFlag, serviceDiscountPrice }) => ({
+  price,
+  serviceDiscountFlag,
+  serviceDiscountPrice,
+});
+
+const groupIndividuPricing = (data) => {
+  data.reduce((acc, item) => {
+    const { duration, level, location } = item;
+
+    const levelKey = level.toLowerCase();
+    if (!acc[duration]) acc[duration] = {};
+
+    if (location === null) {
+      acc[duration][levelKey] = buildPricingInfo(item);
+    } else {
+      if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
+      acc[duration][levelKey][trimmingDash(location)] = buildPricingInfo(item);
+    }
+    return acc;
+  }, {});
+}; // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+
+const groupDefaultPricing = (data) => {
+  data.reduce((acc, item) => {
+    const { duration, counselingType } = item;
+
+    if (!acc[duration]) acc[duration] = {};
+    acc[duration][counselingType] = buildPricingInfo(item);
+    return acc;
+  }, {});
+};
+
+const groupAssessmentPricing = (data) => {
+  data.reduce((acc, item) => {
+    const { audienceQuantity } = item;
+
+    if (!acc[audienceQuantity]) acc[audienceQuantity] = {};
+    acc[audienceQuantity] = buildPricingInfo(item);
+    return acc;
+  }, {});
+};
+
+const groupWawancaraPricing = (data) => {
+  data.reduce((acc, item) => {
+    const { duration, counselingType, targetAudience } = item;
+
+    if (!acc[duration][counselingType]) acc[duration][counselingType] = {};
+    acc[duration][counselingType][targetAudience] = buildPricingInfo(item);
+    return acc;
+  }, {});
+};
+
 const DetailPage = () => {
   const { type, id } = useParams();
 
@@ -63,6 +116,67 @@ const DetailPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [recommendations, setRecommendations] = useState([]);
+
+  const isLocationBased = null;
+  let discountFlag, undiscountedPrice, discountedPrice;
+  if (type.includes("service")) {
+    const isLocationBased =
+      typeof pricingMap[duration]?.[level]?.[
+      Object.keys(pricingMap[duration]?.[level] || {})[0]
+      ] === "object";
+
+    if (isLocationBased) {
+      discountFlag =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
+      undiscountedPrice =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.price;
+      discountedPrice =
+        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
+    } else {
+      discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
+      discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
+    }
+  } else if (type.includes("counselor")) {
+    discountFlag =
+      pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
+    undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
+    discountedPrice =
+      pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
+  }
+
+  const eachCount = {
+    5: commentCount.ratingFive,
+    4: commentCount.ratingFour,
+    3: commentCount.ratingThree,
+    2: commentCount.ratingTwo,
+    1: commentCount.ratingOne,
+  };
+
+  const totalScore = Object.entries(eachCount).reduce(
+    (sum, [rating, count]) => sum + rating * count,
+    0
+  );
+
+  const averageRating =
+    commentCount.total === 0 ? 0 : (totalScore / commentCount.total).toFixed(2);
+
+  const totalPages = Math.ceil(comments.length / commentsPerPage);
+  const paginatedComments = comments.slice(
+    (currentPage - 1) * commentsPerPage,
+    currentPage * commentsPerPage
+  );
+
+  const getRecommendationKey = (item) => {
+    switch (item.itemType) {
+      case "service":
+        return `service-${item.serviceTypeId}`;
+      case "counselor":
+        return `counselor-${item.counselorId}`;
+      default:
+        return `${item.itemType}-${Math.random()}`; // safe fallback
+    }
+  };
 
   const handleDurationChange = (event) => {
     setDuration(parseInt(event.target.value, 10));
@@ -201,35 +315,18 @@ const DetailPage = () => {
 
         if (type.includes("service")) {
           data = await fetchServicePricingById(id);
-          grouped = data.reduce((acc, item) => {
-            const {
-              duration,
-              level,
-              location,
-              price,
-              serviceDiscountFlag,
-              serviceDiscountPrice,
-            } = item;
+          const serviceItemType = detailData?.type?.toLowerCase() || "";
 
-            const levelKey = level.toLowerCase();
-            if (!acc[duration]) acc[duration] = {};
-
-            if (location === null) {
-              acc[duration][levelKey] = {
-                price,
-                serviceDiscountFlag,
-                serviceDiscountPrice,
-              };
-            } else {
-              if (!acc[duration][levelKey]) acc[duration][levelKey] = {};
-              acc[duration][levelKey][trimmingDash(location)] = {
-                price,
-                serviceDiscountFlag,
-                serviceDiscountPrice,
-              };
-            }
-            return acc;
-          }, {}); // combine it into object group of duration, where each of them includes level, price, flag, and discount price
+          if (serviceItemType.includes("individu")) {
+            grouped = groupIndividuPricing(data);
+          } else if (serviceItemType.includes("pasangan") || serviceItemType.includes("keluarga") ||
+            serviceItemType.includes("theraphy")) {
+            grouped = groupDefaultPricing(data);
+          } else if (serviceItemType.includes("assessment")) {
+            grouped = groupAssessmentPricing(data);
+          } else if (serviceItemType.includes("wawancara")) {
+            grouped = groupWawancaraPricing(data);
+          }
         } else if (type.includes("counselor")) {
           data = await fetchCounselorPricingById(id);
           grouped = data.reduce((acc, item) => {
@@ -276,67 +373,6 @@ const DetailPage = () => {
 
     load();
   }, [type, id, detailData, getCommentData]);
-
-  const isLocationBased = null;
-  let discountFlag, undiscountedPrice, discountedPrice;
-  if (type.includes("service")) {
-    const isLocationBased =
-      typeof pricingMap[duration]?.[level]?.[
-      Object.keys(pricingMap[duration]?.[level] || {})[0]
-      ] === "object";
-
-    if (isLocationBased) {
-      discountFlag =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
-      undiscountedPrice =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.price;
-      discountedPrice =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
-    } else {
-      discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
-      undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
-      discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
-    }
-  } else if (type.includes("counselor")) {
-    discountFlag =
-      pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
-    undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
-    discountedPrice =
-      pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
-  }
-
-  const eachCount = {
-    5: commentCount.ratingFive,
-    4: commentCount.ratingFour,
-    3: commentCount.ratingThree,
-    2: commentCount.ratingTwo,
-    1: commentCount.ratingOne,
-  };
-
-  const totalScore = Object.entries(eachCount).reduce(
-    (sum, [rating, count]) => sum + rating * count,
-    0
-  );
-
-  const averageRating =
-    commentCount.total === 0 ? 0 : (totalScore / commentCount.total).toFixed(2);
-
-  const totalPages = Math.ceil(comments.length / commentsPerPage);
-  const paginatedComments = comments.slice(
-    (currentPage - 1) * commentsPerPage,
-    currentPage * commentsPerPage
-  );
-
-  const getRecommendationKey = (item) => {
-    switch (item.itemType) {
-      case "service":
-        return `service-${item.serviceTypeId}`;
-      case "counselor":
-        return `counselor-${item.counselorId}`;
-      default:
-        return `${item.itemType}-${Math.random()}`; // safe fallback
-    }
-  };
 
   const renderImage = () => {
     if (type.includes("service")) {

@@ -49,12 +49,12 @@ const SingleCard = ({ type, data }) => {
           </Typography>
           <Typography variant="body2">
             {lowerCaseType.includes("counselor") && parseInt(singleCard.commentCount) > 0 ? (
-              <div className="singleCardStarWrapper">
+              <span className="singleCardStarWrapper">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <HiStar key={i} className="cardStarSize" />
                 ))}
                 <span>({singleCard.commentCount})</span>
-              </div>
+              </span>
             ) : (
               <></>
             )}

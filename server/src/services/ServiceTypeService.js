@@ -1,4 +1,4 @@
-const { Op, fn, col } = require("sequelize");
+const { Op, fn, col, literal } = require("sequelize");
 
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
@@ -6,6 +6,13 @@ const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 
 const getServiceTypes = async ({ itemType = null, sortBy = null }) => {
   const itemTypeValue = itemType ? itemType : null;
+  const finalPriceLiteral = literal(`
+    CASE 
+      WHEN "discountFlag" = true AND "discountPrice" > 0 
+      THEN "discountPrice" 
+      ELSE "price" 
+    END
+  `);
 
   let orderClause;
   switch (sortBy) {
@@ -13,10 +20,10 @@ const getServiceTypes = async ({ itemType = null, sortBy = null }) => {
       orderClause = [["commentCount", "DESC"]];
       break;
     case "price_asc":
-      orderClause = [["price", "ASC"]];
+      orderClause = [[finalPriceLiteral, "ASC"]];
       break;
     case "price_desc":
-      orderClause = [["price", "DESC"]];
+      orderClause = [[finalPriceLiteral, "DESC"]];
       break;
     case "name_asc":
       orderClause = [["name", "ASC"]];
@@ -28,8 +35,6 @@ const getServiceTypes = async ({ itemType = null, sortBy = null }) => {
       orderClause = [["serviceTypeId", "ASC"]];
   }
 
-  console.log("IT BE = " + itemTypeValue)
-
   const datas = await ServiceTypeModel.findAll({
     attributes: [
       "serviceTypeId",
@@ -39,7 +44,7 @@ const getServiceTypes = async ({ itemType = null, sortBy = null }) => {
       "discountPrice",
       "itemType",
       "type",
-      [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"],
+      [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"]
     ],
     where: itemTypeValue
       ? {

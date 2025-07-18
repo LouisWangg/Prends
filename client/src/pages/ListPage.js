@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { Typography } from "@mui/material";
@@ -13,6 +13,7 @@ import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js
 
 const ListPage = () => {
   const { type, itemType } = useParams();
+  let hasLoadedOnce = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [pageTexts, setPageTexts] = useState(null);
@@ -40,7 +41,9 @@ const ListPage = () => {
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
     setSortOption(newSort);
-    getCounselors(newSort);
+
+    if (type.includes("counselor")) getCounselors(newSort);
+    if (type.includes("service")) getServiceTypes(newSort);
   };
 
   const getCounselors = useCallback(
@@ -55,8 +58,6 @@ const ListPage = () => {
   const getServiceTypes = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      console.log("IT FE = " + itemTypeValue);
-      console.log("IT FE 2 = " + itemType);
       const datas = await fetchServiceTypes({ itemType: itemTypeValue, sortBy: sort });
       setServiceTypes(datas);
       setIsLoading(false);
@@ -69,8 +70,15 @@ const ListPage = () => {
       setPageTexts(datas);
     };
 
+    if (!hasLoadedOnce.current) {
+      hasLoadedOnce.current = true;
+      setSortOption("default");
+      if (type.includes("service")) getServiceTypes("default");
+    } else {
+      if (type.includes("service")) getServiceTypes();
+    }
+
     if (type.includes("counselor")) getCounselors();
-    if (type.includes("service")) getServiceTypes();
     getTitlesAndSubtitles();
   }, [type, itemTypeValue, getCounselors, getServiceTypes]);
 
@@ -116,7 +124,8 @@ const ListPage = () => {
       <div className="filterWrapper">
         <span>Urutkan berdasarkan : </span>
         <select onChange={handleSortChange}>
-          <option value="commentCount">Unggulan</option>
+          <option value="default">Unggulan</option>
+          <option value="commentCount">Produk Terlaris</option>
           <option value="name_asc">Berdasarkan abjad (A-Z)</option>
           <option value="name_desc">Berdasarkan abjad (Z-A)</option>
           <option value="price_asc">
@@ -133,7 +142,7 @@ const ListPage = () => {
 
   return (
     <div className="pageWrapper">
-      <Typography variant="h3" className="listPageTitle">
+      <Typography variant="h3" className="listPageTitle" style={{ paddingTop: "25px" }}>
         {pageTitle}
       </Typography>
 

@@ -7,102 +7,22 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
 
-// Get Counselor datas for Home & List page
-// const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit = null } = {}) => {
-//     let orderClause = "";
-//     let whereClause = "";
-//     let limitClause = "";
-//     let imageMap;
-
-//     const replacements = {};
-//     const itemTypeValue = itemType ? itemType.charAt(0).toUpperCase() + itemType?.slice(1) : null;
-
-//     if (itemType) {
-//         whereClause = `WHERE c."level" = :level`;
-//         replacements.level = itemTypeValue;
-//     }
-
-//     if (limit) {
-//         limitClause = `LIMIT :limit`;
-//         replacements.limit = parseInt(limit);
-//     }
-
-//     switch (sortBy) {
-//         case "price_asc":
-//             orderClause = `ORDER BY c."price" ASC`;
-//             break;
-//         case "price_desc":
-//             orderClause = `ORDER BY c."price" DESC`;
-//             break;
-//         case "name_asc":
-//             orderClause = `ORDER BY c."name" ASC`;
-//             break;
-//         case "name_desc":
-//             orderClause = `ORDER BY c."name" DESC`;
-//             break;
-//         default:
-//             orderClause = `ORDER BY "commentCount" DESC`;
-//     }
-
-//     const counselors = await sequelize.query(`
-//       SELECT 
-//         c."counselorId",
-//         c."name",
-//         c."price",
-//         c."discountFlag",
-//         c."discountPrice",
-//         c."itemType",
-//         COUNT(cf."counselorCommentId") AS "commentCount"
-//       FROM "Counselors" c
-//       LEFT JOIN "CounselorComments" cf ON cf."counselorId" = c."counselorId"
-//       ${whereClause}
-//       GROUP BY 
-//         c."counselorId",
-//         c."name",
-//         c."price",
-//         c."discountFlag",
-//         c."discountPrice",
-//         c."itemType"
-//       ${orderClause}
-//       ${limitClause}
-//     `, {
-//         replacements,
-//         type: sequelize.QueryTypes.SELECT
-//     });
-
-//     // Fetch images separately
-//     const counselorIds = counselors.map(c => c.counselorId);
-
-//     if (counselorIds.length > 0) {
-//         const counselorImages = await sequelize.query(`
-//       SELECT "counselorId", "image"
-//       FROM "CounselorImages"
-//       WHERE "counselorId" IN (:ids)
-//     `, {
-//             replacements: { ids: counselorIds },
-//             type: sequelize.QueryTypes.SELECT
-//         });
-
-//         // Attach images to each counselor and convert to base64
-//         imageMap = counselorImages.reduce((acc, img) => {
-//             if (!acc[img.counselorId]) acc[img.counselorId] = [];
-//             acc[img.counselorId].push({
-//                 ...img,
-//                 image: img.image ? img.image.toString("base64") : null
-//             });
-//             return acc;
-//         }, {});
-//     }
-
-//     return counselors.map(c => ({
-//         ...c,
-//         CounselorImages: imageMap[c.counselorId] || []
-//     }));
-// };
-
 const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit = null } = {}) => {
     const whereClause = {};
     const itemTypeValue = itemType ? itemType.charAt(0).toUpperCase() + itemType.slice(1) : null;
+
+    const finalPriceLiteral = literal(`
+        CASE 
+        WHEN "discountFlag" = true AND "discountPrice" > 0 
+        THEN "discountPrice" 
+        ELSE "price" 
+        END
+    `);
+
+    const commentCountLiteral = literal(`(
+        SELECT COUNT(*) FROM "CounselorComments" 
+        WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId" 
+    )`);
 
     if (itemTypeValue) {
         whereClause.level = itemTypeValue;
@@ -111,16 +31,13 @@ const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit =
     let orderClause;
     switch (sortBy) {
         case "commentCount":
-            orderClause = [[literal(`(
-                SELECT COUNT(*) FROM "CounselorComments"
-                WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId"
-            )`), "DESC"]];
+            orderClause = [[commentCountLiteral, "DESC"]];
             break;
         case "price_asc":
-            orderClause = [["price", "ASC"]];
+            orderClause = [[finalPriceLiteral, "ASC"]];
             break;
         case "price_desc":
-            orderClause = [["price", "DESC"]];
+            orderClause = [[finalPriceLiteral, "DESC"]];
             break;
         case "name_asc":
             orderClause = [["name", "ASC"]];
@@ -129,22 +46,13 @@ const getCounselors = async ({ itemType = null, sortBy = "commentCount", limit =
             orderClause = [["name", "DESC"]];
             break;
         default:
-            orderClause = [[literal(`(
-                SELECT COUNT(*) FROM "CounselorComments"
-                WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId"
-            )`), "DESC"]];
+            orderClause = [[commentCountLiteral, "DESC"]];
     }
 
     const counselors = await CounselorModel.findAll({
         attributes: {
             include: [
-                [
-                    literal(`(
-            SELECT COUNT(*) FROM "CounselorComments"
-            WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId"
-          )`),
-                    "commentCount"
-                ],
+                [commentCountLiteral, "commentCount"],
             ],
         },
         where: whereClause,
