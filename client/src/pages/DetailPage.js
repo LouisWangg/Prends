@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
+import React, { Fragment, useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { FiPlus, FiMinus, FiShare } from "react-icons/fi";
@@ -16,7 +10,6 @@ import diamondTransparency from "../assets/diamond.svg";
 
 import levelLabeling from "../utils/LevelLabel";
 import formatToRupiah from "../utils/FormatPrice";
-import trimmingDash from "../utils/TrimDash";
 
 import usePricingGroup from "../hooks/usePricingGroup";
 
@@ -40,60 +33,77 @@ import { fetchCounselorPricingById } from "../services/CounselorPriceService";
 import { fetchCounselorCommentsById } from "../services/CounselorCommentService";
 import { fetchCounselorRecommendations } from "../services/RecommendationService";
 
-const pricingMap = usePricingGroup(pricingData, detailData, type);
-
 const DetailPage = () => {
-  const { type, id } = useParams();
+  const { itemType, id } = useParams();
 
   const [duration, setDuration] = useState(1);
   const [level, setLevel] = useState("junior");
   const [locationValue, setLocationValue] = useState("Tanah Abang - Jakarta");
   const [counselingType, setCounselingType] = useState("Online Chat Individu");
-
+  const [audienceQuantity, setAudienceQuantity] = useState(1);
+  const [targetAudience, setTargetAudience] = useState("Wawancara Tugas");
   const [quantity, setQuantity] = useState(1);
-
   const [descriptions, setDescriptions] = useState([]);
   const [notices, setNotices] = useState([]);
-
   const [detailData, setDetailData] = useState({});
-  const [pricingData, setPricingData] = useState({});
-
+  const [pricingData, setPricingData] = useState([]);
   const [sortOption, setSortOption] = useState("newest");
   const [comments, setComments] = useState([]);
   const [commentCount, setCommentCount] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
 
   const commentsPerPage = 5;
   const topCommentRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [recommendations, setRecommendations] = useState([]);
+  const hasSetDefaults = useRef(false);
+  const detailType = detailData?.type?.toLowerCase?.() || "";
 
-  const isLocationBased = null;
+  const pricingMap = usePricingGroup(pricingData, detailData, itemType);
+
+  let isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
-  if (type.includes("service")) {
-    const isLocationBased =
-      typeof pricingMap[duration]?.[level]?.[
-      Object.keys(pricingMap[duration]?.[level] || {})[0]
-      ] === "object";
+  if (itemType.includes("service")) {
+    if (detailType?.includes("individu")) {
+      isLocationBased =
+        typeof pricingMap[duration]?.[level]?.[
+        Object.keys(pricingMap[duration]?.[level] || {})[0]
+        ] === "object";
 
-    if (isLocationBased) {
-      discountFlag =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
-      undiscountedPrice =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.price;
-      discountedPrice =
-        pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
-    } else {
-      discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
-      undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
-      discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
+      if (isLocationBased) {
+        discountFlag =
+          pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountFlag;
+        undiscountedPrice =
+          pricingMap?.[duration]?.[level]?.[locationValue]?.price;
+        discountedPrice =
+          pricingMap?.[duration]?.[level]?.[locationValue]?.serviceDiscountPrice;
+      } else {
+        discountFlag = pricingMap?.[duration]?.[level]?.serviceDiscountFlag;
+        undiscountedPrice = pricingMap?.[duration]?.[level]?.price;
+        discountedPrice = pricingMap?.[duration]?.[level]?.serviceDiscountPrice;
+      }
+    } else if (detailType?.includes("pasangan") || detailType?.includes("keluarga") || detailType?.includes("theraphy")) {
+      discountFlag = pricingMap?.[duration]?.[counselingType]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
+      discountedPrice = pricingMap?.[duration]?.[counselingType]?.serviceDiscountPrice;
+    } else if (detailType?.includes("assessment")) {
+      discountFlag = pricingMap?.[audienceQuantity]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[audienceQuantity]?.price;
+      discountedPrice = pricingMap?.[audienceQuantity]?.serviceDiscountPrice;
+    } else if (detailType?.includes("wawancara")) {
+      discountFlag = pricingMap?.[targetAudience]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[targetAudience]?.price;
+      discountedPrice = pricingMap?.[targetAudience]?.serviceDiscountPrice;
     }
-  } else if (type.includes("counselor")) {
-    discountFlag =
-      pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
+
+  } else if (itemType.includes("counselor")) {
+    discountFlag = pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
     undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
-    discountedPrice =
-      pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
+    discountedPrice = pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
+  } else if (itemType.includes("class")) {
+    discountFlag = detailData?.discountFlag;
+    undiscountedPrice = detailData?.price;
+    discountedPrice = detailData.discountPrice;
   }
 
   const eachCount = {
@@ -188,23 +198,26 @@ const DetailPage = () => {
   const getCommentData = useCallback(
     async (sort = sortOption) => {
       let datas;
-      if (type.includes("service")) {
+      if (itemType.includes("service")) {
         datas = await fetchServiceCommentsById({ id, sort });
-      } else if (type.includes("counselor")) {
+      } else if (itemType.includes("counselor")) {
         datas = await fetchCounselorCommentsById({ id, sort });
       }
 
       setComments(datas.datas);
       setCommentCount(datas.counts);
     },
-    [type, id, sortOption]
+    [itemType, id, sortOption]
   );
 
+  //Reset states
   useEffect(() => {
     setDuration(1);
     setLevel("junior");
     setLocationValue("Tanah Abang - Jakarta");
     setCounselingType("Online Chat Individu");
+    setAudienceQuantity(1);
+    setTargetAudience("Wawancara Tugas")
     setQuantity(1);
     setDescriptions([]);
     setNotices([]);
@@ -217,55 +230,57 @@ const DetailPage = () => {
     setRecommendations([]);
     //scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id, type]);
+  }, [id, itemType]);
 
+  //First, fetch detail data only
   useEffect(() => {
     const getDetailData = async () => {
       let data;
 
-      if (type.includes("service")) {
+      if (itemType.includes("service")) {
         data = await fetchServiceDetailById(id);
-      } else if (type.includes("class")) {
+      } else if (itemType.includes("class")) {
         data = await fetchClassDetailById(id);
-      } else if (type.includes("counselor")) {
+      } else if (itemType.includes("counselor")) {
         data = await fetchCounselorDetailById(id);
-      } else if (type.includes("article")) {
+      } else if (itemType.includes("article")) {
         // data = await fetchArticleById(id);
       }
       setDetailData(data);
     };
 
     getDetailData();
-  }, [type, id]);
+  }, [itemType, id]);
 
+  //Second, detail data used to fetch another data
   useEffect(() => {
-    if ((type.includes("counselor") && !detailData?.level)
-      || (type.includes("service") && !detailData?.type)) {
+    if ((itemType.includes("counselor") && !detailData?.level)
+      || (itemType.includes("service") && !detailData?.type)) {
       return;
     }
 
     const load = async () => {
       const getDescriptionsAndNotices = async () => {
-        let itemType;
+        let type;
 
-        if (type.includes("service")) {
-          itemType = detailData?.type;
-        } else if (type.includes("counselor")) {
-          itemType = detailData?.level;
+        if (itemType.includes("service")) {
+          type = detailData?.type;
+        } else if (itemType.includes("counselor")) {
+          type = detailData?.level;
         } else {
-          itemType = undefined;
+          type = undefined;
         }
 
-        const datas = await fetchDescriptionsAndNotices(type, id, itemType);
+        const datas = await fetchDescriptionsAndNotices(itemType, id, type);
         setDescriptions(datas.descriptions);
         setNotices(datas.notices);
       };
 
       const getPricingData = async () => {
-        if (type.includes("service")) {
+        if (itemType.includes("service")) {
           const data = await fetchServicePricingById(id);
           setPricingData(data);
-        } else if (type.includes("counselor")) {
+        } else if (itemType.includes("counselor")) {
           const data = await fetchCounselorPricingById(id);
           setPricingData(data);
         }
@@ -274,16 +289,16 @@ const DetailPage = () => {
       const getRecommendationData = async () => {
         let datas;
 
-        if (type.includes("service") || type.includes("class")) {
+        if (itemType.includes("service") || itemType.includes("class")) {
           datas = await fetchIndividualCounselingRecommendations(id, "Individual");
-        } else if (type.includes("counselor")) {
+        } else if (itemType.includes("counselor")) {
           datas = await fetchCounselorRecommendations(id, detailData.level);
         }
         setRecommendations(datas);
       };
 
       await getDescriptionsAndNotices(); // needs detailData.level
-      if (type.includes("service") || type.includes("counselor")) {
+      if (itemType.includes("service") || itemType.includes("counselor")) {
         getPricingData();
         getCommentData();
       }
@@ -291,10 +306,34 @@ const DetailPage = () => {
     };
 
     load();
-  }, [type, id, detailData, getCommentData]);
+  }, [itemType, id, detailData, getCommentData]);
+
+  //Fourth, set Options value once pricingMap is ready
+  useEffect(() => {
+    const isPricingMapReady = pricingMap && Object.keys(pricingMap).length > 0;
+    if (!isPricingMapReady || hasSetDefaults.current) return;
+
+    if (detailType?.includes("individu")) {
+      const firstLevel = Object.keys(pricingMap[duration] || {})[0];
+      if (firstLevel) setLevel(firstLevel);
+    }
+
+    if (itemType.includes("service") && isLocationBased) {
+      const levelMap = pricingMap[duration]?.[level] || {};
+      const firstLocation = Object.keys(levelMap)[0];
+      if (firstLocation) setLocationValue(firstLocation);
+    }
+
+    if (itemType.includes("counselor") || (itemType.includes("service") && !detailType?.includes("individu"))) {
+      const firstType = Object.keys(pricingMap[duration] || {})[0];
+      if (firstType) setCounselingType(firstType);
+    }
+
+    hasSetDefaults.current = true;
+  }, [pricingMap, duration, itemType, detailType, level, isLocationBased]);
 
   const renderImage = () => {
-    if (type.includes("service")) {
+    if (itemType.includes("service")) {
       return (
         <div className="detailPageImage">
           <img
@@ -307,7 +346,7 @@ const DetailPage = () => {
           />
         </div>
       );
-    } else if (type.includes("class")) {
+    } else if (itemType.includes("class")) {
       return (
         <div className="detailPageImage">
           <img
@@ -320,7 +359,7 @@ const DetailPage = () => {
           />
         </div>
       );
-    } else if (type.includes("counselor")) {
+    } else if (itemType.includes("counselor")) {
       return (
         <div className="detailPageImage">
           <img
@@ -350,49 +389,31 @@ const DetailPage = () => {
   };
 
   const renderPrice = () => {
-    if (type.includes("service") || type.includes("counselor")) {
-      return (
-        <Typography variant="h6">
-          {discountFlag ? (
-            <div className="discountedPriceWrapper">
-              <span className="obralText">
-                {formatToRupiah(undiscountedPrice)}
-              </span>
+    return (
+      <Typography variant="h6">
+        {discountFlag ? (
+          <div className="discountedPriceWrapper">
+            <span className="obralText">
+              {formatToRupiah(undiscountedPrice)}
+            </span>
 
-              <div className="discountedPriceAndBadgeWrapper">
-                {formatToRupiah(discountedPrice)}
-                <span>Obral</span>
-              </div>
+            <div className="discountedPriceAndBadgeWrapper">
+              {formatToRupiah(discountedPrice)}
+              <span>Obral</span>
             </div>
-          ) : (
-            <>{formatToRupiah(undiscountedPrice)}</>
-          )}
-        </Typography>
-      );
-    } else if (type.includes("class")) {
-      return (
-        <Typography variant="h6">
-          {detailData.discountFlag ? (
-            <div className="discountedPriceWrapper">
-              <span className="obralText">
-                {formatToRupiah(detailData.price)}
-              </span>
-
-              <div className="discountedPriceAndBadgeWrapper">
-                {formatToRupiah(detailData.discountPrice)}
-                <span>Obral</span>
-              </div>
-            </div>
-          ) : (
-            <>{formatToRupiah(detailData.price)}</>
-          )}
-        </Typography>
-      );
-    }
+          </div>
+        ) : (
+          <>{formatToRupiah(undiscountedPrice)}</>
+        )}
+      </Typography>
+    );
   };
 
   const renderDurasiOption = () => {
-    if (type.includes("service") || type.includes("counselor")) {
+    const durationLabel = (detailData?.name?.toLowerCase?.().includes("naomi") && detailType?.includes("pasangan")) ||
+      detailType?.includes("keluarga") || detailType?.includes("wawancara");
+
+    if (itemType.includes("service") || itemType.includes("counselor")) {
       return (
         <Option
           title="Durasi Konseling"
@@ -402,7 +423,7 @@ const DetailPage = () => {
             Object.keys(pricingMap).map((d) => [d.toString(), d.toString()])
           )}
           onChange={handleDurationChange}
-          labelMapper={(key) => `${key} jam`}
+          labelMapper={(key) => `${key} ${durationLabel ? "jam" : "sesi"}`}
         />
       );
     }
@@ -410,7 +431,7 @@ const DetailPage = () => {
   };
 
   const renderExpertOption = () => {
-    if (type.includes("service")) {
+    if (detailType?.includes("individu")) {
       return (
         <Option
           title="Expert"
@@ -428,33 +449,36 @@ const DetailPage = () => {
   };
 
   const renderLocationOption = () => {
-    if (type.includes("service")) {
+    if (itemType.includes("service") && isLocationBased) {
       return (
-        isLocationBased && (
-          <Option
-            title="Lokasi"
-            name="location"
-            selected={locationValue}
-            options={Object.fromEntries(
-              Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
-            )}
-            onChange={handleLocationChange}
-          />
-        )
+        <Option
+          title="Lokasi"
+          name="location"
+          selected={locationValue}
+          options={Object.fromEntries(
+            Object.keys(pricingMap[duration][level]).map((loc) => [loc, loc])
+          )}
+          onChange={handleLocationChange}
+        />
       );
     }
     return null;
   };
 
   const renderCounselingTypeOption = () => {
-    if (type.includes("counselor")) {
+    const counselingTypeTitle = (detailType?.includes("theraphy") || detailType?.includes("wawancara"))
+      ? "Jenis"
+      : "Jenis Konseling";
+
+    if (itemType.includes("counselor") || 
+      (itemType.includes("service") && !detailType?.includes("individu") && !detailType?.includes("assessment"))) {
       return (
         <Option
-          title="Jenis Konseling"
+          title={counselingTypeTitle}
           name="counselingType"
           selected={counselingType}
           options={Object.fromEntries(
-            Object.keys(pricingMap[duration] || {}).map((type) => [type, type])
+            Object.keys(pricingMap[duration] || {}).map((itemType) => [itemType, itemType])
           )}
           onChange={handleCounselingTypeChange}
         />
@@ -464,9 +488,13 @@ const DetailPage = () => {
   };
 
   const renderDescription = () => {
-    if (type !== "class") {
+    if (!itemType.includes("class")) {
       return (
         <>
+          {detailType?.includes("pasangan") && detailData?.description?.trim?.() !== "" && (
+            <b className="coupleAdditionalDescription">{detailData.description}</b>
+          )}
+
           {descriptions?.map((description, index) => (
             <Fragment key={description.sharedDescriptionId}>
               <Description data={description} secondData={detailData} />
@@ -681,7 +709,7 @@ const DetailPage = () => {
           {recommendations.map((recommendation) => (
             <SingleCard
               key={getRecommendationKey(recommendation)}
-              type={recommendation.itemType}
+              itemType={recommendation.itemType}
               data={recommendation}
               style={{ margin: "0px" }}
             />

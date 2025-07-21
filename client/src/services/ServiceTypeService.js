@@ -3,10 +3,10 @@ import axios from "axios";
 const url = "http://localhost:5000/serviceTypes";
 
 // Get Konseling Individu datas
-export const fetchServiceTypes = async ({ itemType = null, sortBy = null } = {}) => {
+export const fetchServiceTypes = async ({ type = null, sortBy = null } = {}) => {
   try {
     const response = await axios.get(`${url}/getServiceTypes`, {
-      params: { itemType, sortBy },
+      params: { type, sortBy },
     });
     return response.data;
   } catch (error) {

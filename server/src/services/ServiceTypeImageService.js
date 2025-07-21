@@ -9,6 +9,16 @@ const uploadImage = async ({ id, file } = {}) => {
   });
 };
 
+// Update image by id
+const updateImage = async ({ id, file } = {}) => {
+  // Update an image for a specific service type
+  return await ServiceTypeImageModel.update(
+    { image: file.buffer },
+    { where: { serviceTypeImageId: id } }
+  );
+};
+
 module.exports = {
-  uploadImage
+  uploadImage,
+  updateImage,
 };

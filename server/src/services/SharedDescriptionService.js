@@ -112,36 +112,36 @@ const replaceCharactersByIndex = (text, masterValues, indexArray) => {
   });
 };
 
-const formatTitleFromItemType = (itemType) => {
-  if (!itemType) return "";
-  return itemType.includes("-")
-    ? itemType
+const formatTitleFromType = (type) => {
+  if (!type) return "";
+  return type.includes("-")
+    ? type
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ")
-    : itemType.charAt(0).toUpperCase() + itemType.slice(1);
+    : type.charAt(0).toUpperCase() + type.slice(1);
 };
 
 // Get Description and Notice datas for Detail page
-const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
+const getDescriptionsAndNotices = async ({ itemType, id, type } = {}) => {
   const idNum = parseInt(id);
-  const itemTypeValue = itemType?.toLowerCase();
-  if (!itemTypeValue) return { descriptions: [], notices: [] };
+  const typeValue = type?.toLowerCase();
+  if (!typeValue) return { descriptions: [], notices: [] };
 
   let descriptionIds = [];
   let noticeIds = [];
 
-  if (type.includes("service")) {
-    const dataFound = serviceMapping.find((data) => data.match(itemTypeValue));
+  if (itemType.includes("service")) {
+    const dataFound = serviceMapping.find((data) => data.match(typeValue));
 
     if (dataFound) {
       descriptionIds = dataFound.description(idNum);
       noticeIds = dataFound.notice(idNum);
     }
-  } else if (type.includes("class")) {
+  } else if (itemType.includes("class")) {
     noticeIds = descriptionIdMap.class;
-  } else if (type.includes("counselor")) {
-    const dataFound = counselorMapping.find((data) => data.match(itemTypeValue));
+  } else if (itemType.includes("counselor")) {
+    const dataFound = counselorMapping.find((data) => data.match(typeValue));
     
     if (dataFound) {
       descriptionIds = dataFound.description();
@@ -215,7 +215,7 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
     const { sharedDescriptionId, description } = not.toJSON();
 
     if (sharedDescriptionId === 3) {
-      const index = itemTypeValue?.includes("individu") ? 0 : 1;
+      const index = typeValue?.includes("individu") ? 0 : 1;
       const value = thirdDescription[index];
 
       return {
@@ -230,21 +230,19 @@ const getDescriptionsAndNotices = async ({ type, id, itemType } = {}) => {
 };
 
 // Get Title and Subtitle datas for List page
-const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
+const getTitlesAndSubtitles = async ({ itemType, type } = {}) => {
   let data, title, description, result;
 
-  if (type.includes("service") || type.includes("class")) {
-    console.log("item = " + formatTitleFromItemType(itemType))
-
+  if (itemType.includes("service") || itemType.includes("class")) {
     result = await SharedDescriptionModel.findOne({
       where: {
         title: {
-          [Op.like]: `%${formatTitleFromItemType(itemType)}%`, // case-insensitive match
+          [Op.like]: `%${formatTitleFromType(type)}%`, // case-insensitive match
         },
       },
     });
-  } else if (type.includes("counselor")) {
-    const pattern = `%itu ${itemType} expert%`;
+  } else if (itemType.includes("counselor")) {
+    const pattern = `%itu ${type} expert%`;
 
     result = await SharedDescriptionModel.findOne({
       where: {
@@ -254,16 +252,14 @@ const getTitlesAndSubtitles = async ({ type, itemType } = {}) => {
       },
     });
 
-    title = `${formatTitleFromItemType(itemType)} Expert`;
+    title = `${formatTitleFromType(type)} Expert`;
   }
 
   if (!result) return {};
   data = result.toJSON();
 
-  if (type.includes("service") || type.includes("class")) title = data.title;
-  console.log("title = " + title)
+  if (itemType.includes("service") || itemType.includes("class")) title = data.title;
   description = data.description;
-  console.log("desc = " + description)
 
   return {
     title,

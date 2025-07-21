@@ -12,7 +12,7 @@ import { fetchServiceTypes } from "../services/ServiceTypeService.js";
 import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js";
 
 const ListPage = () => {
-  const { type, itemType } = useParams();
+  const { itemType, type } = useParams();
   let hasLoadedOnce = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,67 +22,67 @@ const ListPage = () => {
   const [sortOption, setSortOption] = useState("commentCount");
 
   let quantity = 0;
-  const itemTypeValue = useMemo(() => {
-    if (type.includes("service")) {
-      return itemType.includes("-")
-        ? itemType?.trim().split("-")[1] ?? null
-        : itemType ?? null;
-    } else if (type.includes("counselor")) {
-      return itemType?.trim().split("-")[0] ?? null;
-    } else if (type.includes("class")) {
-      return itemType.includes("-")
-        ? itemType?.trim().split("-").join(" ") ?? null
-        : itemType ?? null;
+  const typeValue = useMemo(() => {
+    if (itemType.includes("service")) {
+      return type.includes("-")
+        ? type?.trim().split("-")[1] ?? null
+        : type ?? null;
+    } else if (itemType.includes("counselor")) {
+      return type?.trim().split("-")[0] ?? null;
+    } else if (itemType.includes("class")) {
+      return type.includes("-")
+        ? type?.trim().split("-").join(" ") ?? null
+        : type ?? null;
     }
 
     return null;
-  }, [type, itemType]);
+  }, [itemType, type]);
 
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
     setSortOption(newSort);
 
-    if (type.includes("counselor")) getCounselors(newSort);
-    if (type.includes("service")) getServiceTypes(newSort);
+    if (itemType.includes("counselor")) getCounselors(newSort);
+    if (itemType.includes("service")) getServiceTypes(newSort);
   };
 
   const getCounselors = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchCounselors({ itemType: itemTypeValue, sortBy: sort });
+      const datas = await fetchCounselors({ level: typeValue, sortBy: sort });
       setCounselors(datas);
       setIsLoading(false);
-    }, [itemTypeValue, sortOption]
+    }, [typeValue, sortOption]
   );
 
   const getServiceTypes = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchServiceTypes({ itemType: itemTypeValue, sortBy: sort });
+      const datas = await fetchServiceTypes({ type: typeValue, sortBy: sort });
       setServiceTypes(datas);
       setIsLoading(false);
-    }, [itemTypeValue, sortOption]
+    }, [typeValue, sortOption]
   );
 
   useEffect(() => {
     const getTitlesAndSubtitles = async () => {
-      const datas = await fetchTitlesAndSubtitles(type, itemTypeValue);
+      const datas = await fetchTitlesAndSubtitles(itemType, typeValue);
       setPageTexts(datas);
     };
 
     if (!hasLoadedOnce.current) {
       hasLoadedOnce.current = true;
       setSortOption("default");
-      if (type.includes("service")) getServiceTypes("default");
+      if (itemType.includes("service")) getServiceTypes("default");
     } else {
-      if (type.includes("service")) getServiceTypes();
+      if (itemType.includes("service")) getServiceTypes();
     }
 
-    if (type.includes("counselor")) getCounselors();
+    if (itemType.includes("counselor")) getCounselors();
     getTitlesAndSubtitles();
-  }, [type, itemTypeValue, getCounselors, getServiceTypes]);
+  }, [itemType, typeValue, getCounselors, getServiceTypes]);
 
-  const pageTitle = pageTexts?.title ?? (type.includes("counselor") ? "Expert" : "");
+  const pageTitle = pageTexts?.title ?? (itemType.includes("counselor") ? "Expert" : "");
   const pageSubtitle = pageTexts?.description ?? "";
 
   const renderDescription = () => {
@@ -94,19 +94,19 @@ const ListPage = () => {
   };
 
   const renderSingleCard = () => {
-    if (type.includes("service")) {
+    if (itemType.includes("service")) {
       return serviceTypes.map((serviceType) => (
         <SingleCard
           key={serviceType.serviceTypeId}
-          type={serviceType.itemType}
+          itemType={serviceType.itemType}
           data={serviceType}
         />
       ));
-    } else if (type.includes("counselor")) {
+    } else if (itemType.includes("counselor")) {
       return counselors.map((counselor) => (
         <SingleCard
           key={counselor.counselorId}
-          type={counselor.itemType}
+          itemType={counselor.itemType}
           data={counselor}
         />
       ));
@@ -114,9 +114,9 @@ const ListPage = () => {
   };
 
   const renderFilter = () => {
-    if (type.includes("counselor")) {
+    if (itemType.includes("counselor")) {
       quantity = counselors.length;
-    } else if (type.includes("service")) {
+    } else if (itemType.includes("service")) {
       quantity = serviceTypes.length;
     }
 

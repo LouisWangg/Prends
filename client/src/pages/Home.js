@@ -54,7 +54,7 @@ const Home = () => {
   };
 
   const getHomePageServiceTypes = async () => {
-    const datas = await fetchServiceTypes({ itemType: "individual" });
+    const datas = await fetchServiceTypes({ type: "individual" });
     setServiceTypes(datas);
   };
 
@@ -94,7 +94,7 @@ const Home = () => {
         {serviceTypes.map((serviceType) => (
           <SingleCard
             key={serviceType.serviceTypeId}
-            type={serviceType.itemType}
+            itemType={serviceType.itemType}
             data={serviceType}
           />
         ))}
@@ -121,7 +121,7 @@ const Home = () => {
         {classes.map((singleClass) => (
           <SingleCard
             key={singleClass.classId}
-            type={singleClass.itemType}
+            itemType={singleClass.itemType}
             data={singleClass}
           />
         ))}
@@ -135,7 +135,7 @@ const Home = () => {
         {counselors.map((counselor) => (
           <SingleCard
             key={counselor.counselorId}
-            type={counselor.itemType}
+            itemType={counselor.itemType}
             data={counselor}
           />
         ))}
@@ -152,7 +152,7 @@ const Home = () => {
         {articles.map((article) => (
           <SingleCard
             key={article.articleId}
-            type="HomeArticle"
+            itemType="HomeArticle"
             data={article}
           />
         ))}

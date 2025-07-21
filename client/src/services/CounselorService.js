@@ -3,10 +3,10 @@ import axios from "axios";
 const url = "http://localhost:5000/counselors";
 
 // Get Counselor datas for Home & List page
-export const fetchCounselors = async ({ itemType = null, sortBy = "commentCount", limit = null } = {}) => {
+export const fetchCounselors = async ({ level = null, sortBy = "commentCount", limit = null } = {}) => {
   try {
     const response = await axios.get(`${url}/getCounselors`, {
-      params: { itemType, sortBy, limit }
+      params: { level, sortBy, limit }
     });
     return response.data;
   } catch (error) {

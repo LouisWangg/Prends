@@ -91,7 +91,7 @@ export default function usePricingGroup(data, detailData, type) {
     }
 
     setPricingMap(grouped);
-  }, [data, detailData]);
+  }, [data, detailData, type]);
 
   return pricingMap;
 }
