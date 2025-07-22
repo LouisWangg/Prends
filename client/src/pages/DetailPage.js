@@ -37,10 +37,10 @@ const DetailPage = () => {
   const { itemType, id } = useParams();
 
   const [duration, setDuration] = useState(1);
+  const [audienceQuantity, setAudienceQuantity] = useState(1);
   const [level, setLevel] = useState("junior");
   const [locationValue, setLocationValue] = useState("Tanah Abang - Jakarta");
   const [counselingType, setCounselingType] = useState("Online Chat Individu");
-  const [audienceQuantity, setAudienceQuantity] = useState(1);
   const [targetAudience, setTargetAudience] = useState("Wawancara Tugas");
   const [quantity, setQuantity] = useState(1);
   const [descriptions, setDescriptions] = useState([]);
@@ -57,6 +57,7 @@ const DetailPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const hasSetDefaults = useRef(false);
+  const hasSetSecondDefaults = useRef(false);
   const detailType = detailData?.type?.toLowerCase?.() || "";
 
   const pricingMap = usePricingGroup(pricingData, detailData, itemType);
@@ -91,9 +92,9 @@ const DetailPage = () => {
       undiscountedPrice = pricingMap?.[audienceQuantity]?.price;
       discountedPrice = pricingMap?.[audienceQuantity]?.serviceDiscountPrice;
     } else if (detailType?.includes("wawancara")) {
-      discountFlag = pricingMap?.[targetAudience]?.serviceDiscountFlag;
-      undiscountedPrice = pricingMap?.[targetAudience]?.price;
-      discountedPrice = pricingMap?.[targetAudience]?.serviceDiscountPrice;
+      discountFlag = pricingMap?.[duration]?.[counselingType]?.[targetAudience]?.serviceDiscountFlag;
+      undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.[targetAudience]?.price;
+      discountedPrice = pricingMap?.[duration]?.[counselingType]?.[targetAudience]?.serviceDiscountPrice;
     }
 
   } else if (itemType.includes("counselor")) {
@@ -143,12 +144,20 @@ const DetailPage = () => {
     setDuration(parseInt(event.target.value, 10));
   };
 
+  const handleAudienceQuantityChange = (event) => {
+    setAudienceQuantity(parseInt(event.target.value, 10));
+  };
+
   const handleLevelChange = (event) => {
     setLevel(event.target.value);
   };
 
   const handleLocationChange = (event) => {
     setLocationValue(event.target.value);
+  };
+
+  const handleTargetAudienceChange = (event) => {
+    setTargetAudience(event.target.value);
   };
 
   const handleCounselingTypeChange = (event) => {
@@ -222,7 +231,6 @@ const DetailPage = () => {
     setDescriptions([]);
     setNotices([]);
     setDetailData({});
-    // setPricingMap({});
     setSortOption("newest");
     setComments([]);
     setCommentCount([]);
@@ -297,7 +305,7 @@ const DetailPage = () => {
         setRecommendations(datas);
       };
 
-      await getDescriptionsAndNotices(); // needs detailData.level
+      await getDescriptionsAndNotices();
       if (itemType.includes("service") || itemType.includes("counselor")) {
         getPricingData();
         getCommentData();
@@ -331,6 +339,25 @@ const DetailPage = () => {
 
     hasSetDefaults.current = true;
   }, [pricingMap, duration, itemType, detailType, level, isLocationBased]);
+
+  //Fifth, set value only for the Target Audience since it use Counseling Type
+  useEffect(() => {
+    const isPricingMapReady = pricingMap && Object.keys(pricingMap).length > 0;
+    const counselingTypeReady = isPricingMapReady && counselingType;
+
+    if (!counselingTypeReady || hasSetSecondDefaults.current) return;
+
+    if (detailType?.includes("wawancara")) {
+      const targetAudienceMap = pricingMap?.[duration]?.[counselingType] || {};
+      const firstTargetAudience = Object.keys(targetAudienceMap)[0];
+      if (firstTargetAudience) {
+        setTargetAudience(firstTargetAudience);
+        hasSetSecondDefaults.current = true;
+      }
+    }
+
+  }, [pricingMap, duration, counselingType, detailType]);
+
 
   const renderImage = () => {
     if (itemType.includes("service")) {
@@ -409,14 +436,16 @@ const DetailPage = () => {
     );
   };
 
-  const renderDurasiOption = () => {
+  const renderDurationOption = () => {
+    const durationTitle = detailType?.includes("theraphy") || detailType?.includes("wawancara") ? "Durasi" : "Durasi Konseling";
+
     const durationLabel = (detailData?.name?.toLowerCase?.().includes("naomi") && detailType?.includes("pasangan")) ||
       detailType?.includes("keluarga") || detailType?.includes("wawancara");
 
-    if (itemType.includes("service") || itemType.includes("counselor")) {
+    if ((itemType.includes("service") && !detailType?.includes("assessment")) || itemType.includes("counselor")) {
       return (
         <Option
-          title="Durasi Konseling"
+          title={durationTitle}
           name="duration"
           selected={duration.toString()}
           options={Object.fromEntries(
@@ -424,6 +453,24 @@ const DetailPage = () => {
           )}
           onChange={handleDurationChange}
           labelMapper={(key) => `${key} ${durationLabel ? "jam" : "sesi"}`}
+        />
+      );
+    }
+    return null;
+  };
+
+  const renderAudienceQuantityOption = () => {
+    if (detailType?.includes("assessment")) {
+      return (
+        <Option
+          title="Jumlah Peserta"
+          name="audienceQuantity"
+          selected={audienceQuantity.toString()}
+          options={Object.fromEntries(
+            Object.keys(pricingMap).map((d) => [d.toString(), d.toString()])
+          )}
+          onChange={handleAudienceQuantityChange}
+          labelMapper={(key) => `${key} orang`}
         />
       );
     }
@@ -465,12 +512,31 @@ const DetailPage = () => {
     return null;
   };
 
-  const renderCounselingTypeOption = () => {
-    const counselingTypeTitle = (detailType?.includes("theraphy") || detailType?.includes("wawancara"))
-      ? "Jenis"
-      : "Jenis Konseling";
+  const renderTargetAudienceOption = () => {
+    if (detailType?.includes("wawancara")) {
+      return (
+        <Option
+          title="Jenis"
+          name="targetAudience"
+          selected={targetAudience}
+          options={Object.fromEntries(
+            Object.keys(pricingMap?.[duration]?.[counselingType] || {}).map((aud) => [aud, aud])
+          )}
+          onChange={handleTargetAudienceChange}
+        />
+      );
+    }
+    return null;
+  };
 
-    if (itemType.includes("counselor") || 
+  const renderCounselingTypeOption = () => {
+    const counselingTypeTitle = detailType?.includes("theraphy")
+      ? "Jenis"
+      : detailType?.includes("wawancara")
+        ? "Sesi"
+        : "Jenis Konseling";
+
+    if (itemType.includes("counselor") ||
       (itemType.includes("service") && !detailType?.includes("individu") && !detailType?.includes("assessment"))) {
       return (
         <Option
@@ -631,11 +697,15 @@ const DetailPage = () => {
 
           {renderPrice()}
 
-          {renderDurasiOption()}
+          {renderDurationOption()}
+
+          {renderAudienceQuantityOption()}
 
           {renderExpertOption()}
 
           {renderLocationOption()}
+
+          {renderTargetAudienceOption()}
 
           {renderCounselingTypeOption()}
 

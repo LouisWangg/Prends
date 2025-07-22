@@ -234,13 +234,19 @@ const getTitlesAndSubtitles = async ({ itemType, type } = {}) => {
   let data, title, description, result;
 
   if (itemType.includes("service") || itemType.includes("class")) {
-    result = await SharedDescriptionModel.findOne({
+    const results = await SharedDescriptionModel.findAll({
       where: {
         title: {
-          [Op.like]: `%${formatTitleFromType(type)}%`, // case-insensitive match
+          [Op.like]: `%${formatTitleFromType(type)}%`, 
         },
       },
     });
+
+    if (results.length > 1) {
+      result = results.find((item) => item.description === null);
+    } else {
+      result = results[0];
+    }
   } else if (itemType.includes("counselor")) {
     const pattern = `%itu ${type} expert%`;
 

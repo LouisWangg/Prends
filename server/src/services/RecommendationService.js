@@ -53,6 +53,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
             "itemType"
         ],
         where: {
+            level: "Senior",
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
@@ -150,20 +151,225 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
     return [...convertedSameLevelCounselors, ...convertedSeniorCounselors];
 };
 
-const formatImages = (items, key) => {
-  return items.map(item => {
-    const plain = item.get({ plain: true });
-    if (plain[key] && plain[key].length > 0) {
-      plain[key] = plain[key].map(img => ({
-        ...img,
-        image: img.image ? img.image.toString("base64") : null
-      }));
-    }
-    return plain;
-  });
+const getCoupleAndFamilyRecommendations = async ({ excludeId, type } = {}) => {
+    const coupleTypes = await ServiceTypeModel.findAll({
+        attributes: [
+            "serviceTypeId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType",
+            "type",
+        ],
+        where: {
+            ...(type && { type }),
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: 4,
+    });
+
+    const convertedCoupleTypes = coupleTypes.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    if (convertedCoupleTypes.length == 4) return convertedCoupleTypes;
+
+    const remainingServiceTypes = 4 - convertedCoupleTypes.length;
+
+    const familyTypes = await ServiceTypeModel.findAll({
+        attributes: [
+            "serviceTypeId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType",
+            "type",
+        ],
+        where: {
+            type: "Keluarga",
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: remainingServiceTypes
+    });
+
+    const convertedFamilyTypes = familyTypes.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    return [...convertedCoupleTypes, ...convertedFamilyTypes];
 };
+
+const getAssessmentRecommendations = async ({ excludeId } = {}) => {
+    const familyTypes = await ServiceTypeModel.findAll({
+        attributes: [
+            "serviceTypeId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType",
+            "type",
+        ],
+        where: {
+            type: "Keluarga",
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: 4,
+    });
+
+    const convertedFamilyTypes = familyTypes.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    if (convertedFamilyTypes.length == 4) return convertedFamilyTypes;
+
+    const remainingCounselors = 4 - convertedFamilyTypes.length;
+
+    const counselors = await CounselorModel.findAll({
+        attributes: [
+            "counselorId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType"
+        ],
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: remainingCounselors
+    });
+
+    // Step 2: Sort manually in JS
+    const sortedCounselors = counselors.sort((a, b) => a.counselorId - b.counselorId);
+
+    const convertedCounselors = sortedCounselors.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
+            plain.CounselorImages = plain.CounselorImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    return [...convertedFamilyTypes, ...convertedCounselors];
+};
+
+const getSeniorCounselorRecommendations = async () => {
+    const seniorCounselors = await CounselorModel.findAll({
+        attributes: [
+            "counselorId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType"
+        ],
+        where: {
+            level: "Senior",
+        },
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: 4,
+    });
+
+    const convertedSeniorCounselors = seniorCounselors.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
+            plain.CounselorImages = plain.CounselorImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    return [...convertedSeniorCounselors];
+};
+
+const getInterviewRecommendations = async ({ excludeId, type }) => {
+    const serviceTypes = await ServiceTypeModel.findAll({
+        attributes: [
+            "serviceTypeId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "itemType",
+            "type",
+        ],
+        where: {
+            ...(type && { type }),
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
+        order: [['serviceTypeId', 'ASC']], // ensure sorted order
+        limit: serviceLimit,
+    });
+
+    const convertedServiceTypes = serviceTypes.map((item) => {
+        const plain = item.get({ plain: true });
+
+        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
+            // Assuming one image per serviceType, take the first image buffer
+            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
+                ...img,
+                image: img.image ? img.image.toString("base64") : null,
+            }));
+        }
+
+        return plain;
+    });
+
+    return [...convertedServiceTypes];
+};
+
 
 module.exports = {
     getIndividualCounselingRecommendations,
-    getCounselorRecommendations
+    getCounselorRecommendations,
+    getCoupleAndFamilyRecommendations,
+    getAssessmentRecommendations,
+    getSeniorCounselorRecommendations,
+    getInterviewRecommendations,
 };
