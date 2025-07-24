@@ -12,10 +12,6 @@ const ServiceType = sequelize.define('ServiceType', {
         autoIncrement: true
     },
     ...sharedColumn,
-    type: { // services type : konseling individu, pasangan, keluarga, assessment, therapy, wawancara
-        type: DataTypes.STRING,
-        allowNull: false
-    }
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });

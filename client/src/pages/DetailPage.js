@@ -58,7 +58,7 @@ const DetailPage = () => {
 
   const hasSetDefaults = useRef(false);
   const hasSetSecondDefaults = useRef(false);
-  const detailType = detailData?.type?.toLowerCase?.() || "";
+  const detailType = detailData?.subType?.toLowerCase?.() || "";
 
   const pricingMap = usePricingGroup(pricingData, detailData, itemType);
 
@@ -262,24 +262,24 @@ const DetailPage = () => {
 
   //Second, detail data used to fetch another data
   useEffect(() => {
-    if ((itemType.includes("counselor") && !detailData?.level)
-      || (itemType.includes("service") && !detailData?.type)) {
+    if ((itemType.includes("counselor") && !detailData?.subType)
+      || (itemType.includes("service") && !detailData?.subType)) {
       return;
     }
 
     const load = async () => {
       const getDescriptionsAndNotices = async () => {
-        let type;
+        let subType;
 
         if (itemType.includes("service")) {
-          type = detailData?.type;
+          subType = detailData?.subType;
         } else if (itemType.includes("counselor")) {
-          type = detailData?.level;
+          subType = detailData?.subType;
         } else {
-          type = undefined;
+          subType = undefined;
         }
 
-        const datas = await fetchDescriptionsAndNotices(itemType, id, type);
+        const datas = await fetchDescriptionsAndNotices(itemType, id, subType);
         setDescriptions(datas.descriptions);
         setNotices(datas.notices);
       };
@@ -300,7 +300,7 @@ const DetailPage = () => {
         if (itemType.includes("service") || itemType.includes("class")) {
           datas = await fetchIndividualCounselingRecommendations(id, "Individual");
         } else if (itemType.includes("counselor")) {
-          datas = await fetchCounselorRecommendations(id, detailData.level);
+          datas = await fetchCounselorRecommendations(id, detailData.subType);
         }
         setRecommendations(datas);
       };

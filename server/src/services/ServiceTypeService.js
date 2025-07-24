@@ -4,8 +4,8 @@ const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 
-const getServiceTypes = async ({ type = null, sortBy = null }) => {
-  const typeValue = type ? type : null;
+const getServiceTypes = async ({ subType = null, sortBy = null }) => {
+  const subTypeValue = subType ? subType : null;
   const finalPriceLiteral = literal(`
     CASE 
       WHEN "discountFlag" = true AND "discountPrice" > 0 
@@ -43,13 +43,13 @@ const getServiceTypes = async ({ type = null, sortBy = null }) => {
       "discountFlag",
       "discountPrice",
       "itemType",
-      "type",
+      "subType",
       [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"]
     ],
-    where: typeValue
+    where: subTypeValue
       ? {
-        type: {
-          [Op.iLike]: `%${typeValue}%`,
+        subType: {
+          [Op.iLike]: `%${subTypeValue}%`,
         },
       } : undefined,
     include: [

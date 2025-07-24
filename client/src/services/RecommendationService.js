@@ -3,10 +3,10 @@ import axios from "axios";
 const url = "http://localhost:5000/recommendations";
 
 // Get combined Recommendation datas for Individual Konseling Detail Page
-export const fetchIndividualCounselingRecommendations = async (excludeId, type) => {
+export const fetchIndividualCounselingRecommendations = async (excludeId, subType) => {
   try {
     const response = await axios.get(`${url}/getIndividualCounselingRecommendations`, {
-        params: { excludeId, type }
+        params: { excludeId, subType }
     });
     return response.data;
   } catch (error) {
@@ -16,10 +16,10 @@ export const fetchIndividualCounselingRecommendations = async (excludeId, type) 
 };
 
 // Get combined Recommendation datas for Counselor Detail Page
-export const fetchCounselorRecommendations = async (excludeId, level) => {
+export const fetchCounselorRecommendations = async (excludeId, subType) => {
   try {
     const response = await axios.get(`${url}/getCounselorRecommendations`, {
-        params: { excludeId, level }
+        params: { excludeId, subType }
     });
     return response.data;
   } catch (error) {

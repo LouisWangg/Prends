@@ -123,16 +123,16 @@ const formatTitleFromType = (type) => {
 };
 
 // Get Description and Notice datas for Detail page
-const getDescriptionsAndNotices = async ({ itemType, id, type } = {}) => {
+const getDescriptionsAndNotices = async ({ itemType, id, subType } = {}) => {
   const idNum = parseInt(id);
-  const typeValue = type?.toLowerCase();
-  if (!typeValue) return { descriptions: [], notices: [] };
+  const subTypeValue = subType?.toLowerCase();
+  if (!subTypeValue) return { descriptions: [], notices: [] };
 
   let descriptionIds = [];
   let noticeIds = [];
 
   if (itemType.includes("service")) {
-    const dataFound = serviceMapping.find((data) => data.match(typeValue));
+    const dataFound = serviceMapping.find((data) => data.match(subTypeValue));
 
     if (dataFound) {
       descriptionIds = dataFound.description(idNum);
@@ -141,7 +141,7 @@ const getDescriptionsAndNotices = async ({ itemType, id, type } = {}) => {
   } else if (itemType.includes("class")) {
     noticeIds = descriptionIdMap.class;
   } else if (itemType.includes("counselor")) {
-    const dataFound = counselorMapping.find((data) => data.match(typeValue));
+    const dataFound = counselorMapping.find((data) => data.match(subTypeValue));
     
     if (dataFound) {
       descriptionIds = dataFound.description();
@@ -215,7 +215,7 @@ const getDescriptionsAndNotices = async ({ itemType, id, type } = {}) => {
     const { sharedDescriptionId, description } = not.toJSON();
 
     if (sharedDescriptionId === 3) {
-      const index = typeValue?.includes("individu") ? 0 : 1;
+      const index = subTypeValue?.includes("individu") ? 0 : 1;
       const value = thirdDescription[index];
 
       return {
@@ -230,14 +230,14 @@ const getDescriptionsAndNotices = async ({ itemType, id, type } = {}) => {
 };
 
 // Get Title and Subtitle datas for List page
-const getTitlesAndSubtitles = async ({ itemType, type } = {}) => {
+const getTitlesAndSubtitles = async ({ itemType, subType } = {}) => {
   let data, title, description, result;
 
   if (itemType.includes("service") || itemType.includes("class")) {
     const results = await SharedDescriptionModel.findAll({
       where: {
         title: {
-          [Op.like]: `%${formatTitleFromType(type)}%`, 
+          [Op.like]: `%${formatTitleFromType(subType)}%`, 
         },
       },
     });
@@ -248,7 +248,7 @@ const getTitlesAndSubtitles = async ({ itemType, type } = {}) => {
       result = results[0];
     }
   } else if (itemType.includes("counselor")) {
-    const pattern = `%itu ${type} expert%`;
+    const pattern = `%itu ${subType} expert%`;
 
     result = await SharedDescriptionModel.findOne({
       where: {
@@ -258,7 +258,7 @@ const getTitlesAndSubtitles = async ({ itemType, type } = {}) => {
       },
     });
 
-    title = `${formatTitleFromType(type)} Expert`;
+    title = `${formatTitleFromType(subType)} Expert`;
   }
 
   if (!result) return {};

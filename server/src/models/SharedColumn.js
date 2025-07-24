@@ -12,11 +12,15 @@ const sharedColumns = {
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
     },
     itemType: { // for kleexpert, kleedemy, etc
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
+    },
+    subType: { // for each item
+        type: DataTypes.STRING,
+        allowNull: true
     },
     discountFlag: {
         type: DataTypes.BOOLEAN,

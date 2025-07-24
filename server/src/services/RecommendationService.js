@@ -5,7 +5,7 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 
-const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) => {
+const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {}) => {
     const useThreeServices = Math.random() < 0.5;
     const serviceLimit = useThreeServices ? 3 : 2;
     const counselorLimit = useThreeServices ? 1 : 2;
@@ -18,10 +18,10 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
             "discountFlag",
             "discountPrice",
             "itemType",
-            "type",
+            "subType",
         ],
         where: {
-            ...(type && { type }),
+            ...(subType && { subType }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
@@ -53,7 +53,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
             "itemType"
         ],
         where: {
-            level: "Senior",
+            subType: "Senior",
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
@@ -79,8 +79,8 @@ const getIndividualCounselingRecommendations = async ({ excludeId, type } = {}) 
     return [...convertedServiceTypes, ...convertedCounselors];
 };
 
-const getCounselorRecommendations = async ({ excludeId, level }) => {
-    const sameLevelCounselors = await CounselorModel.findAll({
+const getCounselorRecommendations = async ({ excludeId, subType }) => {
+    const sameSubTypeCounselors = await CounselorModel.findAll({
         attributes: [
             "counselorId",
             "name",
@@ -90,7 +90,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
             "itemType"
         ],
         where: {
-            ...(level && { level }),
+            ...(subType && { subType }),
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
@@ -98,7 +98,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
         limit: 4
     });
 
-    const convertedSameLevelCounselors = sameLevelCounselors.map((item) => {
+    const convertedSameSubTypeCounselors = sameSubTypeCounselors.map((item) => {
         const plain = item.get({ plain: true });
 
         if (plain.CounselorImages && plain.CounselorImages.length > 0) {
@@ -111,11 +111,11 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
         return plain;
     });
 
-    // If enough same-level counselors, return
-    if (convertedSameLevelCounselors.length == 4) return convertedSameLevelCounselors;
+    // If enough same-subType counselors, return
+    if (convertedSameSubTypeCounselors.length == 4) return convertedSameSubTypeCounselors;
 
-    // Fill the remaining with senior-level counselors
-    const remainingCounselors = 4 - convertedSameLevelCounselors.length;
+    // Fill the remaining with senior-subType counselors
+    const remainingCounselors = 4 - convertedSameSubTypeCounselors.length;
 
     const seniorCounselors = await CounselorModel.findAll({
         attributes: [
@@ -127,7 +127,7 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
             "itemType"
         ],
         where: {
-            level: "Senior",
+            subType: "Senior",
             ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
@@ -148,10 +148,10 @@ const getCounselorRecommendations = async ({ excludeId, level }) => {
         return plain;
     });
 
-    return [...convertedSameLevelCounselors, ...convertedSeniorCounselors];
+    return [...convertedSameSubTypeCounselors, ...convertedSeniorCounselors];
 };
 
-const getCoupleAndFamilyRecommendations = async ({ excludeId, type } = {}) => {
+const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) => {
     const coupleTypes = await ServiceTypeModel.findAll({
         attributes: [
             "serviceTypeId",
@@ -160,10 +160,10 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, type } = {}) => {
             "discountFlag",
             "discountPrice",
             "itemType",
-            "type",
+            "subType",
         ],
         where: {
-            ...(type && { type }),
+            ...(subType && { subType }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
@@ -196,10 +196,10 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, type } = {}) => {
             "discountFlag",
             "discountPrice",
             "itemType",
-            "type",
+            "subType",
         ],
         where: {
-            type: "Keluarga",
+            subType: "Keluarga",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
@@ -232,10 +232,10 @@ const getAssessmentRecommendations = async ({ excludeId } = {}) => {
             "discountFlag",
             "discountPrice",
             "itemType",
-            "type",
+            "subType",
         ],
         where: {
-            type: "Keluarga",
+            subType: "Keluarga",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
@@ -304,7 +304,7 @@ const getSeniorCounselorRecommendations = async () => {
             "itemType"
         ],
         where: {
-            level: "Senior",
+            subType: "Senior",
         },
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
         order: Sequelize.literal("RANDOM()"),
@@ -336,10 +336,10 @@ const getInterviewRecommendations = async ({ excludeId, type }) => {
             "discountFlag",
             "discountPrice",
             "itemType",
-            "type",
+            "subType",
         ],
         where: {
-            ...(type && { type }),
+            ...(subType && { subType }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
         include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],

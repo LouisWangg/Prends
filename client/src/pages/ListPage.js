@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { Typography } from "@mui/material";
@@ -7,80 +7,85 @@ import "./ListPage.css";
 import SingleCard from "../components/SingleCard";
 import HomeSection from "../components/HomeSection";
 
+import { fetchClasses } from "../services/ClassService.js";
 import { fetchCounselors } from "../services/CounselorService.js";
 import { fetchServiceTypes } from "../services/ServiceTypeService.js";
 import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js";
 
 const ListPage = () => {
-  const { itemType, type } = useParams();
-  let hasLoadedOnce = useRef(false);
+  const { itemType, subType } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
   const [pageTexts, setPageTexts] = useState(null);
+  const [classes, setClasses] = useState([]);
   const [counselors, setCounselors] = useState([]);
   const [serviceTypes, setServiceTypes] = useState([]);
-  const [sortOption, setSortOption] = useState("commentCount");
+  const [sortOption, setSortOption] = useState("default");
 
   let quantity = 0;
-  const typeValue = useMemo(() => {
+  const subTypeValue = useMemo(() => {
     if (itemType.includes("service")) {
-      return type.includes("-")
-        ? type?.trim().split("-")[1] ?? null
-        : type ?? null;
+      return subType.includes("-")
+        ? subType?.trim().split("-")[1] ?? null
+        : subType ?? null;
     } else if (itemType.includes("counselor")) {
-      return type?.trim().split("-")[0] ?? null;
+      return subType?.trim().split("-")[0] ?? null;
     } else if (itemType.includes("class")) {
-      return type.includes("-")
-        ? type?.trim().split("-").join(" ") ?? null
-        : type ?? null;
+      return subType.includes("-")
+        ? subType?.trim().split("-").join(" ") ?? null
+        : subType ?? null;
     }
 
     return null;
-  }, [itemType, type]);
+  }, [itemType, subType]);
 
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
     setSortOption(newSort);
 
+    if (itemType.includes("class")) getClasses(newSort);
     if (itemType.includes("counselor")) getCounselors(newSort);
     if (itemType.includes("service")) getServiceTypes(newSort);
   };
 
+  const getClasses = useCallback(
+    async (sort = sortOption) => {
+      setIsLoading(true);
+      const datas = await fetchClasses({ sortBy: sort });
+      setClasses(datas);
+      setIsLoading(false);
+    }, [sortOption]
+  );
+
   const getCounselors = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchCounselors({ level: typeValue, sortBy: sort });
+      const datas = await fetchCounselors({ subType: subTypeValue, sortBy: sort });
       setCounselors(datas);
       setIsLoading(false);
-    }, [typeValue, sortOption]
+    }, [subTypeValue, sortOption]
   );
 
   const getServiceTypes = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchServiceTypes({ type: typeValue, sortBy: sort });
+      const datas = await fetchServiceTypes({ subType: subTypeValue, sortBy: sort });
       setServiceTypes(datas);
       setIsLoading(false);
-    }, [typeValue, sortOption]
+    }, [subTypeValue, sortOption]
   );
 
   useEffect(() => {
     const getTitlesAndSubtitles = async () => {
-      const datas = await fetchTitlesAndSubtitles(itemType, typeValue);
+      const datas = await fetchTitlesAndSubtitles(itemType, subTypeValue);
       setPageTexts(datas);
     };
 
-    if (!hasLoadedOnce.current) {
-      hasLoadedOnce.current = true;
-      setSortOption("default");
-      if (itemType.includes("service")) getServiceTypes("default");
-    } else {
-      if (itemType.includes("service")) getServiceTypes();
-    }
-
+    if (itemType.includes("class")) getClasses();
     if (itemType.includes("counselor")) getCounselors();
+    if (itemType.includes("service")) getServiceTypes();
     getTitlesAndSubtitles();
-  }, [itemType, typeValue, getCounselors, getServiceTypes]);
+  }, [itemType, subTypeValue, getClasses, getCounselors, getServiceTypes]);
 
   const pageTitle = pageTexts?.title ?? (itemType.includes("counselor") ? "Expert" : "");
   const pageSubtitle = pageTexts?.description ?? "";
@@ -110,6 +115,14 @@ const ListPage = () => {
           data={counselor}
         />
       ));
+    } else if (itemType.includes("class")) {
+      return classes.map((singleClass) => (
+        <SingleCard
+          key={singleClass.classId}
+          itemType={singleClass.itemType}
+          data={singleClass}
+        />
+      ));
     }
   };
 
@@ -118,6 +131,8 @@ const ListPage = () => {
       quantity = counselors.length;
     } else if (itemType.includes("service")) {
       quantity = serviceTypes.length;
+    } else if (itemType.includes("class")) {
+      quantity = classes.length;
     }
 
     return (
@@ -125,7 +140,9 @@ const ListPage = () => {
         <span>Urutkan berdasarkan : </span>
         <select onChange={handleSortChange}>
           <option value="default">Unggulan</option>
-          <option value="commentCount">Produk Terlaris</option>
+          {!itemType.includes("class") && (
+            <option value="commentCount">Produk Terlaris</option>
+          )}
           <option value="name_asc">Berdasarkan abjad (A-Z)</option>
           <option value="name_desc">Berdasarkan abjad (Z-A)</option>
           <option value="price_asc">

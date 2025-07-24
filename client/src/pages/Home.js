@@ -9,7 +9,7 @@ import CommentBox from "../components/CommentBox.js";
 import QnaSection from "../components/QnaSection.js";
 
 import { fetchHomePageQnas } from "../services/QnaService";
-import { fetchHomePageClasses } from "../services/ClassService.js";
+import { fetchClasses } from "../services/ClassService.js";
 import { fetchHomePageArticles } from "../services/ArticleService.js";
 import { fetchCounselors } from "../services/CounselorService.js";
 import { fetchServiceTypes } from "../services/ServiceTypeService.js";
@@ -39,7 +39,7 @@ const Home = () => {
 };
 
   const getHomePageClasses = async () => {
-    const datas = await fetchHomePageClasses();
+    const datas = await fetchClasses({ limit: 4 });
     setClasses(datas);
   };
 
@@ -54,7 +54,7 @@ const Home = () => {
   };
 
   const getHomePageServiceTypes = async () => {
-    const datas = await fetchServiceTypes({ type: "individual" });
+    const datas = await fetchServiceTypes({ subType: "individual" });
     setServiceTypes(datas);
   };
 

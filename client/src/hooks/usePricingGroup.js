@@ -13,19 +13,19 @@ const buildCounselorInfo = ({ price, counselingDiscountFlag, counselingDiscountP
   counselingDiscountPrice,
 });
 
-export default function usePricingGroup(data, detailData, type) {
+export default function usePricingGroup(data, detailData, itemType) {
   const [pricingMap, setPricingMap] = useState({});
 
   useEffect(() => {
-    if (!data || !detailData || !type) return;
+    if (!data || !detailData || !itemType) return;
 
-    const itemType = detailData?.type?.toLowerCase() || "";
+    const subType = detailData?.subType?.toLowerCase() || "";
     let grouped = {};
 
     const groupIndividuPricing = () =>
       data.reduce((acc, item) => {
-        const { duration, level, location } = item;
-        const levelKey = level.toLowerCase();
+        const { duration, subType, location } = item;
+        const levelKey = subType.toLowerCase();
 
         if (!acc[duration]) acc[duration] = {};
         if (location === null) {
@@ -74,24 +74,24 @@ export default function usePricingGroup(data, detailData, type) {
         return acc;
       }, {});
 
-    if (type.includes("service")) {
-      if (itemType.includes("individu")) {
+    if (itemType.includes("service")) {
+      if (subType.includes("individu")) {
         grouped = groupIndividuPricing();
-      } else if (itemType.includes("pasangan") || itemType.includes("keluarga") ||
-        itemType.includes("theraphy")
+      } else if (subType.includes("pasangan") || subType.includes("keluarga") ||
+        subType.includes("theraphy")
       ) {
         grouped = groupDefaultPricing();
-      } else if (itemType.includes("assessment")) {
+      } else if (subType.includes("assessment")) {
         grouped = groupAssessmentPricing();
-      } else if (itemType.includes("wawancara")) {
+      } else if (subType.includes("wawancara")) {
         grouped = groupWawancaraPricing();
       }
-    } else if (type.includes("counselor")) {
+    } else if (itemType.includes("counselor")) {
       grouped = groupCounselorPricing();
     }
 
     setPricingMap(grouped);
-  }, [data, detailData, type]);
+  }, [data, detailData, itemType]);
 
   return pricingMap;
 }

@@ -12,10 +12,6 @@ const Counselor = sequelize.define('Counselor', {
         autoIncrement: true
     },
     ...sharedColumn,
-    level: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
 }, {
     timestamps: true, // or true if your table has createdAt/updatedAt
 });

@@ -2,8 +2,8 @@ const CounselorService = require("../services/CounselorService");
 
 const getCounselors = async (req, res) => {
   try {
-    const { level, sortBy, limit } = req.query;
-    const datas = await CounselorService.getCounselors({ level, sortBy, limit });
+    const { subType, sortBy, limit } = req.query;
+    const datas = await CounselorService.getCounselors({ subType, sortBy, limit });
 
     if (!datas) {
       return res.status(404).json({ message: "Data not found" });

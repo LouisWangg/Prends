@@ -8,6 +8,6 @@ const ServiceTypeImageController = require("../controllers/ServiceTypeImageContr
 
 // using Multer middleware to process the file
 router.post("/uploadImage/:id", upload.single("image"), ServiceTypeImageController.uploadImage); 
-router.post("/updateImage/:id", upload.single("image"), ServiceTypeImageController.updateImage); 
+router.put("/updateImage/:id", upload.single("image"), ServiceTypeImageController.updateImage); 
 
 module.exports = router;

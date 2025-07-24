@@ -17,7 +17,7 @@ const ServiceTypePrice = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    level: {
+    subType: {
       type: DataTypes.STRING,
       allowNull: true,
     },

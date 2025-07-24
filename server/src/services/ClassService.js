@@ -1,7 +1,35 @@
+const { Op, fn, col, literal } = require("sequelize");
+
 const ClassModel = require("../models/ClassModel");
 
 // Get Class datas for Home page
-const getHomePageClasses = async () => {
+const getClasses = async ({ sortBy = "default", limit = null } = {}) => {
+  const finalPriceLiteral = literal(`
+      CASE 
+      WHEN "discountFlag" = true AND "discountPrice" > 0 
+      THEN "discountPrice" 
+      ELSE "price" 
+      END
+  `);
+
+  let orderClause;
+  switch (sortBy) {
+    case "price_asc":
+      orderClause = [[finalPriceLiteral, "ASC"]];
+      break;
+    case "price_desc":
+      orderClause = [[finalPriceLiteral, "DESC"]];
+      break;
+    case "name_asc":
+      orderClause = [["name", "ASC"]];
+      break;
+    case "name_desc":
+      orderClause = [["name", "DESC"]];
+      break;
+    default:
+      orderClause = [["classId", "DESC"]];
+  }
+
   const datas = await ClassModel.findAll({
     attributes: [
       "classId",
@@ -12,8 +40,8 @@ const getHomePageClasses = async () => {
       "itemType",
       "image"
     ],
-    order: [["createdAt", "DESC"]],
-    limit: 4
+    order: orderClause,
+    limit: limit ? parseInt(limit) : undefined,
   });
 
   // Map results to convert image buffer to base64 string
@@ -40,7 +68,7 @@ const getClassDetailById = async ({ id } = {}) => {
 };
 
 // Upload image by id
-const uploadImage = async ({ id, file } = {}) => {
+const updateImage = async ({ id, file } = {}) => {
   // Upload an image for a specific class
   return await ClassModel.update(
     { image: file.buffer },
@@ -53,7 +81,7 @@ const formatImages = (imageBuffer) => {
 };
 
 module.exports = {
-  getHomePageClasses,
+  getClasses,
   getClassDetailById,
-  uploadImage
+  updateImage
 };

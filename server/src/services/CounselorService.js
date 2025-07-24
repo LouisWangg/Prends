@@ -7,9 +7,9 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
 
-const getCounselors = async ({ level = null, sortBy = "commentCount", limit = null } = {}) => {
+const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = null } = {}) => {
     const whereClause = {};
-    const levelValue = level ? level.charAt(0).toUpperCase() + level.slice(1) : null;
+    const subTypeValue = subType ? subType.charAt(0).toUpperCase() + subType.slice(1) : null;
 
     const finalPriceLiteral = literal(`
         CASE 
@@ -24,8 +24,8 @@ const getCounselors = async ({ level = null, sortBy = "commentCount", limit = nu
         WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId" 
     )`);
 
-    if (levelValue) {
-        whereClause.level = levelValue;
+    if (subTypeValue) {
+        whereClause.subType = subTypeValue;
     }
 
     let orderClause;

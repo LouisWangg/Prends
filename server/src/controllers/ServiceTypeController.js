@@ -3,8 +3,8 @@ const ServiceTypeService = require("../services/ServiceTypeService");
 // Get Service Type datas according to type
 const getServiceTypes = async (req, res) => {
   try {
-    const { type, sortBy } = req.query;
-    const datas = await ServiceTypeService.getServiceTypes({ type, sortBy });
+    const { subType, sortBy } = req.query;
+    const datas = await ServiceTypeService.getServiceTypes({ subType, sortBy });
 
     if (!datas) {
       return res.status(404).json({ message: "Data not found" });

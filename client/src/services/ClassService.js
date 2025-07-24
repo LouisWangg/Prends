@@ -3,9 +3,11 @@ import axios from "axios";
 const url = "http://localhost:5000/classes";
 
 // Get Class datas for Home page
-export const fetchHomePageClasses = async () => {
+export const fetchClasses = async ({ sortBy = "default", limit = null } = {}) => {
   try {
-    const response = await axios.get(`${url}/getHomePageClasses`);
+    const response = await axios.get(`${url}/getClasses`, {
+      params: { sortBy, limit }
+    });
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Class datas: `, error?.message || error);
