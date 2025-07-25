@@ -13,7 +13,7 @@ import { fetchServiceTypes } from "../services/ServiceTypeService.js";
 import { fetchTitlesAndSubtitles } from "../services/SharedDescriptionService.js";
 
 const ListPage = () => {
-  const { itemType, subType } = useParams();
+  const { type, subType } = useParams();
   const [isLoading, setIsLoading] = useState(true);
 
   const [pageTexts, setPageTexts] = useState(null);
@@ -24,37 +24,37 @@ const ListPage = () => {
 
   let quantity = 0;
   const subTypeValue = useMemo(() => {
-    if (itemType.includes("service")) {
+    if (type.includes("service")) {
       return subType.includes("-")
         ? subType?.trim().split("-")[1] ?? null
         : subType ?? null;
-    } else if (itemType.includes("counselor")) {
+    } else if (type.includes("counselor")) {
       return subType?.trim().split("-")[0] ?? null;
-    } else if (itemType.includes("class")) {
-      return subType.includes("-")
-        ? subType?.trim().split("-").join(" ") ?? null
-        : subType ?? null;
+    } else if (type.includes("class")) {
+      return subType
+        ? subType.replace(/kelas/gi, "").replace(/[-\s]+/g, " ").trim() || null
+        : null;
     }
 
     return null;
-  }, [itemType, subType]);
+  }, [type, subType]);
 
   const handleSortChange = async (e) => {
     const newSort = e.target.value;
     setSortOption(newSort);
 
-    if (itemType.includes("class")) getClasses(newSort);
-    if (itemType.includes("counselor")) getCounselors(newSort);
-    if (itemType.includes("service")) getServiceTypes(newSort);
+    if (type.includes("class")) getClasses(newSort);
+    if (type.includes("counselor")) getCounselors(newSort);
+    if (type.includes("service")) getServiceTypes(newSort);
   };
 
   const getClasses = useCallback(
     async (sort = sortOption) => {
       setIsLoading(true);
-      const datas = await fetchClasses({ sortBy: sort });
+      const datas = await fetchClasses({ subType: subTypeValue, sortBy: sort });
       setClasses(datas);
       setIsLoading(false);
-    }, [sortOption]
+    }, [subTypeValue, sortOption]
   );
 
   const getCounselors = useCallback(
@@ -77,17 +77,17 @@ const ListPage = () => {
 
   useEffect(() => {
     const getTitlesAndSubtitles = async () => {
-      const datas = await fetchTitlesAndSubtitles(itemType, subTypeValue);
+      const datas = await fetchTitlesAndSubtitles(type, subTypeValue);
       setPageTexts(datas);
     };
 
-    if (itemType.includes("class")) getClasses();
-    if (itemType.includes("counselor")) getCounselors();
-    if (itemType.includes("service")) getServiceTypes();
+    if (type.includes("class")) getClasses();
+    if (type.includes("counselor")) getCounselors();
+    if (type.includes("service")) getServiceTypes();
     getTitlesAndSubtitles();
-  }, [itemType, subTypeValue, getClasses, getCounselors, getServiceTypes]);
+  }, [type, subTypeValue, getClasses, getCounselors, getServiceTypes]);
 
-  const pageTitle = pageTexts?.title ?? (itemType.includes("counselor") ? "Expert" : "");
+  const pageTitle = pageTexts?.title ?? (type.includes("counselor") ? "Expert" : "");
   const pageSubtitle = pageTexts?.description ?? "";
 
   const renderDescription = () => {
@@ -99,27 +99,27 @@ const ListPage = () => {
   };
 
   const renderSingleCard = () => {
-    if (itemType.includes("service")) {
+    if (type.includes("service")) {
       return serviceTypes.map((serviceType) => (
         <SingleCard
           key={serviceType.serviceTypeId}
-          itemType={serviceType.itemType}
+          type={serviceType.type}
           data={serviceType}
         />
       ));
-    } else if (itemType.includes("counselor")) {
+    } else if (type.includes("counselor")) {
       return counselors.map((counselor) => (
         <SingleCard
           key={counselor.counselorId}
-          itemType={counselor.itemType}
+          type={counselor.type}
           data={counselor}
         />
       ));
-    } else if (itemType.includes("class")) {
+    } else if (type.includes("class")) {
       return classes.map((singleClass) => (
         <SingleCard
           key={singleClass.classId}
-          itemType={singleClass.itemType}
+          type={singleClass.type}
           data={singleClass}
         />
       ));
@@ -127,11 +127,11 @@ const ListPage = () => {
   };
 
   const renderFilter = () => {
-    if (itemType.includes("counselor")) {
+    if (type.includes("counselor")) {
       quantity = counselors.length;
-    } else if (itemType.includes("service")) {
+    } else if (type.includes("service")) {
       quantity = serviceTypes.length;
-    } else if (itemType.includes("class")) {
+    } else if (type.includes("class")) {
       quantity = classes.length;
     }
 
@@ -140,7 +140,7 @@ const ListPage = () => {
         <span>Urutkan berdasarkan : </span>
         <select onChange={handleSortChange}>
           <option value="default">Unggulan</option>
-          {!itemType.includes("class") && (
+          {!type.includes("class") && (
             <option value="commentCount">Produk Terlaris</option>
           )}
           <option value="name_asc">Berdasarkan abjad (A-Z)</option>

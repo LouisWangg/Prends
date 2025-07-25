@@ -1,9 +1,11 @@
 const { Op, fn, col, literal } = require("sequelize");
 
+const { convertImageSameField } = require("../utils/ConvertImage");
+
 const ClassModel = require("../models/ClassModel");
 
 // Get Class datas for Home page
-const getClasses = async ({ sortBy = "default", limit = null } = {}) => {
+const getClasses = async ({ subType = null, sortBy = "default", limit = null } = {}) => {
   const finalPriceLiteral = literal(`
       CASE 
       WHEN "discountFlag" = true AND "discountPrice" > 0 
@@ -37,20 +39,21 @@ const getClasses = async ({ sortBy = "default", limit = null } = {}) => {
       "price",
       "discountFlag",
       "discountPrice",
-      "itemType",
+      "type",
       "image"
     ],
+    where: subType
+      ? {
+        subType: {
+          [Op.iLike]: `%${subType}%`,
+        },
+      } : undefined,
     order: orderClause,
     limit: limit ? parseInt(limit) : undefined,
   });
 
   // Map results to convert image buffer to base64 string
-  const response = datas.map((item) => {
-    const plain = item.get({ plain: true });
-    plain.image = formatImages(plain.image);
-
-    return plain;
-  });
+  const response = convertImageSameField(datas, "image");
 
   return response;
 };
@@ -61,8 +64,7 @@ const getClassDetailById = async ({ id } = {}) => {
 
   if (!data) return null;
 
-  const convertedData = data.get({ plain: true });
-  convertedData.image = formatImages(convertedData.image);
+  const [convertedData] = convertImageSameField([data], "image");
 
   return convertedData;
 };
@@ -76,12 +78,8 @@ const updateImage = async ({ id, file } = {}) => {
   );
 };
 
-const formatImages = (imageBuffer) => {
-  return imageBuffer ? imageBuffer.toString("base64") : null;
-};
-
 module.exports = {
   getClasses,
   getClassDetailById,
-  updateImage
+  updateImage,
 };

@@ -1,11 +1,12 @@
 const { Op, fn, col, literal } = require("sequelize");
 
+const { convertImages } = require("../utils/ConvertImage");
+
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
 
 const getServiceTypes = async ({ subType = null, sortBy = null }) => {
-  const subTypeValue = subType ? subType : null;
   const finalPriceLiteral = literal(`
     CASE 
       WHEN "discountFlag" = true AND "discountPrice" > 0 
@@ -42,14 +43,14 @@ const getServiceTypes = async ({ subType = null, sortBy = null }) => {
       "price",
       "discountFlag",
       "discountPrice",
-      "itemType",
+      "type",
       "subType",
       [fn("COUNT", col("ServiceTypeComments.serviceTypeCommentId")), "commentCount"]
     ],
-    where: subTypeValue
+    where: subType
       ? {
         subType: {
-          [Op.iLike]: `%${subTypeValue}%`,
+          [Op.iLike]: `%${subType}%`,
         },
       } : undefined,
     include: [
@@ -71,21 +72,7 @@ const getServiceTypes = async ({ subType = null, sortBy = null }) => {
 
   if (!datas) return null;
 
-  // Convert image buffer and count to plain objects
-  const convertedDatas = datas.map((item) => {
-    const plain = item.get({ plain: true });
-
-    if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-      plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-        ...img,
-        image: img.image ? img.image.toString("base64") : null,
-      }));
-    }
-
-    return plain;
-  });
-
-  return convertedDatas;
+  return convertImages(datas, "ServiceTypeImages");
 };
 
 // Get Service detail data by Id
@@ -101,21 +88,7 @@ const getServiceDetailById = async ({ id } = {}) => {
 
   if (!data) return null;
 
-  const convertedData = data.get({ plain: true });
-
-  if (
-    convertedData.ServiceTypeImages &&
-    convertedData.ServiceTypeImages.length > 0
-  ) {
-    convertedData.ServiceTypeImages = convertedData.ServiceTypeImages.map(
-      (img) => ({
-        ...img,
-        image: img.image ? img.image.toString("base64") : null,
-      })
-    );
-  }
-
-  return convertedData;
+  return convertImages(data, "ServiceTypeImages");
 };
 
 module.exports = {

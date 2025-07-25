@@ -2,8 +2,8 @@ const SharedDescriptionService = require("../services/SharedDescriptionService")
 
 const getDescriptionsAndNotices = async (req, res) => {
   try {
-    const { itemType, id, subType } = req.query;
-    const result = await SharedDescriptionService.getDescriptionsAndNotices({ itemType, id, subType });
+    const { type, id, subType } = req.query;
+    const result = await SharedDescriptionService.getDescriptionsAndNotices({ type, id, subType });
     res.json(result);
   } catch (error) {
     console.error(error.message);
@@ -13,8 +13,8 @@ const getDescriptionsAndNotices = async (req, res) => {
 
 const getTitlesAndSubtitles = async (req, res) => {
   try {
-    const { itemType, subType } = req.query;
-    const result = await SharedDescriptionService.getTitlesAndSubtitles({ itemType, subType });
+    const { type, subType } = req.query;
+    const result = await SharedDescriptionService.getTitlesAndSubtitles({ type, subType });
     res.json(result);
   } catch (error) {
     console.error(error.message);

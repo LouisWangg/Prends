@@ -7,11 +7,11 @@ import "./SingleCard.css";
 import "./ArticleCard.css";
 import formatToRupiah from "../utils/FormatPrice";
 
-const SingleCard = ({ itemType, data }) => {
+const SingleCard = ({ type, data }) => {
   const navigate = useNavigate();
 
   let id, imageData, singleCardContent;
-  const lowerCaseType = itemType.toLowerCase();
+  const lowerCaseType = type.toLowerCase();
   const singleCard = data;
 
   if (lowerCaseType.includes("service")) {

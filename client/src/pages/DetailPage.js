@@ -14,11 +14,12 @@ import formatToRupiah from "../utils/FormatPrice";
 import usePricingGroup from "../hooks/usePricingGroup";
 
 import Option from "../components/Option";
+import Pagination from "../components/Pagination";
+import SingleCard from "../components/SingleCard";
+import HomeSection from "../components/HomeSection";
 import Description from "../components/Description";
 import CommentSection from "../components/CommentSection";
-import Pagination from "../components/Pagination";
-import HomeSection from "../components/HomeSection";
-import SingleCard from "../components/SingleCard";
+import ProfileImageSwitcher from "../components/ProfileImageSwitcher";
 
 import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
@@ -34,7 +35,7 @@ import { fetchCounselorCommentsById } from "../services/CounselorCommentService"
 import { fetchCounselorRecommendations } from "../services/RecommendationService";
 
 const DetailPage = () => {
-  const { itemType, id } = useParams();
+  const { type, id } = useParams();
 
   const [duration, setDuration] = useState(1);
   const [audienceQuantity, setAudienceQuantity] = useState(1);
@@ -60,11 +61,11 @@ const DetailPage = () => {
   const hasSetSecondDefaults = useRef(false);
   const detailType = detailData?.subType?.toLowerCase?.() || "";
 
-  const pricingMap = usePricingGroup(pricingData, detailData, itemType);
+  const pricingMap = usePricingGroup(pricingData, detailData, type);
 
   let isLocationBased = null;
   let discountFlag, undiscountedPrice, discountedPrice;
-  if (itemType.includes("service")) {
+  if (type.includes("service")) {
     if (detailType?.includes("individu")) {
       isLocationBased =
         typeof pricingMap[duration]?.[level]?.[
@@ -97,11 +98,11 @@ const DetailPage = () => {
       discountedPrice = pricingMap?.[duration]?.[counselingType]?.[targetAudience]?.serviceDiscountPrice;
     }
 
-  } else if (itemType.includes("counselor")) {
+  } else if (type.includes("counselor")) {
     discountFlag = pricingMap?.[duration]?.[counselingType]?.counselingDiscountFlag;
     undiscountedPrice = pricingMap?.[duration]?.[counselingType]?.price;
     discountedPrice = pricingMap?.[duration]?.[counselingType]?.counselingDiscountPrice;
-  } else if (itemType.includes("class")) {
+  } else if (type.includes("class")) {
     discountFlag = detailData?.discountFlag;
     undiscountedPrice = detailData?.price;
     discountedPrice = detailData.discountPrice;
@@ -130,13 +131,13 @@ const DetailPage = () => {
   );
 
   const getRecommendationKey = (item) => {
-    switch (item.itemType) {
+    switch (item.type) {
       case "service":
         return `service-${item.serviceTypeId}`;
       case "counselor":
         return `counselor-${item.counselorId}`;
       default:
-        return `${item.itemType}-${Math.random()}`; // safe fallback
+        return `${item.type}-${Math.random()}`; // safe fallback
     }
   };
 
@@ -207,16 +208,16 @@ const DetailPage = () => {
   const getCommentData = useCallback(
     async (sort = sortOption) => {
       let datas;
-      if (itemType.includes("service")) {
+      if (type.includes("service")) {
         datas = await fetchServiceCommentsById({ id, sort });
-      } else if (itemType.includes("counselor")) {
+      } else if (type.includes("counselor")) {
         datas = await fetchCounselorCommentsById({ id, sort });
       }
 
       setComments(datas.datas);
       setCommentCount(datas.counts);
     },
-    [itemType, id, sortOption]
+    [type, id, sortOption]
   );
 
   //Reset states
@@ -238,32 +239,32 @@ const DetailPage = () => {
     setRecommendations([]);
     //scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id, itemType]);
+  }, [id, type]);
 
   //First, fetch detail data only
   useEffect(() => {
     const getDetailData = async () => {
       let data;
 
-      if (itemType.includes("service")) {
+      if (type.includes("service")) {
         data = await fetchServiceDetailById(id);
-      } else if (itemType.includes("class")) {
+      } else if (type.includes("class")) {
         data = await fetchClassDetailById(id);
-      } else if (itemType.includes("counselor")) {
+      } else if (type.includes("counselor")) {
         data = await fetchCounselorDetailById(id);
-      } else if (itemType.includes("article")) {
+      } else if (type.includes("article")) {
         // data = await fetchArticleById(id);
       }
       setDetailData(data);
     };
 
     getDetailData();
-  }, [itemType, id]);
+  }, [type, id]);
 
   //Second, detail data used to fetch another data
   useEffect(() => {
-    if ((itemType.includes("counselor") && !detailData?.subType)
-      || (itemType.includes("service") && !detailData?.subType)) {
+    if ((type.includes("counselor") && !detailData?.subType)
+      || (type.includes("service") && !detailData?.subType)) {
       return;
     }
 
@@ -271,24 +272,24 @@ const DetailPage = () => {
       const getDescriptionsAndNotices = async () => {
         let subType;
 
-        if (itemType.includes("service")) {
+        if (type.includes("service")) {
           subType = detailData?.subType;
-        } else if (itemType.includes("counselor")) {
+        } else if (type.includes("counselor")) {
           subType = detailData?.subType;
         } else {
           subType = undefined;
         }
 
-        const datas = await fetchDescriptionsAndNotices(itemType, id, subType);
+        const datas = await fetchDescriptionsAndNotices(type, id, subType);
         setDescriptions(datas.descriptions);
         setNotices(datas.notices);
       };
 
       const getPricingData = async () => {
-        if (itemType.includes("service")) {
+        if (type.includes("service")) {
           const data = await fetchServicePricingById(id);
           setPricingData(data);
-        } else if (itemType.includes("counselor")) {
+        } else if (type.includes("counselor")) {
           const data = await fetchCounselorPricingById(id);
           setPricingData(data);
         }
@@ -297,16 +298,16 @@ const DetailPage = () => {
       const getRecommendationData = async () => {
         let datas;
 
-        if (itemType.includes("service") || itemType.includes("class")) {
+        if (type.includes("service") || type.includes("class")) {
           datas = await fetchIndividualCounselingRecommendations(id, "Individual");
-        } else if (itemType.includes("counselor")) {
+        } else if (type.includes("counselor")) {
           datas = await fetchCounselorRecommendations(id, detailData.subType);
         }
         setRecommendations(datas);
       };
 
       await getDescriptionsAndNotices();
-      if (itemType.includes("service") || itemType.includes("counselor")) {
+      if (type.includes("service") || type.includes("counselor")) {
         getPricingData();
         getCommentData();
       }
@@ -314,7 +315,7 @@ const DetailPage = () => {
     };
 
     load();
-  }, [itemType, id, detailData, getCommentData]);
+  }, [type, id, detailData, getCommentData]);
 
   //Fourth, set Options value once pricingMap is ready
   useEffect(() => {
@@ -326,19 +327,19 @@ const DetailPage = () => {
       if (firstLevel) setLevel(firstLevel);
     }
 
-    if (itemType.includes("service") && isLocationBased) {
+    if (type.includes("service") && isLocationBased) {
       const levelMap = pricingMap[duration]?.[level] || {};
       const firstLocation = Object.keys(levelMap)[0];
       if (firstLocation) setLocationValue(firstLocation);
     }
 
-    if (itemType.includes("counselor") || (itemType.includes("service") && !detailType?.includes("individu"))) {
+    if (type.includes("counselor") || (type.includes("service") && !detailType?.includes("individu"))) {
       const firstType = Object.keys(pricingMap[duration] || {})[0];
       if (firstType) setCounselingType(firstType);
     }
 
     hasSetDefaults.current = true;
-  }, [pricingMap, duration, itemType, detailType, level, isLocationBased]);
+  }, [pricingMap, duration, type, detailType, level, isLocationBased]);
 
   //Fifth, set value only for the Target Audience since it use Counseling Type
   useEffect(() => {
@@ -360,46 +361,60 @@ const DetailPage = () => {
 
 
   const renderImage = () => {
-    if (itemType.includes("service")) {
-      return (
-        <div className="detailPageImage">
-          <img
-            src={
-              detailData?.ServiceTypeImages?.[0]?.image
-                ? `data:image/jpeg;base64,${detailData.ServiceTypeImages[0].image}`
-                : null
-            }
-            alt={detailData.name}
-          />
-        </div>
-      );
-    } else if (itemType.includes("class")) {
-      return (
-        <div className="detailPageImage">
-          <img
-            src={
-              detailData?.image
-                ? `data:image/jpeg;base64,${detailData.image}`
-                : null
-            }
-            alt={detailData.name}
-          />
-        </div>
-      );
-    } else if (itemType.includes("counselor")) {
-      return (
-        <div className="detailPageImage">
-          <img
-            src={
-              detailData?.CounselorImages?.[0]?.image
-                ? `data:image/jpeg;base64,${detailData.CounselorImages[0].image}`
-                : null
-            }
-            alt={detailData.name}
-          />
-        </div>
-      );
+    let images;
+
+    if (type.includes("service")) {
+      images = detailData?.ServiceTypeImages?.map((img) => img.image) || [];
+    } else if (type.includes("class")) {
+      images = detailData?.image ? detailData.image : null;
+    } else if (type.includes("counselor")) {
+      images = detailData?.CounselorImages?.map((img) => img.image) || [];
     }
+
+    return (
+      <ProfileImageSwitcher images={images} />
+    );
+
+    // if (type.includes("service")) {
+    //   return (
+    //     <div className="detailPageImage">
+    //       <img
+    //         src={
+    //           detailData?.ServiceTypeImages?.[0]?.image
+    //             ? `data:image/jpeg;base64,${detailData.ServiceTypeImages[0].image}`
+    //             : null
+    //         }
+    //         alt={detailData.name}
+    //       />
+    //     </div>
+    //   );
+    // } else if (type.includes("class")) {
+    //   return (
+    //     <div className="detailPageImage">
+    //       <img
+    //         src={
+    //           detailData?.image
+    //             ? `data:image/jpeg;base64,${detailData.image}`
+    //             : null
+    //         }
+    //         alt={detailData.name}
+    //       />
+    //     </div>
+    //   );
+    // } else if (type.includes("counselor")) {
+    //   return (
+    //     <div className="detailPageImage">
+    //       <img
+    //         src={
+    //           detailData?.CounselorImages?.[0]?.image
+    //             ? `data:image/jpeg;base64,${detailData.CounselorImages[0].image}`
+    //             : null
+    //         }
+    //         alt={detailData.name}
+    //       />
+    //     </div>
+    //   );
+    // }
   };
 
   const renderRating = () => {
@@ -442,7 +457,7 @@ const DetailPage = () => {
     const durationLabel = (detailData?.name?.toLowerCase?.().includes("naomi") && detailType?.includes("pasangan")) ||
       detailType?.includes("keluarga") || detailType?.includes("wawancara");
 
-    if ((itemType.includes("service") && !detailType?.includes("assessment")) || itemType.includes("counselor")) {
+    if ((type.includes("service") && !detailType?.includes("assessment")) || type.includes("counselor")) {
       return (
         <Option
           title={durationTitle}
@@ -496,7 +511,7 @@ const DetailPage = () => {
   };
 
   const renderLocationOption = () => {
-    if (itemType.includes("service") && isLocationBased) {
+    if (type.includes("service") && isLocationBased) {
       return (
         <Option
           title="Lokasi"
@@ -536,15 +551,15 @@ const DetailPage = () => {
         ? "Sesi"
         : "Jenis Konseling";
 
-    if (itemType.includes("counselor") ||
-      (itemType.includes("service") && !detailType?.includes("individu") && !detailType?.includes("assessment"))) {
+    if (type.includes("counselor") ||
+      (type.includes("service") && !detailType?.includes("individu") && !detailType?.includes("assessment"))) {
       return (
         <Option
           title={counselingTypeTitle}
           name="counselingType"
           selected={counselingType}
           options={Object.fromEntries(
-            Object.keys(pricingMap[duration] || {}).map((itemType) => [itemType, itemType])
+            Object.keys(pricingMap[duration] || {}).map((type) => [type, type])
           )}
           onChange={handleCounselingTypeChange}
         />
@@ -554,7 +569,7 @@ const DetailPage = () => {
   };
 
   const renderDescription = () => {
-    if (!itemType.includes("class")) {
+    if (!type.includes("class")) {
       return (
         <>
           {detailType?.includes("pasangan") && detailData?.description?.trim?.() !== "" && (
@@ -779,7 +794,7 @@ const DetailPage = () => {
           {recommendations.map((recommendation) => (
             <SingleCard
               key={getRecommendationKey(recommendation)}
-              itemType={recommendation.itemType}
+              type={recommendation.type}
               data={recommendation}
               style={{ margin: "0px" }}
             />

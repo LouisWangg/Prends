@@ -1,6 +1,9 @@
+const { Op, fn, col, literal } = require("sequelize");
+
 const sequelize = require("../config/database");
 
-const { Op, fn, col, literal } = require("sequelize");
+const { convertImages } = require("../utils/ConvertImage");
+
 const CounselorModel = require("../models/CounselorModel");
 const CounselorImageModel = require("../models/CounselorImageModel");
 
@@ -8,9 +11,6 @@ const CounselorImageModel = require("../models/CounselorImageModel");
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
 
 const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = null } = {}) => {
-    const whereClause = {};
-    const subTypeValue = subType ? subType.charAt(0).toUpperCase() + subType.slice(1) : null;
-
     const finalPriceLiteral = literal(`
         CASE 
         WHEN "discountFlag" = true AND "discountPrice" > 0 
@@ -23,10 +23,6 @@ const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = 
         SELECT COUNT(*) FROM "CounselorComments" 
         WHERE "CounselorComments"."counselorId" = "Counselor"."counselorId" 
     )`);
-
-    if (subTypeValue) {
-        whereClause.subType = subTypeValue;
-    }
 
     let orderClause;
     switch (sortBy) {
@@ -55,7 +51,12 @@ const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = 
                 [commentCountLiteral, "commentCount"],
             ],
         },
-        where: whereClause,
+        where: subType
+            ? {
+                subType: {
+                    [Op.iLike]: `%${subType}%`,
+                },
+            } : undefined,
         include: [
             {
                 model: CounselorImageModel,
@@ -67,14 +68,7 @@ const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = 
     });
 
     // Convert image buffers to base64
-    return counselors.map((c) => {
-        const plain = c.get({ plain: true });
-        plain.CounselorImages = (plain.CounselorImages || []).map((img) => ({
-            ...img,
-            image: img.image ? img.image.toString("base64") : null,
-        }));
-        return plain;
-    });
+    return convertImages(counselors, "CounselorImages");
 };
 
 // Get Counselor detail data by Id
@@ -86,13 +80,7 @@ const getCounselorDetailById = async ({ id } = {}) => {
 
         if (!data) return null;
 
-        const converted = data.get({ plain: true });
-        converted.CounselorImages = (converted.CounselorImages || []).map((img) => ({
-            ...img,
-            image: img.image ? img.image.toString("base64") : null,
-        }));
-
-        return converted;
+        return convertImages(data, "CounselorImages");
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error on getCounselorDetailById");

@@ -1,5 +1,7 @@
 const { Op, Sequelize } = require("sequelize");
 
+const { convertImages } = require("../utils/ConvertImage");
+
 const CounselorModel = require("../models/CounselorModel");
 const CounselorImageModel = require("../models/CounselorImageModel");
 const ServiceTypeModel = require("../models/ServiceTypeModel");
@@ -17,7 +19,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType",
+            "type",
             "subType",
         ],
         where: {
@@ -29,19 +31,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
         limit: serviceLimit,
     });
 
-    const convertedServiceTypes = serviceTypes.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-            // Assuming one image per serviceType, take the first image buffer
-            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedServiceTypes = convertImages(serviceTypes, "ServiceTypeImages");
 
     const counselors = await CounselorModel.findAll({
         attributes: [
@@ -50,7 +40,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType"
+            "type"
         ],
         where: {
             subType: "Senior",
@@ -61,19 +51,7 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
         limit: counselorLimit
     });
 
-    const convertedCounselors = counselors.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-            // Assuming one image per serviceType, take the first image buffer
-            plain.CounselorImages = plain.CounselorImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedCounselors = convertImages(counselors, "CounselorImages");
 
     // No need to shuffle combined — services are first, counselors later
     return [...convertedServiceTypes, ...convertedCounselors];
@@ -87,7 +65,7 @@ const getCounselorRecommendations = async ({ excludeId, subType }) => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType"
+            "type"
         ],
         where: {
             ...(subType && { subType }),
@@ -98,18 +76,7 @@ const getCounselorRecommendations = async ({ excludeId, subType }) => {
         limit: 4
     });
 
-    const convertedSameSubTypeCounselors = sameSubTypeCounselors.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-            plain.CounselorImages = plain.CounselorImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedSameSubTypeCounselors = convertImages(sameSubTypeCounselors, "CounselorImages");
 
     // If enough same-subType counselors, return
     if (convertedSameSubTypeCounselors.length == 4) return convertedSameSubTypeCounselors;
@@ -124,7 +91,7 @@ const getCounselorRecommendations = async ({ excludeId, subType }) => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType"
+            "type"
         ],
         where: {
             subType: "Senior",
@@ -135,18 +102,7 @@ const getCounselorRecommendations = async ({ excludeId, subType }) => {
         limit: remainingCounselors
     });
 
-    const convertedSeniorCounselors = seniorCounselors.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-            plain.CounselorImages = plain.CounselorImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedSeniorCounselors = convertImages(seniorCounselors, "CounselorImages");
 
     return [...convertedSameSubTypeCounselors, ...convertedSeniorCounselors];
 };
@@ -159,7 +115,7 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) =>
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType",
+            "type",
             "subType",
         ],
         where: {
@@ -171,18 +127,7 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) =>
         limit: 4,
     });
 
-    const convertedCoupleTypes = coupleTypes.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedCoupleTypes = convertImages(coupleTypes, "ServiceTypeImages");
 
     if (convertedCoupleTypes.length == 4) return convertedCoupleTypes;
 
@@ -195,7 +140,7 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) =>
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType",
+            "type",
             "subType",
         ],
         where: {
@@ -207,23 +152,12 @@ const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) =>
         limit: remainingServiceTypes
     });
 
-    const convertedFamilyTypes = familyTypes.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedFamilyTypes = convertImages(serviceTypes, "ServiceTypeImages");
 
     return [...convertedCoupleTypes, ...convertedFamilyTypes];
 };
 
-const getAssessmentRecommendations = async ({ excludeId } = {}) => {
+const getDeboraAssessmentRecommendations = async ({ excludeId } = {}) => {
     const familyTypes = await ServiceTypeModel.findAll({
         attributes: [
             "serviceTypeId",
@@ -231,10 +165,13 @@ const getAssessmentRecommendations = async ({ excludeId } = {}) => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType",
+            "type",
             "subType",
         ],
         where: {
+            name: {
+                [Op.iLike]: `%debora%`
+            },
             subType: "Keluarga",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
@@ -243,18 +180,7 @@ const getAssessmentRecommendations = async ({ excludeId } = {}) => {
         limit: 4,
     });
 
-    const convertedFamilyTypes = familyTypes.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedFamilyTypes = convertImages(serviceTypes, "ServiceTypeImages");
 
     if (convertedFamilyTypes.length == 4) return convertedFamilyTypes;
 
@@ -267,7 +193,7 @@ const getAssessmentRecommendations = async ({ excludeId } = {}) => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType"
+            "type"
         ],
         include: [{ model: CounselorImageModel, attributes: ["image"] }],
         order: Sequelize.literal("RANDOM()"),
@@ -277,20 +203,65 @@ const getAssessmentRecommendations = async ({ excludeId } = {}) => {
     // Step 2: Sort manually in JS
     const sortedCounselors = counselors.sort((a, b) => a.counselorId - b.counselorId);
 
-    const convertedCounselors = sortedCounselors.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-            plain.CounselorImages = plain.CounselorImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedCounselors = convertImages(sortedCounselors, "CounselorImages");
 
     return [...convertedFamilyTypes, ...convertedCounselors];
+};
+
+
+
+const getShanenClassRecommendations = async ({ excludeId } = {}) => {
+    const coupleTypes = await ServiceTypeModel.findAll({
+        attributes: [
+            "serviceTypeId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "type",
+            "subType",
+        ],
+        where: {
+            name: {
+                [Op.iLike]: `%shanen%`
+            },
+            subType: "Pasangan",
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
+        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: 4,
+    });
+
+    const convertedCoupleTypes = convertImages(coupleTypes, "ServiceTypeImages");
+
+    if (convertedCoupleTypes.length == 4) return convertedCoupleTypes;
+
+    const remainingCounselors = 4 - convertedCoupleTypes.length;
+
+    const counselors = await CounselorModel.findAll({
+        attributes: [
+            "counselorId",
+            "name",
+            "price",
+            "discountFlag",
+            "discountPrice",
+            "type"
+        ],
+        where: {
+            subType: "Senior"
+        },
+        include: [{ model: CounselorImageModel, attributes: ["image"] }],
+        order: Sequelize.literal("RANDOM()"),
+        limit: remainingCounselors
+    });
+
+    // Step 2: Sort manually in JS
+    const sortedCounselors = counselors.sort((a, b) => a.counselorId - b.counselorId);
+
+    const convertedCounselors = convertImages(sortedCounselors, "CounselorImages");
+
+    return [...convertedCoupleTypes, ...convertedCounselors];
 };
 
 const getSeniorCounselorRecommendations = async () => {
@@ -301,7 +272,7 @@ const getSeniorCounselorRecommendations = async () => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType"
+            "type"
         ],
         where: {
             subType: "Senior",
@@ -311,18 +282,7 @@ const getSeniorCounselorRecommendations = async () => {
         limit: 4,
     });
 
-    const convertedSeniorCounselors = seniorCounselors.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.CounselorImages && plain.CounselorImages.length > 0) {
-            plain.CounselorImages = plain.CounselorImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedSeniorCounselors = convertImages(seniorCounselors, "CounselorImages");
 
     return [...convertedSeniorCounselors];
 };
@@ -335,7 +295,7 @@ const getInterviewRecommendations = async ({ excludeId, type }) => {
             "price",
             "discountFlag",
             "discountPrice",
-            "itemType",
+            "type",
             "subType",
         ],
         where: {
@@ -347,29 +307,16 @@ const getInterviewRecommendations = async ({ excludeId, type }) => {
         limit: serviceLimit,
     });
 
-    const convertedServiceTypes = serviceTypes.map((item) => {
-        const plain = item.get({ plain: true });
-
-        if (plain.ServiceTypeImages && plain.ServiceTypeImages.length > 0) {
-            // Assuming one image per serviceType, take the first image buffer
-            plain.ServiceTypeImages = plain.ServiceTypeImages.map((img) => ({
-                ...img,
-                image: img.image ? img.image.toString("base64") : null,
-            }));
-        }
-
-        return plain;
-    });
+    const convertedServiceTypes = convertImages(serviceTypes, "ServiceTypeImages");
 
     return [...convertedServiceTypes];
 };
-
 
 module.exports = {
     getIndividualCounselingRecommendations,
     getCounselorRecommendations,
     getCoupleAndFamilyRecommendations,
-    getAssessmentRecommendations,
+    getDeboraAssessmentRecommendations,
     getSeniorCounselorRecommendations,
     getInterviewRecommendations,
 };

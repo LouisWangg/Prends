@@ -2,8 +2,8 @@ const ClassService = require("../services/ClassService");
 
 const getClasses = async (req, res) => {
   try {
-    const { sortBy, limit } = req.query;
-    const response = await ClassService.getClasses({ sortBy, limit });
+    const { subType, sortBy, limit } = req.query;
+    const response = await ClassService.getClasses({ subType, sortBy, limit });
 
     if (!response) {
       return res.status(404).json({ message: "Data not found" });

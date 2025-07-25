@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import trimmingDash from "../utils/TrimDash";
+import trimmingDash from "../utils/TrimDash"; 
 
 const buildServiceInfo = ({ price, serviceDiscountFlag, serviceDiscountPrice }) => ({
   price,
@@ -13,11 +13,11 @@ const buildCounselorInfo = ({ price, counselingDiscountFlag, counselingDiscountP
   counselingDiscountPrice,
 });
 
-export default function usePricingGroup(data, detailData, itemType) {
+export default function usePricingGroup(data, detailData, type) {
   const [pricingMap, setPricingMap] = useState({});
 
   useEffect(() => {
-    if (!data || !detailData || !itemType) return;
+    if (!data || !detailData || !type) return;
 
     const subType = detailData?.subType?.toLowerCase() || "";
     let grouped = {};
@@ -74,7 +74,7 @@ export default function usePricingGroup(data, detailData, itemType) {
         return acc;
       }, {});
 
-    if (itemType.includes("service")) {
+    if (type.includes("service")) {
       if (subType.includes("individu")) {
         grouped = groupIndividuPricing();
       } else if (subType.includes("pasangan") || subType.includes("keluarga") ||
@@ -86,12 +86,12 @@ export default function usePricingGroup(data, detailData, itemType) {
       } else if (subType.includes("wawancara")) {
         grouped = groupWawancaraPricing();
       }
-    } else if (itemType.includes("counselor")) {
+    } else if (type.includes("counselor")) {
       grouped = groupCounselorPricing();
     }
 
     setPricingMap(grouped);
-  }, [data, detailData, itemType]);
+  }, [data, detailData, type]);
 
   return pricingMap;
 }

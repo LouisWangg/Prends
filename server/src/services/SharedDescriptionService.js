@@ -123,7 +123,7 @@ const formatTitleFromType = (type) => {
 };
 
 // Get Description and Notice datas for Detail page
-const getDescriptionsAndNotices = async ({ itemType, id, subType } = {}) => {
+const getDescriptionsAndNotices = async ({ type, id, subType } = {}) => {
   const idNum = parseInt(id);
   const subTypeValue = subType?.toLowerCase();
   if (!subTypeValue) return { descriptions: [], notices: [] };
@@ -131,16 +131,16 @@ const getDescriptionsAndNotices = async ({ itemType, id, subType } = {}) => {
   let descriptionIds = [];
   let noticeIds = [];
 
-  if (itemType.includes("service")) {
+  if (type.includes("service")) {
     const dataFound = serviceMapping.find((data) => data.match(subTypeValue));
 
     if (dataFound) {
       descriptionIds = dataFound.description(idNum);
       noticeIds = dataFound.notice(idNum);
     }
-  } else if (itemType.includes("class")) {
+  } else if (type.includes("class")) {
     noticeIds = descriptionIdMap.class;
-  } else if (itemType.includes("counselor")) {
+  } else if (type.includes("counselor")) {
     const dataFound = counselorMapping.find((data) => data.match(subTypeValue));
     
     if (dataFound) {
@@ -230,10 +230,10 @@ const getDescriptionsAndNotices = async ({ itemType, id, subType } = {}) => {
 };
 
 // Get Title and Subtitle datas for List page
-const getTitlesAndSubtitles = async ({ itemType, subType } = {}) => {
+const getTitlesAndSubtitles = async ({ type, subType } = {}) => {
   let data, title, description, result;
 
-  if (itemType.includes("service") || itemType.includes("class")) {
+  if (type.includes("service") || type.includes("class")) {
     const results = await SharedDescriptionModel.findAll({
       where: {
         title: {
@@ -247,7 +247,7 @@ const getTitlesAndSubtitles = async ({ itemType, subType } = {}) => {
     } else {
       result = results[0];
     }
-  } else if (itemType.includes("counselor")) {
+  } else if (type.includes("counselor")) {
     const pattern = `%itu ${subType} expert%`;
 
     result = await SharedDescriptionModel.findOne({
@@ -264,7 +264,7 @@ const getTitlesAndSubtitles = async ({ itemType, subType } = {}) => {
   if (!result) return {};
   data = result.toJSON();
 
-  if (itemType.includes("service") || itemType.includes("class")) title = data.title;
+  if (type.includes("service") || type.includes("class")) title = data.title;
   description = data.description;
 
   return {

@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
-
 const sequelize = require("../config/database");
+
 const ArticleModel = require("../models/ArticleModel");
 const ArticleImageModel = require("../models/ArticleImageModel");
 
@@ -13,7 +13,7 @@ const getHomePageArticles = async () => {
         limit: 3
     });
 
-    return formatImages(articles);
+    return convertArticleImages(articles);
 };
 
 // Get Articles for Article page
@@ -25,22 +25,7 @@ const getArticles = async () => {
         order: [["createdAt", "DESC"]],
     });
 
-    return formatImages(articles);
-};
-
-// Helper function to convert image to base64
-const formatImages = (articles) => {
-    return articles.map((article) => {
-        const plain = article.get({ plain: true });
-
-        if (plain.ArticleImage) {
-            plain.ArticleImage.image = plain.ArticleImage.image
-                ? plain.ArticleImage.image.toString("base64")
-                : null;
-        }
-
-        return plain;
-    });
+    return convertArticleImages(articles);
 };
 
 module.exports = {

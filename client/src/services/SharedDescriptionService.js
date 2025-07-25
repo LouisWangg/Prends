@@ -3,10 +3,10 @@ import axios from "axios";
 const url = "http://localhost:5000/sharedDescriptions";
 
 // Get Description and Notice datas for Detail page
-export const fetchDescriptionsAndNotices = async (itemType, id, subType) => {
+export const fetchDescriptionsAndNotices = async (type, id, subType) => {
   try {
     const response = await axios.get(`${url}/getDescriptionsAndNotices`, {
-      params: { itemType, id, subType }
+      params: { type, id, subType }
     });
     return response.data;
   } catch (error) {
@@ -16,10 +16,10 @@ export const fetchDescriptionsAndNotices = async (itemType, id, subType) => {
 };
 
 // Get Title and Subtitle datas for List page
-export const fetchTitlesAndSubtitles = async (itemType, subType) => {
+export const fetchTitlesAndSubtitles = async (type, subType) => {
   try {
     const response = await axios.get(`${url}/getTitlesAndSubtitles`, {
-      params: { itemType, subType }
+      params: { type, subType }
     });
     return response.data;
   } catch (error) {

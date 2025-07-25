@@ -94,7 +94,7 @@ const Home = () => {
         {serviceTypes.map((serviceType) => (
           <SingleCard
             key={serviceType.serviceTypeId}
-            itemType={serviceType.itemType}
+            type={serviceType.type}
             data={serviceType}
           />
         ))}
@@ -121,7 +121,7 @@ const Home = () => {
         {classes.map((singleClass) => (
           <SingleCard
             key={singleClass.classId}
-            itemType={singleClass.itemType}
+            type={singleClass.type}
             data={singleClass}
           />
         ))}
@@ -135,7 +135,7 @@ const Home = () => {
         {counselors.map((counselor) => (
           <SingleCard
             key={counselor.counselorId}
-            itemType={counselor.itemType}
+            type={counselor.type}
             data={counselor}
           />
         ))}
@@ -152,7 +152,7 @@ const Home = () => {
         {articles.map((article) => (
           <SingleCard
             key={article.articleId}
-            itemType="HomeArticle"
+            type="HomeArticle"
             data={article}
           />
         ))}
