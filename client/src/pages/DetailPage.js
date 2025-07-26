@@ -25,14 +25,14 @@ import { fetchServiceDetailById } from "../services/ServiceTypeService";
 import { fetchServicePricingById } from "../services/ServiceTypePriceService";
 import { fetchServiceCommentsById } from "../services/ServiceTypeCommentService";
 import { fetchDescriptionsAndNotices } from "../services/SharedDescriptionService";
-import { fetchIndividualCounselingRecommendations } from "../services/RecommendationService";
+import { fetchServiceTypeAndSeniorCounselorRecommendations } from "../services/RecommendationService";
 
 import { fetchClassDetailById } from "../services/ClassService";
 
 import { fetchCounselorDetailById } from "../services/CounselorService";
 import { fetchCounselorPricingById } from "../services/CounselorPriceService";
 import { fetchCounselorCommentsById } from "../services/CounselorCommentService";
-import { fetchCounselorRecommendations } from "../services/RecommendationService";
+import { fetchCounselorAndSeniorCounselorRecommendations } from "../services/RecommendationService";
 
 const DetailPage = () => {
   const { type, id } = useParams();
@@ -299,9 +299,9 @@ const DetailPage = () => {
         let datas;
 
         if (type.includes("service") || type.includes("class")) {
-          datas = await fetchIndividualCounselingRecommendations(id, "Individual");
+          datas = await fetchServiceTypeAndSeniorCounselorRecommendations(id, "Individual");
         } else if (type.includes("counselor")) {
-          datas = await fetchCounselorRecommendations(id, detailData.subType);
+          datas = await fetchCounselorAndSeniorCounselorRecommendations(id, detailData.subType);
         }
         setRecommendations(datas);
       };
@@ -374,47 +374,6 @@ const DetailPage = () => {
     return (
       <ProfileImageSwitcher images={images} />
     );
-
-    // if (type.includes("service")) {
-    //   return (
-    //     <div className="detailPageImage">
-    //       <img
-    //         src={
-    //           detailData?.ServiceTypeImages?.[0]?.image
-    //             ? `data:image/jpeg;base64,${detailData.ServiceTypeImages[0].image}`
-    //             : null
-    //         }
-    //         alt={detailData.name}
-    //       />
-    //     </div>
-    //   );
-    // } else if (type.includes("class")) {
-    //   return (
-    //     <div className="detailPageImage">
-    //       <img
-    //         src={
-    //           detailData?.image
-    //             ? `data:image/jpeg;base64,${detailData.image}`
-    //             : null
-    //         }
-    //         alt={detailData.name}
-    //       />
-    //     </div>
-    //   );
-    // } else if (type.includes("counselor")) {
-    //   return (
-    //     <div className="detailPageImage">
-    //       <img
-    //         src={
-    //           detailData?.CounselorImages?.[0]?.image
-    //             ? `data:image/jpeg;base64,${detailData.CounselorImages[0].image}`
-    //             : null
-    //         }
-    //         alt={detailData.name}
-    //       />
-    //     </div>
-    //   );
-    // }
   };
 
   const renderRating = () => {

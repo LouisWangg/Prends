@@ -1,40 +1,53 @@
-const convertImageSameField = (items, imageKey = "image") =>
-    items.map((item) => {
-        const plain = item.get({ plain: true });
-        const imageBuffer = plain[imageKey];
+const convertImageSameField = (data, imageKey = "image") => {
+  const process = (item) => {
+    const plain = item.get({ plain: true });
+    const imageBuffer = plain[imageKey];
+    
+    plain[imageKey] = imageBuffer ? imageBuffer.toString("base64") : null;
+    return plain;
+  };
 
-        plain[imageKey] = imageBuffer ? imageBuffer.toString("base64") : null;
+  if (Array.isArray(data)) return data.map(process);
+  if (data && typeof data.get === "function") return process(data);
+  return null;
+};
 
-        return plain;
-    });
+const convertArticleImages = (data, imageKey = "ArticleImage") => {
+  const process = (article) => {
+    const plain = article.get({ plain: true });
+    const imageObj = plain[imageKey];
 
-const convertArticleImages = (articles, imageKey = "ArticleImage") =>
-    articles.map((article) => {
-        const plain = article.get({ plain: true });
-        const imageObj = plain[imageKey];
+    if (imageObj && imageObj.image) {
+      imageObj.image = imageObj.image.toString("base64");
+    } else if (imageObj) {
+      imageObj.image = null;
+    }
 
-        if (imageObj && imageObj.image) {
-            imageObj.image = imageObj.image.toString("base64");
-        } else if (imageObj) {
-            imageObj.image = null;
-        }
+    return plain;
+  };
 
-        return plain;
-    });
+  if (Array.isArray(data)) return data.map(process);
+  if (data && typeof data.get === "function") return process(data);
+  return null;
+};
 
+const convertImages = (data, imageKey = "Images") => {
+  const process = (item) => {
+    const plain = item.get({ plain: true });
+    const images = plain[imageKey] || [];
 
-const convertImages = (items, imageKey = "Images") =>
-    items.map((item) => {
-        const plain = item.get({ plain: true });
-        const images = plain[imageKey] || [];
+    plain[imageKey] = images.map((img) => ({
+      ...img,
+      image: img.image ? img.image.toString("base64") : null,
+    }));
 
-        plain[imageKey] = images.map((img) => ({
-            ...img,
-            image: img.image ? img.image.toString("base64") : null,
-        }));
+    return plain;
+  };
 
-        return plain;
-    });
+  if (Array.isArray(data)) return data.map(process);
+  if (data && typeof data.get === "function") return process(data);
+  return null;
+};
 
 module.exports = {
   convertImageSameField,

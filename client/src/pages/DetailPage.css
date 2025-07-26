@@ -5,26 +5,8 @@
   box-sizing: border-box;
 }
 
-.detailPageImage {
-  flex: 3;
-  width: 100%;
-  height: fit-content;
-  position: sticky;
-  top: 120px;
-  /* adjust based on your header or navbar height */
-  align-self: flex-start;
-  margin-right: 120px;
-}
-
-.detailPageImage img {
-  width: 400px;
-  height: 510px;
-  object-fit: cover;
-  border: 2px solid black;
-}
-
 .detailPageContent {
-  flex: 7;
+  flex: 10;
 }
 
 .detailPageTitle {

@@ -1,8 +1,8 @@
 const { Op, fn, col, literal } = require("sequelize");
 
-const { convertImageSameField } = require("../utils/ConvertImage");
-
 const ClassModel = require("../models/ClassModel");
+
+const { convertImageSameField } = require("../utils/ConvertImage");
 
 // Get Class datas for Home page
 const getClasses = async ({ subType = null, sortBy = "default", limit = null } = {}) => {

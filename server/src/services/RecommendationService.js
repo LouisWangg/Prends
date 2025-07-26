@@ -1,17 +1,13 @@
 const { Op, Sequelize } = require("sequelize");
 
-const { convertImages } = require("../utils/ConvertImage");
-
 const CounselorModel = require("../models/CounselorModel");
 const CounselorImageModel = require("../models/CounselorImageModel");
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 
-const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {}) => {
-    const useThreeServices = Math.random() < 0.5;
-    const serviceLimit = useThreeServices ? 3 : 2;
-    const counselorLimit = useThreeServices ? 1 : 2;
+const { convertImages } = require("../utils/ConvertImage");
 
+const fetchServiceTypes = async ({ where, limit, sortRandom = true }) => {
     const serviceTypes = await ServiceTypeModel.findAll({
         attributes: [
             "serviceTypeId",
@@ -22,17 +18,23 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
             "type",
             "subType",
         ],
-        where: {
-            ...(subType && { subType }),
-            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
-        },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: [['serviceTypeId', 'ASC']], // ensure sorted order
-        limit: serviceLimit,
+        where,
+        include: [
+            {
+                model: ServiceTypeImageModel,
+                attributes: ["serviceTypeImageId", "image"],
+                separate: true,
+                order: [["serviceTypeImageId", "ASC"]],
+            },
+        ],
+        order: sortRandom ? Sequelize.literal("RANDOM()") : [["serviceTypeId", "ASC"]],
+        limit,
     });
 
-    const convertedServiceTypes = convertImages(serviceTypes, "ServiceTypeImages");
+    return convertImages(serviceTypes, "ServiceTypeImages");
+};
 
+const fetchCounselors = async ({ where, limit, sortRandom = true }) => {
     const counselors = await CounselorModel.findAll({
         attributes: [
             "counselorId",
@@ -40,187 +42,125 @@ const getIndividualCounselingRecommendations = async ({ excludeId, subType } = {
             "price",
             "discountFlag",
             "discountPrice",
-            "type"
-        ],
-        where: {
-            subType: "Senior",
-            ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
-        },
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: [Sequelize.literal('RANDOM()')],
-        limit: counselorLimit
-    });
-
-    const convertedCounselors = convertImages(counselors, "CounselorImages");
-
-    // No need to shuffle combined — services are first, counselors later
-    return [...convertedServiceTypes, ...convertedCounselors];
-};
-
-const getCounselorRecommendations = async ({ excludeId, subType }) => {
-    const sameSubTypeCounselors = await CounselorModel.findAll({
-        attributes: [
-            "counselorId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type"
-        ],
-        where: {
-            ...(subType && { subType }),
-            ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
-        },
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: [['counselorId', 'ASC']],
-        limit: 4
-    });
-
-    const convertedSameSubTypeCounselors = convertImages(sameSubTypeCounselors, "CounselorImages");
-
-    // If enough same-subType counselors, return
-    if (convertedSameSubTypeCounselors.length == 4) return convertedSameSubTypeCounselors;
-
-    // Fill the remaining with senior-subType counselors
-    const remainingCounselors = 4 - convertedSameSubTypeCounselors.length;
-
-    const seniorCounselors = await CounselorModel.findAll({
-        attributes: [
-            "counselorId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type"
-        ],
-        where: {
-            subType: "Senior",
-            ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
-        },
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
-        limit: remainingCounselors
-    });
-
-    const convertedSeniorCounselors = convertImages(seniorCounselors, "CounselorImages");
-
-    return [...convertedSameSubTypeCounselors, ...convertedSeniorCounselors];
-};
-
-const getCoupleAndFamilyRecommendations = async ({ excludeId, subType } = {}) => {
-    const coupleTypes = await ServiceTypeModel.findAll({
-        attributes: [
-            "serviceTypeId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
             "type",
-            "subType",
         ],
+        where,
+        include: [
+            {
+                model: CounselorImageModel,
+                attributes: ["counselorImageId", "image"],
+                separate: true,
+                order: [["counselorImageId", "ASC"]],
+            },
+        ],
+        order: sortRandom ? Sequelize.literal("RANDOM()") : [["counselorId", "ASC"]],
+        limit,
+    });
+
+    return convertImages(counselors, "CounselorImages");
+};
+
+const getServiceTypeAndSeniorCounselorRecommendations = async ({ excludeId, subType } = {}) => {
+    const useThreeServices = Math.random() < 0.5;
+    const serviceLimit = useThreeServices ? 3 : 2;
+    const counselorLimit = useThreeServices ? 1 : 2;
+
+    const serviceTypes = await fetchServiceTypes({
         where: {
             ...(subType && { subType }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
+        limit: serviceLimit,
+        sortRandom: false,
+    });
+
+    const counselors = await fetchCounselors({
+        where: {
+            subType: "Senior",
+        },
+        limit: counselorLimit,
+    });
+
+    return [...serviceTypes, ...counselors];
+};
+
+const getCounselorAndSeniorCounselorRecommendations = async ({ excludeId, subType }) => {
+    const sameSubTypeCounselors = await fetchCounselors({
+        where: {
+            ...(subType && { subType }),
+            ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
+        },
+        limit: 4,
+        sortRandom: false,
+    });
+
+    // If enough same-subType counselors, return
+    if (sameSubTypeCounselors.length == 4) return sameSubTypeCounselors;
+
+    // Fill the remaining with senior-subType counselors
+    const remaining = 4 - sameSubTypeCounselors.length;
+
+    const seniorCounselors = await fetchCounselors({
+        where: {
+            subType: "Senior",
+            ...(excludeId && { counselorId: { [Op.ne]: excludeId } }),
+        },
+        limit: remaining,
+    });
+
+    return [...sameSubTypeCounselors, ...seniorCounselors];
+};
+
+const getServiceTypeAndFamilyRecommendations = async ({ excludeId, subType } = {}) => {
+    const coupleTypes = await fetchServiceTypes({
+        where: {
+            ...(subType && { subType }),
+            ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
+        },
         limit: 4,
     });
 
-    const convertedCoupleTypes = convertImages(coupleTypes, "ServiceTypeImages");
+    if (coupleTypes.length == 4) return coupleTypes;
 
-    if (convertedCoupleTypes.length == 4) return convertedCoupleTypes;
+    const remaining = 4 - coupleTypes.length;
 
-    const remainingServiceTypes = 4 - convertedCoupleTypes.length;
-
-    const familyTypes = await ServiceTypeModel.findAll({
-        attributes: [
-            "serviceTypeId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type",
-            "subType",
-        ],
+    const familyTypes = await fetchServiceTypes({
         where: {
             subType: "Keluarga",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
-        limit: remainingServiceTypes
+        limit: remaining,
     });
 
-    const convertedFamilyTypes = convertImages(serviceTypes, "ServiceTypeImages");
-
-    return [...convertedCoupleTypes, ...convertedFamilyTypes];
+    return [...coupleTypes, ...familyTypes];
 };
 
 const getDeboraAssessmentRecommendations = async ({ excludeId } = {}) => {
-    const familyTypes = await ServiceTypeModel.findAll({
-        attributes: [
-            "serviceTypeId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type",
-            "subType",
-        ],
+    const deboraFamilyTypes = await fetchServiceTypes({
         where: {
-            name: {
-                [Op.iLike]: `%debora%`
-            },
+            name: { [Op.iLike]: `%debora%` },
             subType: "Keluarga",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
         limit: 4,
     });
 
-    const convertedFamilyTypes = convertImages(serviceTypes, "ServiceTypeImages");
+    if (deboraFamilyTypes.length == 4) return deboraFamilyTypes;
 
-    if (convertedFamilyTypes.length == 4) return convertedFamilyTypes;
+    const remaining = 4 - deboraFamilyTypes.length;
 
-    const remainingCounselors = 4 - convertedFamilyTypes.length;
-
-    const counselors = await CounselorModel.findAll({
-        attributes: [
-            "counselorId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type"
-        ],
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
-        limit: remainingCounselors
+    const counselors = await fetchCounselors({
+        limit: remaining,
     });
 
     // Step 2: Sort manually in JS
     const sortedCounselors = counselors.sort((a, b) => a.counselorId - b.counselorId);
 
-    const convertedCounselors = convertImages(sortedCounselors, "CounselorImages");
-
-    return [...convertedFamilyTypes, ...convertedCounselors];
+    return [...deboraFamilyTypes, ...sortedCounselors];
 };
 
-
-
 const getShanenClassRecommendations = async ({ excludeId } = {}) => {
-    const coupleTypes = await ServiceTypeModel.findAll({
-        attributes: [
-            "serviceTypeId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type",
-            "subType",
-        ],
+    const shanenCoupleType = await fetchServiceTypes({
         where: {
             name: {
                 [Op.iLike]: `%shanen%`
@@ -228,95 +168,56 @@ const getShanenClassRecommendations = async ({ excludeId } = {}) => {
             subType: "Pasangan",
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
         limit: 4,
     });
 
-    const convertedCoupleTypes = convertImages(coupleTypes, "ServiceTypeImages");
+    if (shanenCoupleType.length == 4) return shanenCoupleType;
 
-    if (convertedCoupleTypes.length == 4) return convertedCoupleTypes;
+    const remaining = 4 - shanenCoupleType.length;
 
-    const remainingCounselors = 4 - convertedCoupleTypes.length;
-
-    const counselors = await CounselorModel.findAll({
-        attributes: [
-            "counselorId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type"
-        ],
+    const seniorCounselors = await fetchCounselors({
         where: {
             subType: "Senior"
         },
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
-        limit: remainingCounselors
+        limit: remaining,
     });
 
     // Step 2: Sort manually in JS
-    const sortedCounselors = counselors.sort((a, b) => a.counselorId - b.counselorId);
+    const sortedCounselors = seniorCounselors.sort((a, b) => a.counselorId - b.counselorId);
 
-    const convertedCounselors = convertImages(sortedCounselors, "CounselorImages");
-
-    return [...convertedCoupleTypes, ...convertedCounselors];
+    return [...shanenCoupleType, ...sortedCounselors];
 };
 
 const getSeniorCounselorRecommendations = async () => {
-    const seniorCounselors = await CounselorModel.findAll({
-        attributes: [
-            "counselorId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type"
-        ],
+    const seniorCounselors = await fetchCounselors({
         where: {
             subType: "Senior",
         },
-        include: [{ model: CounselorImageModel, attributes: ["image"] }],
-        order: Sequelize.literal("RANDOM()"),
         limit: 4,
     });
 
-    const convertedSeniorCounselors = convertImages(seniorCounselors, "CounselorImages");
-
-    return [...convertedSeniorCounselors];
+    return seniorCounselors;
 };
 
-const getInterviewRecommendations = async ({ excludeId, type }) => {
-    const serviceTypes = await ServiceTypeModel.findAll({
-        attributes: [
-            "serviceTypeId",
-            "name",
-            "price",
-            "discountFlag",
-            "discountPrice",
-            "type",
-            "subType",
-        ],
+const getServiceTypeRecommendations = async ({ excludeId, subType }) => {
+    const serviceTypes = await fetchServiceTypes({
         where: {
             ...(subType && { subType }),
             ...(excludeId && { serviceTypeId: { [Op.ne]: excludeId } }),
         },
-        include: [{ model: ServiceTypeImageModel, attributes: ["image"] }],
-        order: [['serviceTypeId', 'ASC']], // ensure sorted order
-        limit: serviceLimit,
+        limit: 4,
+        sortRandom: false,
     });
 
-    const convertedServiceTypes = convertImages(serviceTypes, "ServiceTypeImages");
-
-    return [...convertedServiceTypes];
+    return serviceTypes;
 };
 
 module.exports = {
-    getIndividualCounselingRecommendations,
-    getCounselorRecommendations,
-    getCoupleAndFamilyRecommendations,
+    getServiceTypeAndSeniorCounselorRecommendations,
+    getCounselorAndSeniorCounselorRecommendations,
+    getServiceTypeAndFamilyRecommendations,
     getDeboraAssessmentRecommendations,
+    getShanenClassRecommendations,
     getSeniorCounselorRecommendations,
-    getInterviewRecommendations,
+    getServiceTypeRecommendations,
 };

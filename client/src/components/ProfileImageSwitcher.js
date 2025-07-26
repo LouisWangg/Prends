@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import "./ProfileImageSwitcher.css";
 
 const ProfileImageSwitcher = ({ images }) => {
   // Normalize input: if not array, make it an array
-  const normalizedImages = Array.isArray(images) ? images : [images];
+  const normalizedImages = useMemo(
+    () => (Array.isArray(images) ? images : [images]),
+    [images]
+  );
 
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -12,12 +15,12 @@ const ProfileImageSwitcher = ({ images }) => {
     if (normalizedImages?.length > 0) {
       setSelectedImage(normalizedImages[0]);
     }
-  }, [images]);
+  }, [normalizedImages]);
 
   if (!selectedImage) return null;
 
   return (
-    <div>
+    <div className="detailPageImage">
       {/* Top Large Image */}
       <div className="selectedImage">
         <img src={getImageSrc(selectedImage)} alt="Selected" />

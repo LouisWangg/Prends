@@ -1,10 +1,10 @@
 const { Op, fn, col, literal } = require("sequelize");
 
-const { convertImages } = require("../utils/ConvertImage");
-
 const ServiceTypeModel = require("../models/ServiceTypeModel");
 const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
 const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
+
+const { convertImages } = require("../utils/ConvertImage");
 
 const getServiceTypes = async ({ subType = null, sortBy = null }) => {
   const finalPriceLiteral = literal(`
@@ -81,7 +81,9 @@ const getServiceDetailById = async ({ id } = {}) => {
     include: [
       {
         model: ServiceTypeImageModel,
-        attributes: ["image"],
+        attributes: ["serviceTypeImageId", "image"],
+        separate: true,
+        order: [["serviceTypeImageId", "ASC"]],
       },
     ],
   });

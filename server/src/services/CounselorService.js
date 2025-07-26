@@ -2,10 +2,10 @@ const { Op, fn, col, literal } = require("sequelize");
 
 const sequelize = require("../config/database");
 
-const { convertImages } = require("../utils/ConvertImage");
-
 const CounselorModel = require("../models/CounselorModel");
 const CounselorImageModel = require("../models/CounselorImageModel");
+
+const { convertImages } = require("../utils/ConvertImage");
 
 // fn ==> to make a virtual column
 // literal ==> because i want to order by a virtual column / raw SQL, not a model field, necessary when sorting counts, sums, etc
@@ -60,7 +60,9 @@ const getCounselors = async ({ subType = null, sortBy = "commentCount", limit = 
         include: [
             {
                 model: CounselorImageModel,
-                attributes: ["image"],
+                attributes: ["counselorImageId", "image"],
+                separate: true,
+                order: [["counselorImageId", "ASC"]],
             },
         ],
         order: orderClause,

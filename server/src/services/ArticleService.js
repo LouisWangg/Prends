@@ -4,6 +4,8 @@ const sequelize = require("../config/database");
 const ArticleModel = require("../models/ArticleModel");
 const ArticleImageModel = require("../models/ArticleImageModel");
 
+const { convertArticleImages } = require("../utils/ConvertImage");
+
 // Get 3 newest Article datas for Home page
 const getHomePageArticles = async () => {
     const articles = await ArticleModel.findAll({
