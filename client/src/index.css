@@ -55,3 +55,22 @@ input:hover {
   text-decoration-thickness: 2px; /* Thinner line */
   color: inherit; /* Optional: matches surrounding text */
 }
+
+/* Removes Chrome's autofill "eye" icon */
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Removes Microsoft Edge's eye icon */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Optional: Kill yellow autofill bg */
+input:-webkit-autofill {
+  box-shadow: 0 0 0 1000px white inset !important;
+}

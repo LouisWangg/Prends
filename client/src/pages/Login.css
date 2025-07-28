@@ -1,0 +1,49 @@
+.loginForm {
+    width: 450px;
+    margin: 0 auto;
+}
+
+.loginInput {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.loginPasswordWrapper {
+    position: relative;
+}
+
+.showPasswordIcon {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-55%);
+    cursor: pointer;
+    color: black;
+    font-size: 26px;
+}
+
+.loginLink {
+    color: black;
+    text-decoration: underline;
+}
+
+.loginLink:hover {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+.loginButton {
+    padding: 10px 40px;
+    color: white;
+    background-color: black;
+    border: none;
+}
+
+.loginButton:hover {
+    outline: 1px solid black;
+}
+
