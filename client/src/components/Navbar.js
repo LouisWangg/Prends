@@ -167,11 +167,6 @@ const Navbar = ({ isSticky }) => {
             <RxChevronDown className="navbarLinkIcon" />
           )}
         </li>
-        {/* <li
-            className={`${isActive("/store") ? "navbarLinkActive" : ""}`}
-          >
-            <Link to="/kleemart">KLEEMART</Link>
-          </li> */}
         <li className={`${isActive("/aboutUs") ? "navbarLinkActive" : ""}`}>
           <Link to="/aboutUs">Tentang Kami</Link>
         </li>

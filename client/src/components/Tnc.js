@@ -7,10 +7,10 @@ const Tnc = ({tncText}) => {
   return (
     <Fragment>
       <Line />
-      <div className="text-center">
-        <p className="mt-4 mb-4">
+      <div style={{display: "flex", justifyContent: "center", textAlign: "center"}}>
+        <p style={{margin: "auto"}}>
           Dengan menekan tombol '{tncText}', saya telah membaca dan setuju dengan <Link className="customUnderline">
-          Syarat & Ketentuan</Link> <br /> serta <Link className="customUnderline">Kebijakan Privasi</Link> dari Klee.
+          Syarat & Ketentuan</Link> <br /> serta <Link className="customUnderline">Kebijakan Privasi</Link> dari Prends.
         </p>
       </div>
     </Fragment>

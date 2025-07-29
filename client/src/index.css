@@ -36,8 +36,15 @@ code {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 input:hover {
@@ -45,15 +52,15 @@ input:hover {
 }
 
 .customUnderline {
+  color: black;
   text-decoration: underline;
-  text-decoration-thickness: 1px; /* Thinner line */
-  color: inherit; /* Optional: matches surrounding text */
+  text-decoration-thickness: 1px;
 }
 
-.customUnderline:hover{
+.customUnderline:hover {
+  color: inherit;
   text-decoration: underline;
-  text-decoration-thickness: 2px; /* Thinner line */
-  color: inherit; /* Optional: matches surrounding text */
+  text-decoration-thickness: 2px;
 }
 
 /* Removes Chrome's autofill "eye" icon */

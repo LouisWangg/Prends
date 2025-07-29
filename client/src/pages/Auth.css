@@ -1,0 +1,51 @@
+.authForm {
+    width: 450px;
+    margin: 0 auto;
+}
+
+.authInput {
+    display: block;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.authPasswordWrapper {
+    position: relative;
+}
+
+.showPasswordIcon {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-55%);
+  cursor: pointer;
+  color: black;
+  font-size: 26px;
+}
+
+.authButtonWrapper,
+.authLinkWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.authButtonWrapper {
+    margin-top: 30px;
+}
+
+.authLinkWrapper {
+    margin-top: 18px;
+}
+
+.authButton {
+    padding: 10px 40px;
+    color: white;
+    background-color: black;
+    border: none;
+}
+
+.authButton:hover {
+    outline: 1px solid black;
+}

@@ -73,51 +73,6 @@ const AboutUs = () => {
           >
             @prends.id
           </Link>
-          {/* <br />
-          Twitter :{" "}
-          <Link
-            to="#"
-            url="https://x.com/klee_id"
-            onClick={(event) => openNewTab(event)}
-          >
-            @prends_id
-          </Link>
-          <br />
-          Facebook :{" "}
-          <Link
-            to="#"
-            url="https://www.facebook.com/klee.indonesia/?_rdc=1&_rdr"
-            onClick={(event) => openNewTab(event)}
-          >
-            Prends
-          </Link>
-          <br />
-          Youtube :{" "}
-          <Link
-            to="#"
-            url="https://www.youtube.com/kleeindonesia"
-            onClick={(event) => openNewTab(event)}
-          >
-            Prends ID
-          </Link>
-          <br />
-          Spotify :{" "}
-          <Link
-            to="#"
-            url="https://open.spotify.com/show/7JRdDYLYSc93HCOOIzTsQo"
-            onClick={(event) => openNewTab(event)}
-          >
-            PRENDSCORDER
-          </Link>
-          <br />
-          TikTok :{" "}
-          <Link
-            to="#"
-            url="https://www.tiktok.com/@klee.id"
-            onClick={(event) => openNewTab(event)}
-          >
-            @prends.id
-          </Link> */}
         </p>
       </div>
     </Fragment>

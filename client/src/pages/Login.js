@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
-import "./Login.css";
+import "./Auth.css";
 import Tnc from "../components/Tnc";
 // import { loginUser } from "../services/UserService";
 
@@ -23,6 +23,7 @@ const Login = () => {
     // };
 
     // const response = await loginUser(userData);
+    // console.log("Service response: ", response);
     console.log("Masuk ke login");
   };
 
@@ -46,10 +47,10 @@ const Login = () => {
       {!isForgotPassword ? (
         <>
           <Typography variant="h3" className="pageTitle">Login</Typography>
-          <div className="loginForm">
+          <div className="authForm">
             <input
               type="text"
-              className="loginInput"
+              className="authInput"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -61,7 +62,7 @@ const Login = () => {
               }}
             />
             <div
-              className="loginPasswordWrapper"
+              className="authPasswordWrapper"
               onFocus={() => setIsPasswordFocused(true)}
               onBlur={() => setIsPasswordFocused(false)}
               tabIndex={-1} //Makes wrapper focusable, but not in tab order
@@ -69,7 +70,7 @@ const Login = () => {
               <input
                 ref={passwordRef}
                 type={showPassword ? "text" : "password"}
-                className="loginInput"
+                className="authInput"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -87,14 +88,14 @@ const Login = () => {
                 </span>
               )}
             </div>
-            <Link className="loginLink" onClick={() => setIsForgotPassword(true)}>Lupa sandi?</Link>
-            <div className="text-center mt-4">
-              <button type="button" className="loginButton" onClick={handleLogin} >
+            <Link className="customUnderline" onClick={() => setIsForgotPassword(true)}>Lupa sandi?</Link>
+            <div className="authButtonWrapper">
+              <button type="button" className="authButton" onClick={handleLogin} >
                 Masuk
               </button>
             </div>
-            <div className="text-center mt-3">
-              <Link to="/register" className="loginLink">
+            <div className="authLinkWrapper">
+              <Link to="/register" className="customUnderline">
                 Buat Akun
               </Link>
             </div>
@@ -105,10 +106,10 @@ const Login = () => {
         <>
           <Typography variant="h3" className="pageTitle">Reset Sandi</Typography>
           <Typography variant="body1" className="pageTitle">Kami akan mengirimi Anda email untuk mereset sandi</Typography>
-          <div className="loginForm">
+          <div className="authForm">
             <input
               type="text"
-              className="loginInput"
+              className="authInput"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -116,13 +117,13 @@ const Login = () => {
                 if (e.key === 'Enter') handleLogin();
               }}
             />
-            <div className="text-center mt-4">
-              <button type="button" className="loginButton" onClick={handleLogin} >
+            <div className="authButtonWrapper">
+              <button type="button" className="authButton" onClick={handleLogin} >
                 Kirim
               </button>
             </div>
-            <div className="text-center mt-3">
-              <Link className="loginLink" onClick={() => setIsForgotPassword(false)}>
+            <div className="authLinkWrapper">
+              <Link className="customUnderline" onClick={() => setIsForgotPassword(false)}>
                 Batal
               </Link>
             </div>
