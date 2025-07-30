@@ -11,6 +11,10 @@
     margin-bottom: 15px;
 }
 
+.authInput.error {
+    border: 2px solid red;
+}
+
 .authPasswordWrapper {
     position: relative;
 }
@@ -48,4 +52,21 @@
 
 .authButton:hover {
     outline: 1px solid black;
+}
+
+.errorList {
+  padding-left: 15px;
+  list-style: none;
+}
+
+.errorText {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 14px;
+}
+
+.errorIcon {
+  flex-shrink: 0;
+  color: #e53935;
+  margin-top: 4px;
 }
