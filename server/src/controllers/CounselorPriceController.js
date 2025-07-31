@@ -1,4 +1,4 @@
-import CounselorPriceService from "../services/CounselorPriceService.js";
+import * as CounselorPriceService from "../services/CounselorPriceService.js";
 
 export const getCounselorPricingById = async (req, res) => {
   try {

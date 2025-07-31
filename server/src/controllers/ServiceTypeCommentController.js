@@ -1,4 +1,4 @@
-import ServiceTypeCommentService from "../services/ServiceTypeCommentService.js";
+import * as ServiceTypeCommentService from "../services/ServiceTypeCommentService.js";
 
 export const getHomePageComments = async (req, res) => {
   try {

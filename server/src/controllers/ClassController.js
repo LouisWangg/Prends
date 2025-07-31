@@ -1,4 +1,4 @@
-import ClassService from "../services/ClassService.js";
+import * as ClassService from "../services/ClassService.js";
 
 export const getClasses = async (req, res) => {
   try {

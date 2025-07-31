@@ -1,4 +1,4 @@
-import SharedDescriptionService from "../services/SharedDescriptionService.js";
+import * as SharedDescriptionService from "../services/SharedDescriptionService.js";
 
 export const getDescriptionsAndNotices = async (req, res) => {
   try {

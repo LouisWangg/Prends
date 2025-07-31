@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import ServiceTypeImageController from "../controllers/ServiceTypeImageController.js";
+
+import * as ServiceTypeImageController from "../controllers/ServiceTypeImageController.js";
 
 const router = express.Router();
 const upload = multer(); // in-memory storage

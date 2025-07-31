@@ -1,4 +1,4 @@
-import QnaService from "../services/QnaService.js";
+import * as QnaService from "../services/QnaService.js";
 
 export const getHomePageQnas = async (req, res) => {
   try {

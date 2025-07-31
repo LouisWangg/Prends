@@ -1,4 +1,4 @@
-import CounselorCommentService from "../services/CounselorCommentService.js";
+import * as CounselorCommentService from "../services/CounselorCommentService.js";
 
 export const getCounselorCommentsById = async (req, res) => {
   try {

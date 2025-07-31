@@ -1,4 +1,4 @@
-import ArticleImageService from "../services/ArticleImageService.js";
+import * as ArticleImageService from "../services/ArticleImageService.js";
 
 export const uploadImage = async (req, res) => {
   try {

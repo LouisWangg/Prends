@@ -1,4 +1,4 @@
-import ServiceTypePriceService from "../services/ServiceTypePriceService.js";
+import * as ServiceTypePriceService from "../services/ServiceTypePriceService.js";
 
 export const getServicePricingById = async (req, res) => {
   try {

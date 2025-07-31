@@ -1,4 +1,4 @@
-import ServiceTypeImageService from "../services/ServiceTypeImageService.js";
+import * as ServiceTypeImageService from "../services/ServiceTypeImageService.js";
 
 export const uploadImage = async (req, res) => {
   try {

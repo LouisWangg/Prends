@@ -1,4 +1,4 @@
-import ServiceTypeService from "../services/ServiceTypeService.js";
+import * as ServiceTypeService from "../services/ServiceTypeService.js";
 
 // Get Service Type datas according to type
 export const getServiceTypes = async (req, res) => {

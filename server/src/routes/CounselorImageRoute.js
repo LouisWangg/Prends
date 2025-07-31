@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import CounselorImageController from "../controllers/CounselorImageController.js";
+
+import * as CounselorImageController from "../controllers/CounselorImageController.js";
 
 const router = express.Router();
 const upload = multer(); 

@@ -1,5 +1,5 @@
 import express from "express";
-import CounselorPriceController from "../controllers/CounselorPriceController.js";
+import * as CounselorPriceController from "../controllers/CounselorPriceController.js";
 
 const router = express.Router();
 

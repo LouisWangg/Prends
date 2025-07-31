@@ -1,4 +1,4 @@
-import RecommendationService from "../services/RecommendationService.js";
+import * as RecommendationService from "../services/RecommendationService.js";
 
 export const getServiceTypeAndSeniorCounselorRecommendations = async (req, res) => {
   try {

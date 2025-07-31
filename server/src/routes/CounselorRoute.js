@@ -1,5 +1,5 @@
 import express from "express";
-import CounselorController from "../controllers/CounselorController.js";
+import * as CounselorController from "../controllers/CounselorController.js";
 
 const router = express.Router();
 

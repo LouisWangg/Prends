@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import sequelize from "./models/index.js";
-import errorHandler from "./middlewares/ErrorHandler.js";
+import { sequelize } from "./models/index.js";
+import { errorHandler } from "./middlewares/ErrorHandler.js";
 
 // Import routes
 import UserRoute from "./routes/UserRoute.js";

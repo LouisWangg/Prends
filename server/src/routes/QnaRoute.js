@@ -1,5 +1,5 @@
 import express from "express";
-import QnaController from "../controllers/QnaController.js";
+import * as QnaController from "../controllers/QnaController.js";
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 import express from "express";
-import SharedDescriptionController from "../controllers/SharedDescriptionController.js";
+import * as SharedDescriptionController from "../controllers/SharedDescriptionController.js";
 
 const router = express.Router();
 

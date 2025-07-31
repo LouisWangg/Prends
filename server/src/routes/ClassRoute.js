@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import ClassController from "../controllers/ClassController.js";
+
+import * as ClassController from "../controllers/ClassController.js";
 
 const router = express.Router();
 const upload = multer(); // in-memory storage

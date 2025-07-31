@@ -1,4 +1,4 @@
-import CounselorImageService from "../services/CounselorImageService.js";
+import * as CounselorImageService from "../services/CounselorImageService.js";
 
 export const uploadImage = async (req, res) => {
   try {

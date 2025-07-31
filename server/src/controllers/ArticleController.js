@@ -1,4 +1,4 @@
-import ArticleService from "../services/ArticleService.js";
+import * as ArticleService from "../services/ArticleService.js";
 
 export const getHomePageArticles = async (req, res) => {
   try {

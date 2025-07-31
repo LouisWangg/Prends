@@ -1,5 +1,5 @@
 import express from "express";
-import ServiceTypeCommentController from "../controllers/ServiceTypeCommentController.js";
+import * as ServiceTypeCommentController from "../controllers/ServiceTypeCommentController.js";
 
 const router = express.Router();
 
