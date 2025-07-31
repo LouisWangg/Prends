@@ -1,6 +1,6 @@
-const ArticleService = require("../services/ArticleService");
+import ArticleService from "../services/ArticleService.js";
 
-const getHomePageArticles = async (req, res) => {
+export const getHomePageArticles = async (req, res) => {
   try {
     const result = await ArticleService.getHomePageArticles();
     res.json(result);
@@ -10,7 +10,7 @@ const getHomePageArticles = async (req, res) => {
   }
 };
 
-const getArticles = async (req, res) => {
+export const getArticles = async (req, res) => {
   try {
     const result = await ArticleService.getArticles();
     res.json(result);
@@ -18,9 +18,4 @@ const getArticles = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getArticles");
   }
-};
-
-module.exports = {
-  getHomePageArticles,
-  getArticles
 };

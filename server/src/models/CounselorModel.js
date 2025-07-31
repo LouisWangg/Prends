@@ -1,19 +1,19 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const sharedColumn = require('./SharedColumn');
-const CounselorImage = require('./CounselorImageModel');
-const CounselorPrice = require('./CounselorPriceModel');
-const CounselorComment = require('./CounselorCommentModel');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+import sharedColumn from './SharedColumn.js';
+import CounselorImage from './CounselorImageModel.js';
+import CounselorPrice from './CounselorPriceModel.js';
+import CounselorComment from './CounselorCommentModel.js';
 
 const Counselor = sequelize.define('Counselor', {
-    counselorId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    ...sharedColumn,
+  counselorId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  ...sharedColumn,
 }, {
-    timestamps: true, // or true if your table has createdAt/updatedAt
+  timestamps: true
 });
 
 Counselor.hasMany(CounselorPrice, { foreignKey: 'counselorId' });
@@ -25,4 +25,4 @@ CounselorImage.belongsTo(Counselor, { foreignKey: 'counselorId' });
 Counselor.hasMany(CounselorComment, { foreignKey: 'counselorId' });
 CounselorComment.belongsTo(Counselor, { foreignKey: 'counselorId' });
 
-module.exports = Counselor;
+export default Counselor;

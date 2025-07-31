@@ -1,7 +1,7 @@
-const { Op } = require("sequelize");
-const sequelize = require("../config/database");
+import { Op } from "sequelize";
+import sequelize from "../config/database.js";
 
-const SharedDescriptionModel = require("../models/SharedDescriptionModel");
+import SharedDescriptionModel from "../models/SharedDescriptionModel.js";
 
 const thirdDescription = ["Konseling", "sesi"];
 const eightTitle = ["online", "offline", "home visit"];
@@ -123,7 +123,7 @@ const formatTitleFromType = (type) => {
 };
 
 // Get Description and Notice datas for Detail page
-const getDescriptionsAndNotices = async ({ type, id, subType } = {}) => {
+export const getDescriptionsAndNotices = async ({ type, id, subType } = {}) => {
   const idNum = parseInt(id);
   const subTypeValue = subType?.toLowerCase();
   if (!subTypeValue) return { descriptions: [], notices: [] };
@@ -230,7 +230,7 @@ const getDescriptionsAndNotices = async ({ type, id, subType } = {}) => {
 };
 
 // Get Title and Subtitle datas for List page
-const getTitlesAndSubtitles = async ({ type, subType } = {}) => {
+export const getTitlesAndSubtitles = async ({ type, subType } = {}) => {
   let data, title, description, result;
 
   if (type.includes("service") || type.includes("class")) {
@@ -271,9 +271,4 @@ const getTitlesAndSubtitles = async ({ type, subType } = {}) => {
     title,
     description,
   };
-};
-
-module.exports = {
-  getDescriptionsAndNotices,
-  getTitlesAndSubtitles,
 };

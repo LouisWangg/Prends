@@ -1,12 +1,12 @@
-const { Op, fn, col, literal } = require("sequelize");
+import { Op, fn, col, literal } from "sequelize";
 
-const ServiceTypeModel = require("../models/ServiceTypeModel");
-const ServiceTypeImageModel = require("../models/ServiceTypeImageModel");
-const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
+import ServiceTypeModel from "../models/ServiceTypeModel.js";
+import ServiceTypeImageModel from "../models/ServiceTypeImageModel.js";
+import ServiceTypeCommentModel from "../models/ServiceTypeCommentModel.js";
 
-const { convertImages } = require("../utils/ConvertImage");
+import { convertImages } from "../utils/ConvertImage.js";
 
-const getServiceTypes = async ({ subType = null, sortBy = null }) => {
+export const getServiceTypes = async ({ subType = null, sortBy = null }) => {
   const finalPriceLiteral = literal(`
     CASE 
       WHEN "discountFlag" = true AND "discountPrice" > 0 
@@ -76,7 +76,7 @@ const getServiceTypes = async ({ subType = null, sortBy = null }) => {
 };
 
 // Get Service detail data by Id
-const getServiceDetailById = async ({ id } = {}) => {
+export const getServiceDetailById = async ({ id } = {}) => {
   const data = await ServiceTypeModel.findByPk(id, {
     include: [
       {
@@ -91,9 +91,4 @@ const getServiceDetailById = async ({ id } = {}) => {
   if (!data) return null;
 
   return convertImages(data, "ServiceTypeImages");
-};
-
-module.exports = {
-  getServiceTypes,
-  getServiceDetailById
 };

@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import ServiceTypeController from "../controllers/ServiceTypeController.js";
 
-const ServiceTypeController = require("../controllers/ServiceTypeController");
+const router = express.Router();
 
 router.get("/getServiceTypes", ServiceTypeController.getServiceTypes);
 router.get("/getServiceDetailById/:id", ServiceTypeController.getServiceDetailById);
 
-module.exports = router;
+export default router;

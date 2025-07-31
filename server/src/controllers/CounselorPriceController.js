@@ -1,9 +1,9 @@
-const counselorPricingService = require("../services/CounselorPriceService");
+import CounselorPriceService from "../services/CounselorPriceService.js";
 
-const getCounselorPricingById = async (req, res) => {
+export const getCounselorPricingById = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await counselorPricingService.getCounselorPricingById({ id });
+    const data = await CounselorPriceService.getCounselorPricingById({ id });
 
     if (!data || data.length === 0) {
       return res.status(404).json({ message: "Data not found" });
@@ -14,8 +14,4 @@ const getCounselorPricingById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getCounselorPricingById");
   }
-};
-
-module.exports = {
-  getCounselorPricingById
 };

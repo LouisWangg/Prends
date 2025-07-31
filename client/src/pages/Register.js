@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
@@ -6,7 +7,7 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import "./Auth.css";
 import { emailRegex, nameRegex, passwordRegex } from "../utils/InputValidator";
 import Tnc from "../components/Tnc";
-// import { registerUser } from "../services/UserService";
+import { registerUser } from "../services/UserService";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -16,6 +17,7 @@ const Register = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [serverMessage, setServerMessage] = useState(null);
 
   const [errors, setErrors] = useState({
     firstName: [],
@@ -24,6 +26,7 @@ const Register = () => {
     password: [],
   });
 
+  const navigate = useNavigate();
   const lastNameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -98,36 +101,45 @@ const Register = () => {
     const hasError = Object.values(newErrors).some(arr => arr.length > 0);
     if (hasError) return;
 
-    // const userData = {
-    //   email: "test@example.com",
-    //   password: "123456",
-    //   firstName: "John",
-    //   lastName: "Doe"
-    // };
+    const userData = {
+      email: trimmedEmail,
+      password: trimmedPassword,
+      firstName: trimmedFirstName,
+      lastName: trimmedLastName,
+    };
 
-    // const response = await registerUser(userData);
-    // console.log("Service response: ", response);
+    const response = await registerUser(userData);
+
+    if (!response.success) {
+      setServerMessage({ type: "error", text: response.error });
+    } else {
+      // setServerMessage({ type: "success", text: response.message });
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
+      navigate("/login");
+    }
   };
-
-  // const onRegisterForm = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const body = { email, password };
-  //     await fetch("http://localhost:5000/insert", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(body),
-  //     });
-  //     window.location = "/register";
-  //   } catch (error) {
-  //     console.error(error.message);
-  //   }
-  // };
 
   return (
     <>
       <Typography variant="h3" className="pageTitle">Register</Typography>
       <div className="authForm">
+        {serverMessage && (
+          <div className={`serverMessage ${serverMessage.type}`}>
+            <ul className="errorList">
+              <li className="errorText">
+                {serverMessage.type === "error" && (
+                  <>
+                    <PiWarningCircleFill className="errorIcon" />
+                    {serverMessage.text}
+                  </>
+                )}
+              </li>
+            </ul>
+          </div>
+        )}
         <div>
           <input
             type="text"

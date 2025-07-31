@@ -3,6 +3,10 @@
     margin: 0 auto;
 }
 
+.serverMessage {
+    display: flex;
+}
+
 .authInput {
     display: block;
     width: 100%;

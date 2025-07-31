@@ -1,7 +1,6 @@
-const ArticleImageService = require("../services/ArticleImageService");
+import ArticleImageService from "../services/ArticleImageService.js";
 
-// Upload image by id
-const uploadImage = async (req, res) => {
+export const uploadImage = async (req, res) => {
   try {
     const { id } = req.params;
     const { file } = req;
@@ -11,13 +10,8 @@ const uploadImage = async (req, res) => {
     await ArticleImageService.uploadImage({ id, file });
 
     res.send("Article image uploaded successfully");
-
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
   }
-};
-
-module.exports = {
-  uploadImage
 };

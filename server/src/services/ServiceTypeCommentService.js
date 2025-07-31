@@ -1,10 +1,10 @@
-const { Op, Sequelize, fn, col } = require("sequelize");
+import { Op, Sequelize, fn, col } from "sequelize";
 
-const UserModel = require("../models/UserModel");
-const ServiceTypeCommentModel = require("../models/ServiceTypeCommentModel");
+import UserModel from "../models/UserModel.js";
+import ServiceTypeCommentModel from "../models/ServiceTypeCommentModel.js";
 
 // Get Comment datas for Home page
-const getHomePageComments = async () => {
+export const getHomePageComments = async () => {
   return await ServiceTypeCommentModel.findAll({
     attributes: ["serviceTypeCommentId", "title", "description"],
     order: [["createdAt", "DESC"]],
@@ -13,7 +13,7 @@ const getHomePageComments = async () => {
 };
 
 // Get Comment datas for Service Detail page
-const getServiceCommentsById = async ({ id, sort } = {}) => {
+export const getServiceCommentsById = async ({ id, sort } = {}) => {
   let orderClause;
 
   if (sort === "oldest") {
@@ -70,9 +70,4 @@ const getServiceCommentsById = async ({ id, sort } = {}) => {
   });
 
   return { datas, counts };
-};
-
-module.exports = {
-  getHomePageComments,
-  getServiceCommentsById
 };

@@ -1,42 +1,43 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const CounselorComment = require('./CounselorCommentModel');
-const ServiceTypeComment = require('./ServiceTypeCommentModel');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+import CounselorComment from './CounselorCommentModel.js';
+import ServiceTypeComment from './ServiceTypeCommentModel.js';
 
 const User = sequelize.define('User', {
-    userId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+  userId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
-    timestamps: true, // or true if your table has createdAt/updatedAt
+  timestamps: true,
 });
 
+// Associations
 User.hasMany(CounselorComment, { foreignKey: 'userId' });
 CounselorComment.belongsTo(User, { foreignKey: 'userId' });
 
 User.hasMany(ServiceTypeComment, { foreignKey: 'userId' });
 ServiceTypeComment.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = User;
+export default User;

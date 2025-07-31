@@ -1,23 +1,17 @@
-const CounselorImageModel = require("../models/CounselorImageModel");
+import CounselorImageModel from "../models/CounselorImageModel.js";
 
 // Upload image by id
-const uploadImage = async ({ id, file } = {}) => {
+export const uploadImage = async ({ id, file } = {}) => {
   return await CounselorImageModel.create({
     counselorId: id,
-    image: file.buffer
+    image: file.buffer,
   });
 };
 
 // Update image by id
-const updateImage = async ({ id, file } = {}) => {
-  // Update an image for a specific counselor
+export const updateImage = async ({ id, file } = {}) => {
   return await CounselorImageModel.update(
     { image: file.buffer },
     { where: { counselorImageId: id } }
   );
-};
-
-module.exports = {
-  uploadImage,
-  updateImage,
 };

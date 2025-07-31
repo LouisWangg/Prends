@@ -1,12 +1,8 @@
-const QnaModel = require("../models/QnaModel");
+import QnaModel from "../models/QnaModel.js";
 
 // Get Qna datas for Home page
-const getHomePageQnas = async () => {
+export const getHomePageQnas = async () => {
   return await QnaModel.findAll({
-    order: [["qnaId", "ASC"]]
+    order: [["qnaId", "ASC"]],
   });
-};
-
-module.exports = {
-  getHomePageQnas
 };

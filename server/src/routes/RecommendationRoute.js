@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import RecommendationController from "../controllers/RecommendationController.js";
 
-const RecommendationController = require("../controllers/RecommendationController");
+const router = express.Router();
 
 router.get("/getServiceTypeAndSeniorCounselorRecommendations", RecommendationController.getServiceTypeAndSeniorCounselorRecommendations);
 router.get("/getCounselorAndSeniorCounselorRecommendations", RecommendationController.getCounselorAndSeniorCounselorRecommendations);
@@ -11,4 +11,4 @@ router.get("/getShanenClassRecommendations", RecommendationController.getShanenC
 router.get("/getSeniorCounselorRecommendations", RecommendationController.getSeniorCounselorRecommendations);
 router.get("/getServiceTypeRecommendations", RecommendationController.getServiceTypeRecommendations);
 
-module.exports = router;
+export default router;

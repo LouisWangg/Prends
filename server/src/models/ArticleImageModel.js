@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
 
 const ArticleImage = sequelize.define("ArticleImage", {
   articleImageId: {
@@ -12,7 +12,7 @@ const ArticleImage = sequelize.define("ArticleImage", {
     allowNull: true,
   },
 }, {
-    timestamps: true, // or true if your table has createdAt/updatedAt
+  timestamps: true, // Set to false if you don't want createdAt/updatedAt
 });
 
-module.exports = ArticleImage;
+export default ArticleImage;

@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import ServiceTypePriceController from "../controllers/ServiceTypePriceController.js";
+
 const router = express.Router();
-const ServiceTypePriceController = require("../controllers/ServiceTypePriceController");
 
 router.get("/getServicePricingById/:id", ServiceTypePriceController.getServicePricingById);
 
-module.exports = router;
+export default router;

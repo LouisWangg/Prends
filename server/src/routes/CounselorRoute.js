@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import CounselorController from "../controllers/CounselorController.js";
 
-const CounselorController = require("../controllers/CounselorController");
+const router = express.Router();
 
 router.get("/getCounselors", CounselorController.getCounselors);
 router.get("/getCounselorDetailById/:id", CounselorController.getCounselorDetailById);
 
-module.exports = router;
+export default router;

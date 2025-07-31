@@ -1,24 +1,22 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+import { DataTypes } from "sequelize";
+import sequelize from "../config/database.js";
 
 const CounselorImage = sequelize.define("CounselorImage", {
-    counselorImageId: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    counselorId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    image: {
-      type: DataTypes.BLOB("long"),
-      allowNull: true,
-    },
+  counselorImageId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
-  {
-    timestamps: true, // or true if your table has createdAt/updatedAt
-  }
-);
+  counselorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  image: {
+    type: DataTypes.BLOB("long"),
+    allowNull: true,
+  },
+}, {
+  timestamps: true,
+});
 
-module.exports = CounselorImage;
+export default CounselorImage;

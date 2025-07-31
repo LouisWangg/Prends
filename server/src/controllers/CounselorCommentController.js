@@ -1,6 +1,6 @@
-const CounselorCommentService = require("../services/CounselorCommentService");
+import CounselorCommentService from "../services/CounselorCommentService.js";
 
-const getCounselorCommentsById = async (req, res) => {
+export const getCounselorCommentsById = async (req, res) => {
   try {
     const { id } = req.params;
     const { sort } = req.query;
@@ -12,8 +12,4 @@ const getCounselorCommentsById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on running getCounselorCommentsById");
   }
-};
-
-module.exports = {
-  getCounselorCommentsById
 };

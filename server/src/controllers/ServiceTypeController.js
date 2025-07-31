@@ -1,7 +1,7 @@
-const ServiceTypeService = require("../services/ServiceTypeService");
+import ServiceTypeService from "../services/ServiceTypeService.js";
 
 // Get Service Type datas according to type
-const getServiceTypes = async (req, res) => {
+export const getServiceTypes = async (req, res) => {
   try {
     const { subType, sortBy } = req.query;
     const datas = await ServiceTypeService.getServiceTypes({ subType, sortBy });
@@ -18,7 +18,7 @@ const getServiceTypes = async (req, res) => {
 };
 
 // Get Service detail data by Id
-const getServiceDetailById = async (req, res) => {
+export const getServiceDetailById = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await ServiceTypeService.getServiceDetailById({ id });
@@ -32,9 +32,4 @@ const getServiceDetailById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getServiceDetailById");
   }
-};
-
-module.exports = {
-  getServiceTypes,
-  getServiceDetailById
 };

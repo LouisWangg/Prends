@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import ArticleController from "../controllers/ArticleController.js";
 
-const ArticleController = require("../controllers/ArticleController");
+const router = express.Router();
 
 router.get("/getHomePageArticles", ArticleController.getHomePageArticles);
 router.get("/getArticles", ArticleController.getArticles);
 
-module.exports = router;
+export default router;

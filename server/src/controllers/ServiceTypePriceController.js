@@ -1,6 +1,6 @@
-const ServiceTypePriceService = require("../services/ServiceTypePriceService");
+import ServiceTypePriceService from "../services/ServiceTypePriceService.js";
 
-const getServicePricingById = async (req, res) => {
+export const getServicePricingById = async (req, res) => {
   try {
     const { id } = req.params;
     const datas = await ServiceTypePriceService.getServicePricingById({ id });
@@ -14,8 +14,4 @@ const getServicePricingById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getServicePricingById");
   }
-};
-
-module.exports = {
-  getServicePricingById
 };

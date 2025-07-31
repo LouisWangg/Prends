@@ -1,12 +1,11 @@
-const express = require("express");
-const multer = require("multer");
+import express from "express";
+import multer from "multer";
+import ArticleImageController from "../controllers/ArticleImageController.js";
 
 const router = express.Router();
 const upload = multer();
 
-const ArticleImageController = require("../controllers/ArticleImageController");
+//multer to process the file
+router.post("/uploadImage/:id", upload.single("image"), ArticleImageController.uploadImage);
 
-// using Multer middleware to process the file
-router.post("/uploadImage/:id", upload.single("image"), ArticleImageController.uploadImage); 
-
-module.exports = router;
+export default router;

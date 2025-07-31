@@ -1,8 +1,9 @@
-const express = require("express");
+import express from "express";
+import ServiceTypeCommentController from "../controllers/ServiceTypeCommentController.js";
+
 const router = express.Router();
-const ServiceTypeCommentController = require("../controllers/ServiceTypeCommentController");
 
 router.get("/getHomePageComments", ServiceTypeCommentController.getHomePageComments);
 router.get("/getServiceCommentsById/:id", ServiceTypeCommentController.getServiceCommentsById);
 
-module.exports = router;
+export default router;

@@ -1,26 +1,26 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
 const Qna = sequelize.define('Qna', {
-    qnaId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
-    isActive: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    }
+  qnaId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
 }, {
-    timestamps: true, // or true if your table has createdAt/updatedAt
+  timestamps: true,
 });
 
-module.exports = Qna;
+export default Qna;

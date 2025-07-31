@@ -1,36 +1,35 @@
-const { Op } = require("sequelize");
-const sequelize = require("../config/database");
+import { Op } from "sequelize";
+import sequelize from "../config/database.js";
 
-const ArticleModel = require("../models/ArticleModel");
-const ArticleImageModel = require("../models/ArticleImageModel");
+import ArticleModel from "../models/ArticleModel.js";
+import ArticleImageModel from "../models/ArticleImageModel.js";
 
-const { convertArticleImages } = require("../utils/ConvertImage");
+import { convertArticleImages } from "../utils/ConvertImage.js";
 
 // Get 3 newest Article datas for Home page
-const getHomePageArticles = async () => {
-    const articles = await ArticleModel.findAll({
-        attributes: ["articleId", "title", "subTitle"],
-        include: [{ model: ArticleImageModel, attributes: ["image"] }],
-        order: [["createdAt", "DESC"]],
-        limit: 3
-    });
+export const getHomePageArticles = async () => {
+  const articles = await ArticleModel.findAll({
+    attributes: ["articleId", "title", "subTitle"],
+    include: [{ model: ArticleImageModel, attributes: ["image"] }],
+    order: [["createdAt", "DESC"]],
+    limit: 3,
+  });
 
-    return convertArticleImages(articles);
+  return convertArticleImages(articles);
 };
 
 // Get Articles for Article page
-const getArticles = async () => {
-    const articles = await ArticleModel.findAll({
-        attributes: ["articleId", "title",
-            [sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), 'createdAt'], "subTitle"],
-        include: [{ model: ArticleImageModel, attributes: ["image"] }],
-        order: [["createdAt", "DESC"]],
-    });
+export const getArticles = async () => {
+  const articles = await ArticleModel.findAll({
+    attributes: [
+      "articleId",
+      "title",
+      [sequelize.literal(`TO_CHAR("Article"."createdAt", 'DD MONTH YYYY')`), "createdAt"],
+      "subTitle",
+    ],
+    include: [{ model: ArticleImageModel, attributes: ["image"] }],
+    order: [["createdAt", "DESC"]],
+  });
 
-    return convertArticleImages(articles);
-};
-
-module.exports = {
-    getHomePageArticles,
-    getArticles
+  return convertArticleImages(articles);
 };

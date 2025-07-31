@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import CounselorPriceController from "../controllers/CounselorPriceController.js";
 
-const CounselorPriceController = require("../controllers/CounselorPriceController");
+const router = express.Router();
 
 router.get("/getCounselorPricingById/:id", CounselorPriceController.getCounselorPricingById);
 
-module.exports = router;
+export default router;

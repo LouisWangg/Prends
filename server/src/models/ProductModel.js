@@ -1,21 +1,21 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const sharedColumn = require('./SharedColumn');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+import sharedColumn from './SharedColumn.js';
 
 const Product = sequelize.define('Product', {
-    productId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    ...sharedColumn,
-    quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-    },
+  productId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  ...sharedColumn,
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 }, {
-    timestamps: true, // or true if your table has createdAt/updatedAt
+  timestamps: true,
 });
 
-module.exports = Product;
+export default Product;

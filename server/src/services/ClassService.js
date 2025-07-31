@@ -1,17 +1,16 @@
-const { Op, fn, col, literal } = require("sequelize");
+import { Op, literal } from "sequelize";
 
-const ClassModel = require("../models/ClassModel");
-
-const { convertImageSameField } = require("../utils/ConvertImage");
+import ClassModel from "../models/ClassModel.js";
+import { convertImageSameField } from "../utils/ConvertImage.js";
 
 // Get Class datas for Home page
-const getClasses = async ({ subType = null, sortBy = "default", limit = null } = {}) => {
+export const getClasses = async ({ subType = null, sortBy = "default", limit = null } = {}) => {
   const finalPriceLiteral = literal(`
-      CASE 
-      WHEN "discountFlag" = true AND "discountPrice" > 0 
-      THEN "discountPrice" 
-      ELSE "price" 
-      END
+    CASE 
+    WHEN "discountFlag" = true AND "discountPrice" > 0 
+    THEN "discountPrice" 
+    ELSE "price" 
+    END
   `);
 
   let orderClause;
@@ -40,26 +39,26 @@ const getClasses = async ({ subType = null, sortBy = "default", limit = null } =
       "discountFlag",
       "discountPrice",
       "type",
-      "image"
+      "image",
     ],
     where: subType
       ? {
-        subType: {
-          [Op.iLike]: `%${subType}%`,
-        },
-      } : undefined,
+          subType: {
+            [Op.iLike]: `%${subType}%`,
+          },
+        }
+      : undefined,
     order: orderClause,
     limit: limit ? parseInt(limit) : undefined,
   });
 
-  // Map results to convert image buffer to base64 string
   const response = convertImageSameField(datas, "image");
 
   return response;
 };
 
 // Get Class detail data by Id
-const getClassDetailById = async ({ id } = {}) => {
+export const getClassDetailById = async ({ id } = {}) => {
   const data = await ClassModel.findByPk(id);
 
   if (!data) return null;
@@ -70,16 +69,9 @@ const getClassDetailById = async ({ id } = {}) => {
 };
 
 // Upload image by id
-const updateImage = async ({ id, file } = {}) => {
-  // Upload an image for a specific class
+export const updateImage = async ({ id, file } = {}) => {
   return await ClassModel.update(
     { image: file.buffer },
     { where: { classId: id } }
   );
-};
-
-module.exports = {
-  getClasses,
-  getClassDetailById,
-  updateImage,
 };

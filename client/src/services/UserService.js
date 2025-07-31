@@ -8,8 +8,10 @@ export const registerUser = async (data) => {
     const response = await axios.post(`${url}/registerUser`, data);
     return response.data;
   } catch (error) {
-    console.error("Register account failed: ", error?.message || error);
-    return { error: "Failed to create user" };
+    if (error.response && error.response.data && !error.response.data.success) 
+      return { error: error.response.data.message, success: error.response.data.success };
+
+    return { error: "Gagal dalam proses Register" };
   }
 };
 
@@ -19,8 +21,10 @@ export const loginUser = async (data) => {
     const response = await axios.get(`${url}/loginUser`, data);
     return response.data;
   } catch (error) {
-    console.error(`User not found: `, error?.message || error);
-    return { error: "Failed to create user" };
+    if (error.response && error.response.data && !error.response.data.success) 
+      return { error: error.response.data.message, success: error.response.data.success };
+
+    return { error: "Gagal dalam proses Login" };
   }
 };
 

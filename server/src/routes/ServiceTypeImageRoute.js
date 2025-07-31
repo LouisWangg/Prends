@@ -1,13 +1,12 @@
-const express = require("express");
-const multer = require("multer");
+import express from "express";
+import multer from "multer";
+import ServiceTypeImageController from "../controllers/ServiceTypeImageController.js";
 
 const router = express.Router();
 const upload = multer(); // in-memory storage
 
-const ServiceTypeImageController = require("../controllers/ServiceTypeImageController");
-
 // using Multer middleware to process the file
-router.post("/uploadImage/:id", upload.single("image"), ServiceTypeImageController.uploadImage); 
-router.put("/updateImage/:id", upload.single("image"), ServiceTypeImageController.updateImage); 
+router.post("/uploadImage/:id", upload.single("image"), ServiceTypeImageController.uploadImage);
+router.put("/updateImage/:id", upload.single("image"), ServiceTypeImageController.updateImage);
 
-module.exports = router;
+export default router;

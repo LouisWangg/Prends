@@ -1,6 +1,6 @@
-const ClassService = require("../services/ClassService");
+import ClassService from "../services/ClassService.js";
 
-const getClasses = async (req, res) => {
+export const getClasses = async (req, res) => {
   try {
     const { subType, sortBy, limit } = req.query;
     const response = await ClassService.getClasses({ subType, sortBy, limit });
@@ -16,7 +16,7 @@ const getClasses = async (req, res) => {
   }
 };
 
-const getClassDetailById = async (req, res) => {
+export const getClassDetailById = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await ClassService.getClassDetailById({ id });
@@ -24,7 +24,7 @@ const getClassDetailById = async (req, res) => {
     if (!data) {
       return res.status(404).json({ message: "Data not found" });
     }
-    
+
     res.json(data);
   } catch (error) {
     console.error(error.message);
@@ -32,7 +32,7 @@ const getClassDetailById = async (req, res) => {
   }
 };
 
-const updateImage = async (req, res) => {
+export const updateImage = async (req, res) => {
   try {
     const { id } = req.params;
     const { file } = req;
@@ -40,16 +40,10 @@ const updateImage = async (req, res) => {
     if (!file) return res.status(400).send("No image file uploaded.");
 
     await ClassService.updateImage({ id, file });
-    
+
     res.send("Class image uploaded successfully");
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error on updateImage");
   }
-};
-
-module.exports = {
-  getClasses,
-  getClassDetailById,
-  updateImage
 };

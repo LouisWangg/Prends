@@ -1,7 +1,6 @@
-const QnaService = require("../services/QnaService");
+import QnaService from "../services/QnaService.js";
 
-// Get Qna datas for Home page
-const getHomePageQnas = async (req, res) => {
+export const getHomePageQnas = async (req, res) => {
   try {
     const qnas = await QnaService.getHomePageQnas();
     res.json(qnas);
@@ -9,8 +8,4 @@ const getHomePageQnas = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getHomePageQnas");
   }
-};
-
-module.exports = {
-  getHomePageQnas
 };

@@ -1,13 +1,9 @@
-const ArticleImageModel = require("../models/ArticleImageModel");
+import ArticleImageModel from "../models/ArticleImageModel.js";
 
 // Upload image by id
-const uploadImage = async ({ id, file } = {}) => {
+export const uploadImage = async ({ id, file } = {}) => {
   return await ArticleImageModel.create({
     articleId: id,
     image: file.buffer
   });
-};
-
-module.exports = {
-  uploadImage
 };

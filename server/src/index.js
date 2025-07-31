@@ -1,36 +1,40 @@
-const express = require("express");
-const cors = require("cors");
-const { sequelize } = require('./models');
+import express from "express";
+import cors from "cors";
+import sequelize from "./models/index.js";
+import errorHandler from "./middlewares/ErrorHandler.js";
+
+// Import routes
+import UserRoute from "./routes/UserRoute.js";
+import ClassRoute from "./routes/ClassRoute.js";
+import ServiceTypeRoute from "./routes/ServiceTypeRoute.js";
+import ServiceTypeImageRoute from "./routes/ServiceTypeImageRoute.js";
+import ServiceTypePriceRoute from "./routes/ServiceTypePriceRoute.js";
+import ServiceTypeCommentRoute from "./routes/ServiceTypeCommentRoute.js";
+import CounselorRoute from "./routes/CounselorRoute.js";
+import CounselorImageRoute from "./routes/CounselorImageRoute.js";
+import CounselorPriceRoute from "./routes/CounselorPriceRoute.js";
+import CounselorCommentRoute from "./routes/CounselorCommentRoute.js";
+import ArticleRoute from "./routes/ArticleRoute.js";
+import ArticleImageRoute from "./routes/ArticleImageRoute.js";
+import SharedDescriptionRoute from "./routes/SharedDescriptionRoute.js";
+import QnaRoute from "./routes/QnaRoute.js";
+import RecommendationRoute from "./routes/RecommendationRoute.js";
+
 const app = express();
 
-sequelize.sync({ alter: true, logging: console.log })
+// Database sync
+sequelize
+  .sync({ alter: true, logging: console.log })
   .then(() => {
-    console.log('Database synced');
+    console.log("Database synced");
   })
   .catch((err) => {
-    console.error('Error syncing database:', err);
+    console.error("Error syncing database:", err);
   });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Import routes
-const UserRoute = require("./routes/UserRoute");
-const ClassRoute = require("./routes/ClassRoute");
-const ServiceTypeRoute = require("./routes/ServiceTypeRoute");
-const ServiceTypeImageRoute = require("./routes/ServiceTypeImageRoute");
-const ServiceTypePriceRoute = require("./routes/ServiceTypePriceRoute");
-const ServiceTypeCommentRoute = require("./routes/ServiceTypeCommentRoute");
-const CounselorRoute = require("./routes/CounselorRoute");
-const CounselorImageRoute = require("./routes/CounselorImageRoute");
-const CounselorPriceRoute = require("./routes/CounselorPriceRoute");
-const CounselorCommentRoute = require("./routes/CounselorCommentRoute");
-const ArticleRoute = require("./routes/ArticleRoute");
-const ArticleImageRoute = require("./routes/ArticleImageRoute");
-const SharedDescriptionRoute = require("./routes/SharedDescriptionRoute");
-const QnaRoute = require("./routes/QnaRoute");
-const RecommendationRoute = require("./routes/RecommendationRoute");
 
 // Register routes
 app.use("/users", UserRoute);
@@ -48,6 +52,9 @@ app.use("/articleImages", ArticleImageRoute);
 app.use("/sharedDescriptions", SharedDescriptionRoute);
 app.use("/qnas", QnaRoute);
 app.use("/recommendations", RecommendationRoute);
+
+// Must go after all routes
+app.use(errorHandler);
 
 // Server start
 app.listen(5000, () => {

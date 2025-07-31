@@ -1,21 +1,21 @@
-const sequelize = require("../config/database");
+import sequelize from "../config/database.js";
 
-const User = require("./UserModel");
-const Class = require("./ClassModel");
-const ServiceType = require("./ServiceTypeModel");
-const ServiceTypeImage = require("./ServiceTypeImageModel");
-const ServiceTypePrice = require("./ServiceTypePriceModel");
-const ServiceTypeComment = require("./ServiceTypeCommentModel");
-const Counselor = require("./CounselorModel");
-const CounselorImage = require("./CounselorImageModel");
-const CounselorPrice = require("./CounselorPriceModel");
-const CounselorComment = require("./CounselorCommentModel");
-const Article = require("./ArticleModel");
-const ArticleImage = require("./ArticleImageModel");
-const Qna = require("./QnaModel");
-const SharedDescription = require("./SharedDescriptionModel");
+import User from "./UserModel.js";
+import Class from "./ClassModel.js";
+import ServiceType from "./ServiceTypeModel.js";
+import ServiceTypeImage from "./ServiceTypeImageModel.js";
+import ServiceTypePrice from "./ServiceTypePriceModel.js";
+import ServiceTypeComment from "./ServiceTypeCommentModel.js";
+import Counselor from "./CounselorModel.js";
+import CounselorImage from "./CounselorImageModel.js";
+import CounselorPrice from "./CounselorPriceModel.js";
+import CounselorComment from "./CounselorCommentModel.js";
+import Article from "./ArticleModel.js";
+import ArticleImage from "./ArticleImageModel.js";
+import Qna from "./QnaModel.js";
+import SharedDescription from "./SharedDescriptionModel.js";
 
-// Define associations here
+// Define associations
 User.hasMany(ServiceTypeComment, { foreignKey: 'userId' });
 ServiceTypeComment.belongsTo(User, { foreignKey: 'userId' });
 
@@ -40,7 +40,7 @@ CounselorComment.belongsTo(Counselor, { foreignKey: 'counselorId' });
 ArticleImage.hasMany(Article, { foreignKey: 'articleImageId' });
 Article.belongsTo(ArticleImage, { foreignKey: 'articleImageId' });
 
-module.exports = {
+export {
   sequelize,
   User,
   Class,

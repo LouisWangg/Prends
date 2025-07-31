@@ -1,6 +1,6 @@
-const RecommendationService = require("../services/RecommendationService");
+import RecommendationService from "../services/RecommendationService.js";
 
-const getServiceTypeAndSeniorCounselorRecommendations = async (req, res) => {
+export const getServiceTypeAndSeniorCounselorRecommendations = async (req, res) => {
   try {
     const { excludeId, subType } = req.query;
     const result = await RecommendationService.getServiceTypeAndSeniorCounselorRecommendations({ excludeId, subType });
@@ -11,7 +11,7 @@ const getServiceTypeAndSeniorCounselorRecommendations = async (req, res) => {
   }
 };
 
-const getCounselorAndSeniorCounselorRecommendations = async (req, res) => {
+export const getCounselorAndSeniorCounselorRecommendations = async (req, res) => {
   try {
     const { excludeId, subType } = req.query;
     const result = await RecommendationService.getCounselorAndSeniorCounselorRecommendations({ excludeId, subType });
@@ -22,9 +22,7 @@ const getCounselorAndSeniorCounselorRecommendations = async (req, res) => {
   }
 };
 
-//
-
-const getServiceTypeAndFamilyRecommendations = async (req, res) => {
+export const getServiceTypeAndFamilyRecommendations = async (req, res) => {
   try {
     const { excludeId, subType } = req.query;
     const result = await RecommendationService.getServiceTypeAndFamilyRecommendations({ excludeId, subType });
@@ -35,7 +33,7 @@ const getServiceTypeAndFamilyRecommendations = async (req, res) => {
   }
 };
 
-const getDeboraAssessmentRecommendations = async (req, res) => {
+export const getDeboraAssessmentRecommendations = async (req, res) => {
   try {
     const { excludeId } = req.query;
     const result = await RecommendationService.getDeboraAssessmentRecommendations({ excludeId });
@@ -46,7 +44,7 @@ const getDeboraAssessmentRecommendations = async (req, res) => {
   }
 };
 
-const getShanenClassRecommendations = async (req, res) => {
+export const getShanenClassRecommendations = async (req, res) => {
   try {
     const { excludeId } = req.query;
     const result = await RecommendationService.getShanenClassRecommendations({ excludeId });
@@ -57,7 +55,7 @@ const getShanenClassRecommendations = async (req, res) => {
   }
 };
 
-const getSeniorCounselorRecommendations = async (req, res) => {
+export const getSeniorCounselorRecommendations = async (req, res) => {
   try {
     const result = await RecommendationService.getSeniorCounselorRecommendations();
     res.json(result);
@@ -67,7 +65,7 @@ const getSeniorCounselorRecommendations = async (req, res) => {
   }
 };
 
-const getServiceTypeRecommendations = async (req, res) => {
+export const getServiceTypeRecommendations = async (req, res) => {
   try {
     const { excludeId, subType } = req.query;
     const result = await RecommendationService.getServiceTypeRecommendations({ excludeId, subType });
@@ -76,14 +74,4 @@ const getServiceTypeRecommendations = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getServiceTypeRecommendations");
   }
-};
-
-module.exports = {
-  getServiceTypeAndSeniorCounselorRecommendations,
-  getCounselorAndSeniorCounselorRecommendations,
-  getServiceTypeAndFamilyRecommendations,
-  getDeboraAssessmentRecommendations,
-  getShanenClassRecommendations,
-  getSeniorCounselorRecommendations,
-  getServiceTypeRecommendations,
 };

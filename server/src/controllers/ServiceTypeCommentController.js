@@ -1,6 +1,6 @@
-const ServiceTypeCommentService = require("../services/ServiceTypeCommentService");
+import ServiceTypeCommentService from "../services/ServiceTypeCommentService.js";
 
-const getHomePageComments = async (req, res) => {
+export const getHomePageComments = async (req, res) => {
   try {
     const result = await ServiceTypeCommentService.getHomePageComments();
     res.json(result);
@@ -10,7 +10,7 @@ const getHomePageComments = async (req, res) => {
   }
 };
 
-const getServiceCommentsById = async (req, res) => {
+export const getServiceCommentsById = async (req, res) => {
   try {
     const { id } = req.params;
     const { sort } = req.query;
@@ -21,9 +21,4 @@ const getServiceCommentsById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getServiceCommentsById");
   }
-};
-
-module.exports = {
-  getHomePageComments,
-  getServiceCommentsById
 };

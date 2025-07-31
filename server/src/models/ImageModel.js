@@ -1,22 +1,22 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
 const Image = sequelize.define('Image', {
-    imageId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    imageCategory: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    url: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    }
+  imageId: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  imageCategory: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  url: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
 }, {
-    timestamps: false, // or true if your table has createdAt/updatedAt
+  timestamps: false,
 });
 
-module.exports = Image;
+export default Image;

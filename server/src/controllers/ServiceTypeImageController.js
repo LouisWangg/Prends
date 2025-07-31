@@ -1,6 +1,6 @@
-const ServiceTypeImageService = require("../services/ServiceTypeImageService");
+import ServiceTypeImageService from "../services/ServiceTypeImageService.js";
 
-const uploadImage = async (req, res) => {
+export const uploadImage = async (req, res) => {
   try {
     const { id } = req.params;
     const { file } = req;
@@ -15,7 +15,7 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const updateImage = async (req, res) => {
+export const updateImage = async (req, res) => {
   try {
     const { id } = req.params;
     const { file } = req;
@@ -28,9 +28,4 @@ const updateImage = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on updateImage");
   }
-};
-
-module.exports = {
-  uploadImage,
-  updateImage,
 };

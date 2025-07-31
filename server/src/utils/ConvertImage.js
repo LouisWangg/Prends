@@ -1,4 +1,4 @@
-const convertImageSameField = (data, imageKey = "image") => {
+export const convertImageSameField = (data, imageKey = "image") => {
   const process = (item) => {
     const plain = item.get({ plain: true });
     const imageBuffer = plain[imageKey];
@@ -12,7 +12,7 @@ const convertImageSameField = (data, imageKey = "image") => {
   return null;
 };
 
-const convertArticleImages = (data, imageKey = "ArticleImage") => {
+export const convertArticleImages = (data, imageKey = "ArticleImage") => {
   const process = (article) => {
     const plain = article.get({ plain: true });
     const imageObj = plain[imageKey];
@@ -31,7 +31,7 @@ const convertArticleImages = (data, imageKey = "ArticleImage") => {
   return null;
 };
 
-const convertImages = (data, imageKey = "Images") => {
+export const convertImages = (data, imageKey = "Images") => {
   const process = (item) => {
     const plain = item.get({ plain: true });
     const images = plain[imageKey] || [];
@@ -47,10 +47,4 @@ const convertImages = (data, imageKey = "Images") => {
   if (Array.isArray(data)) return data.map(process);
   if (data && typeof data.get === "function") return process(data);
   return null;
-};
-
-module.exports = {
-  convertImageSameField,
-  convertArticleImages,
-  convertImages,
 };

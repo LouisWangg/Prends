@@ -1,6 +1,6 @@
-const CounselorService = require("../services/CounselorService");
+import CounselorService from "../services/CounselorService.js";
 
-const getCounselors = async (req, res) => {
+export const getCounselors = async (req, res) => {
   try {
     const { subType, sortBy, limit } = req.query;
     const datas = await CounselorService.getCounselors({ subType, sortBy, limit });
@@ -16,7 +16,7 @@ const getCounselors = async (req, res) => {
   }
 };
 
-const getCounselorDetailById = async (req, res) => {
+export const getCounselorDetailById = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await CounselorService.getCounselorDetailById({ id });
@@ -28,9 +28,4 @@ const getCounselorDetailById = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error on getCounselorDetailById");
   }
-};
-
-module.exports = {
-  getCounselors,
-  getCounselorDetailById
 };

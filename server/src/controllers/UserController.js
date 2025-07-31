@@ -1,39 +1,38 @@
-const UserService = require("../services/UserService");
+import * as UserService from "../services/UserService.js";
 
 // Register User
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { email, password, firstName, lastName } = req.body;
-
     const result = await UserService.registerUser({ email, password, firstName, lastName });
 
-    if (result.exists) {
-      return res.status(404).send(`User with this email: ${result.email} has already exist!`);
-    }
-
-    res.json(`New user has been successfully added: ${result.firstName}`);
+    return res.status(201).json({
+      success: true,
+      message: `Pengguna baru berhasil didaftarkan : ${result.firstName}`
+    });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server error");
+    next(error);
   }
 };
 
 // Login User
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const data = await UserService.loginUser({ email, password });
 
-    if (!data) return res.status(404).send("User not found");
-    res.json(data);
+    return res.status(200).json({
+      success: true,
+      message: `Pengguna berhasil ditemukan`,
+      data,
+    });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server error");
+    next(error);
   }
 };
 
 // Create user
-const insertUser = async (req, res) => {
+export const insertUser = async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
     const data = await UserService.insertUser({ email, password, firstName, lastName });
@@ -45,7 +44,7 @@ const insertUser = async (req, res) => {
 };
 
 // Get all users
-const getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
     const datas = await UserService.getUsers();
     res.json(datas);
@@ -56,7 +55,7 @@ const getUsers = async (req, res) => {
 };
 
 // Get user by Id
-const getUser = async (req, res) => {
+export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await UserService.getUser({ id });
@@ -70,7 +69,7 @@ const getUser = async (req, res) => {
 };
 
 // Update user
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { email, firstName, lastName } = req.body;
@@ -86,7 +85,7 @@ const updateUser = async (req, res) => {
 };
 
 // Delete user
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const data = await UserService.deleteUser({ id });
@@ -97,14 +96,4 @@ const deleteUser = async (req, res) => {
     console.error(error.message);
     res.status(500).send("Server error");
   }
-};
-
-module.exports = {
-  registerUser,
-  loginUser,
-  insertUser,
-  getUsers,
-  getUser,
-  updateUser,
-  deleteUser
 };
