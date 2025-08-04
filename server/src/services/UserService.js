@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-// import { generateToken } from "../utils/AuthUtil.js";
+import { generateToken, generateRefreshToken } from "../utils/AuthUtil.js";
 import { AppError } from "../utils/AppError.js";
 import UserModel from "../models/UserModel.js";
 
@@ -36,14 +36,19 @@ export const loginUser = async ({ email, password } = {}) => {
   if (!isMatch)
     throw new AppError("Password salah", 401, "AUTHENTICATION_PASSWORD", "INVALID_PASSWORD");
 
+  const payload = { id: user.userId, email: user.email };
+  const accessToken = generateToken(payload);
+  const refreshToken = generateRefreshToken(payload);
+
   return {
-    success: true,
     user: {
-      id: user.id,
+      id: user.userId,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
     },
+    accessToken,
+    refreshToken,
   };
 };
 

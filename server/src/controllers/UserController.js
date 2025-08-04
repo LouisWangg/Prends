@@ -19,11 +19,11 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const data = await UserService.loginUser({ email, password });
+    const { user, accessToken, refreshToken } = await UserService.loginUser({ email, password });
 
     return res.status(200).json({
       success: true,
-      message: `Pengguna berhasil ditemukan`,
+      message: `Login berhasil`,
       data,
     });
   } catch (error) {
