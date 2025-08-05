@@ -5,11 +5,21 @@ import Footer from "./Footer";
 import Line from "./Line";
 
 const Layout = () => {
-  const [isSticky, setIsSticky] = useState(false);
+  // const [isSticky, setIsSticky] = useState(false);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsSticky(window.scrollY > 0);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
+
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 0);
+      setShowNavbar(window.scrollY === 0);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -17,9 +27,10 @@ const Layout = () => {
 
   return (
     <>
-      <Navbar isSticky={isSticky} />
-      <div className={`container ${isSticky ? "pageTitlePadding" : ""}`}>
-        <Outlet context={{ isSticky }} />
+      <Navbar showNavbar={showNavbar} />
+      {showNavbar && <div style={{ height: showNavbar ? "120px" : "0px", transition: "height 0.3s ease" }} />} {/* ✅ Only when visible */}
+      <div className={`container`}>
+        <Outlet />
       </div>
       <Line />
       <Footer />

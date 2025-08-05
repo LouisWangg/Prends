@@ -8,7 +8,7 @@ import { RxChevronUp, RxChevronDown } from "react-icons/rx";
 import "./Navbar.css";
 import logo from "../assets/Logo.png";
 
-const Navbar = ({ isSticky }) => {
+const Navbar = () => {
   const location = useLocation();
   const activePath = location.pathname;
   const isActive = (path, exact = false) =>
@@ -50,8 +50,19 @@ const Navbar = ({ isSticky }) => {
     return () => document.removeEventListener("mousedown", closeAllDropdowns);
   }, []);
 
+  const [showNavbar, setShowNavbar] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowNavbar(window.scrollY === 0); // Show only at top
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className={`navbarWrapper ${isSticky ? "sticky" : ""}`}>
+    <div className={`navbarWrapper ${showNavbar ? "visible" : "hidden"}`}>
       <img src={logo} alt="logo" height={70} />
       <ul className="navbarLists">
         <li className={`${isActive("/", true) ? "navbarLinkActive" : ""}`}>

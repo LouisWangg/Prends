@@ -1,5 +1,5 @@
 .navbarWrapper {
-  position: static;
+  position: relative;
   width: 100%;
   color: black;
   background-color: white;
@@ -9,13 +9,36 @@
   transition: transform 0.3s ease;
 }
 
-.navbarWrapper.sticky {
+/* Initially hidden (slid up) */
+.navbarWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Slide down when visible */
+.navbarWrapper.visible {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+
+/* .navbarWrapper.sticky {
   position: fixed;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
   transform: translateY(0%);
-}
+} */
 
 .navbarLists {
   list-style: none;
