@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/classes";
+const url = "/classes";
 
 // Get Class datas for Home page
 export const fetchClasses = async ({ subType = null, sortBy = "default", limit = null } = {}) => {
   try {
-    const response = await axios.get(`${url}/getClasses`, {
+    const response = await axiosInstance.get(`${url}/getClasses`, {
       params: { subType, sortBy, limit }
     });
     return response.data;
@@ -18,7 +18,7 @@ export const fetchClasses = async ({ subType = null, sortBy = "default", limit =
 // Get Class detail data by ID
 export const fetchClassDetailById = async (id) => {
   try {
-    const response = await axios.get(`${url}/getClassDetailById/${id}`);
+    const response = await axiosInstance.get(`${url}/getClassDetailById/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Class detail data by id: ${id}`, error?.message || error);

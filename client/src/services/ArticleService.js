@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/articles";
+const url = "/articles";
 
 // Get 3 newest Article datas for Home page
 export const fetchHomePageArticles = async () => {
   try {
-    const response = await axios.get(`${url}/getHomePageArticles`);
+    const response = await axiosInstance.get(`${url}/getHomePageArticles`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Article datas: `, error?.message || error);
@@ -16,7 +16,7 @@ export const fetchHomePageArticles = async () => {
 // Get Article datas for Article page
 export const fetchArticles = async () => {
   try {
-    const response = await axios.get(`${url}/getArticles`);
+    const response = await axiosInstance.get(`${url}/getArticles`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Article datas: `, error?.message || error);

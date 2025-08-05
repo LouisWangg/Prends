@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/serviceTypeComments";
+const url = "/serviceTypeComments";
 
 // Get Comment datas for Home page
 export const fetchHomePageComments = async () => {
   try {
-    const response = await axios.get(`${url}/getHomePageComments`);
+    const response = await axiosInstance.get(`${url}/getHomePageComments`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch fetchHomePageComments datas: `, error?.message || error);
@@ -16,7 +16,7 @@ export const fetchHomePageComments = async () => {
 // Get Comment datas for each Service
 export const fetchServiceCommentsById = async ({ id, sort = "newest" } = {}) => {
   try {
-    const response = await axios.get(`${url}/getServiceCommentsById/${id}`, {
+    const response = await axiosInstance.get(`${url}/getServiceCommentsById/${id}`, {
       params: { sort }
     });
     return response.data;

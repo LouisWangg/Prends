@@ -1,11 +1,13 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/qnas";
+const url = "/qnas";
+
+
 
 // Get Qna datas for Home page
 export const fetchHomePageQnas = async () => {
   try {
-    const response = await axios.get(`${url}/getHomePageQnas`);
+    const response = await axiosInstance.get(`${url}/getHomePageQnas`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Qna datas: `, error?.message || error);

@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/users";
+const url = "/users";
 
 // Register User
 export const registerUser = async (data) => {
   try {
-    const response = await axios.post(`${url}/registerUser`, data);
+    const response = await axiosInstance.post(`${url}/registerUser`, data);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && !error.response.data.success) 
@@ -18,7 +18,9 @@ export const registerUser = async (data) => {
 // Login User
 export const loginUser = async (data) => {
   try {
-    const response = await axios.get(`${url}/loginUser`, data);
+    const response = await axiosInstance.post(`${url}/loginUser`, data, {
+      withCredentials: true // allows cookie to be set
+    });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && !error.response.data.success) 
@@ -29,9 +31,14 @@ export const loginUser = async (data) => {
 };
 
 // Get all users
-export const fetchUsers = async () => {
+export const fetchUsers = async (accessToken) => {
   try {
-    const response = await axios.get(`${url}/getUsers`);
+    const response = await axiosInstance.get(`${url}/getUsers`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error("Failed to fetch users:", error?.message || error);
@@ -42,7 +49,7 @@ export const fetchUsers = async () => {
 // Get user by ID
 export const fetchUserById = async (id) => {
   try {
-    const response = await axios.get(`${url}/getUser/${id}`);
+    const response = await axiosInstance.get(`${url}/getUser/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch user by id: ${id}`, error?.message || error);
@@ -53,7 +60,7 @@ export const fetchUserById = async (id) => {
 // Create user
 export const createUser = async (data) => {
   try {
-    const response = await axios.post(`${url}/insertUser`, data);
+    const response = await axiosInstance.post(`${url}/insertUser`, data);
     return response.data;
   } catch (error) {
     console.error("Failed to create user:", error?.message || error);
@@ -64,7 +71,7 @@ export const createUser = async (data) => {
 // Update user
 export const updateUser = async (id, updatedData) => {
   try {
-    const response = await axios.put(
+    const response = await axiosInstance.put(
       `${url}/updateUser/${id}`,
       updatedData
     );
@@ -78,7 +85,7 @@ export const updateUser = async (id, updatedData) => {
 // Delete user
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${url}/deleteUser/${id}`);
+    const response = await axiosInstance.delete(`${url}/deleteUser/${id}`);
     return response.data;
   } catch (error) {
     console.error("Failed to delete user:", error?.message || error);

@@ -1,3 +1,4 @@
+import { generateToken, verifyRefreshToken } from "../utils/AuthUtil.js";
 import * as UserService from "../services/UserService.js";
 
 // Register User
@@ -21,14 +22,45 @@ export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     const { user, accessToken, refreshToken } = await UserService.loginUser({ email, password });
 
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     return res.status(200).json({
       success: true,
       message: `Login berhasil`,
-      data,
+      user,
+      accessToken,
     });
   } catch (error) {
     next(error);
   }
+};
+
+export const refreshAccessToken = (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) return res.status(401).json({ message: "Missing refresh token" });
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken);
+    const newAccessToken = generateToken({ id: decoded.id, email: decoded.email });
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    res.status(403).json({ message: "Invalid or expired refresh token" });
+  }
+};
+
+export const logoutUser = (req, res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
+  return res.status(200).json({ message: "Logout successful" });
 };
 
 // Create user

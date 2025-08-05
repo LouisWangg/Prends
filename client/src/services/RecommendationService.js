@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/recommendations";
+const url = "/recommendations";
 
 // Get combined Recommendation datas for Individual Konseling Detail Page
 export const fetchServiceTypeAndSeniorCounselorRecommendations = async (excludeId, subType) => {
   try {
-    const response = await axios.get(`${url}/getServiceTypeAndSeniorCounselorRecommendations`, {
+    const response = await axiosInstance.get(`${url}/getServiceTypeAndSeniorCounselorRecommendations`, {
         params: { excludeId, subType }
     });
     return response.data;
@@ -18,7 +18,7 @@ export const fetchServiceTypeAndSeniorCounselorRecommendations = async (excludeI
 // Get combined Recommendation datas for Counselor Detail Page
 export const fetchCounselorAndSeniorCounselorRecommendations = async (excludeId, subType) => {
   try {
-    const response = await axios.get(`${url}/getCounselorAndSeniorCounselorRecommendations`, {
+    const response = await axiosInstance.get(`${url}/getCounselorAndSeniorCounselorRecommendations`, {
         params: { excludeId, subType }
     });
     return response.data;

@@ -12,6 +12,7 @@ information, by storing them in a .env file instead of hardcoding them into your
 - multer = handle file uploads
 - bcryptjs = password-hashing function
 - jsonwebtoken = generate and verify JSON Web Token (JWTs)
+- cookie-parser = parse cookie that's attached to HTTP request and to easily access req.cookies
 
 - git rm = remove node_modules folder from Github repository
 - git pull origin 'the name of repository' = pull from git
@@ -28,6 +29,7 @@ information, by storing them in a .env file instead of hardcoding them into your
 - npm install multer
 - npm install bcryptjs
 - npm install jsonwebtoken
+- npm install cookie-parser
 - git rm -r --cached node_modules
 git commit -m "Remove node_modules from repo"
 git push

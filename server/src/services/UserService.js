@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import { generateToken, generateRefreshToken } from "../utils/AuthUtil.js";
 import { AppError } from "../utils/AppError.js";
+import { generateToken, generateRefreshToken } from "../utils/AuthUtil.js";
 import UserModel from "../models/UserModel.js";
 
 // Register User

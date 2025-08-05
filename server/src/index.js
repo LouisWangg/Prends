@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import { sequelize } from "./models/index.js";
 import { errorHandler } from "./middlewares/ErrorHandler.js";
 
@@ -33,8 +35,12 @@ sequelize
   });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", // your frontend URL
+  credentials: true,
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // Register routes
 app.use("/users", UserRoute);

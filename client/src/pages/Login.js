@@ -5,9 +5,9 @@ import { PiWarningCircleFill } from "react-icons/pi";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 import "./Auth.css";
-import { emailRegex } from "../utils/InputValidator";
 import Tnc from "../components/Tnc";
-// import { loginUser } from "../services/UserService";
+import { emailRegex } from "../utils/InputValidator";
+import { loginUser, fetchUsers } from "../services/UserService";
 
 const Login = () => {
   // const navigate = useNavigate(); dipake pas teken button dan mau kirim data
@@ -49,10 +49,13 @@ const Login = () => {
     const hasError = Object.values(newErrors).some(arr => arr.length > 0);
     if (hasError) return;
 
-    // const userData = {
-    //   email: "test@example.com",
-    //   password: "123456",
-    // };
+    const userData = { email: trimmedEmail, password: trimmedPassword };
+    const response = await loginUser(userData);
+
+    if (response?.accessToken) {
+      const response2 = await fetchUsers(response?.accessToken);
+      console.log("Const = " + response2[0].email);
+    } 
 
     // const response = await loginUser(userData);
     // console.log("Service response: ", response);

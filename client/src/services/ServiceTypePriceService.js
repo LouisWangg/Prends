@@ -1,11 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "./AxiosInstance.js";
 
-const url = "http://localhost:5000/serviceTypePrices";
+const url = "/serviceTypePrices";
 
 // Get Service pricing data by Id
 export const fetchServicePricingById = async (id) => {
   try {
-    const response = await axios.get(`${url}/getServicePricingById/${id}`);
+    const response = await axiosInstance.get(`${url}/getServicePricingById/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Service pricing data by id: ${id}`, error?.message || error);
