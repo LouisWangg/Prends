@@ -1,11 +1,11 @@
-import { axiosInstance } from "./AxiosInstance.js";
+import { api } from "../api/Axios.js";
 
 const url = "/serviceTypes";
 
 // Get Konseling Individu datas
 export const fetchServiceTypes = async ({ subType = null, sortBy = null } = {}) => {
   try {
-    const response = await axiosInstance.get(`${url}/getServiceTypes`, {
+    const response = await api.get(`${url}/getServiceTypes`, {
       params: { subType, sortBy },
     });
     return response.data;
@@ -18,7 +18,7 @@ export const fetchServiceTypes = async ({ subType = null, sortBy = null } = {}) 
 // Get Service detail data by ID
 export const fetchServiceDetailById = async (id) => {
   try {
-    const response = await axiosInstance.get(`${url}/getServiceDetailById/${id}`);
+    const response = await api.get(`${url}/getServiceDetailById/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch Service detail data by id: ${id}`, error?.message || error);

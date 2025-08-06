@@ -73,7 +73,7 @@ const Register = () => {
     }
 
     if (!emailRegex.test(trimmedEmail)) {
-      newErrors.email.push("Format Email tidak valid. Contoh: halo.prends@example.com atau halo.prends@example.co.id");
+      newErrors.email.push("Format Email tidak valid. \nContoh: halo.prends@example.com");
     }
 
     if (trimmedEmail.length > 150) {

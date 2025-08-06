@@ -37,7 +37,7 @@ const Login = () => {
     if (!trimmedEmail) {
       newErrors.email.push("Email tidak boleh kosong.");
     } else if (!emailRegex.test(trimmedEmail)) {
-      newErrors.email.push("Format Email tidak valid. Contoh: halo.prends@example.com atau halo.prends@example.co.id");
+      newErrors.email.push("Format Email tidak valid. \nContoh: halo.prends@example.com");
     }
 
     if (!trimmedPassword) {

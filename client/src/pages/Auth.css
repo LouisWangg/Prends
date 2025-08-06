@@ -61,6 +61,7 @@
 .errorList {
   padding-left: 15px;
   list-style: none;
+  white-space: pre-line;
 }
 
 .errorText {
